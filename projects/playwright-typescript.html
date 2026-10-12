@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playwright + TypeScript Framework · Niranjan Kumar Agri</title>
+<meta name="description" content="UI and API test automation for a demo web shop (Angular front end + REST API) with Playwright Test and strict TypeScript: 47 tests, 95 runs per full run on Chromium, Firefox and WebKit.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f43d6'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script>try{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
+    <nav aria-label="Sections"><a href="../#projects">Projects</a><a href="../#experience">Experience</a><a href="../#contact">Contact</a></nav>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">◐</button>
+  </div>
+</header>
+<main id="main" class="wrap page">
+  <p class="crumbs"><a href="../#projects">← All projects</a></p>
+  <p class="eyebrow">Featured project 2 · TypeScript · Web + API</p>
+  <h1>Playwright + TypeScript Framework</h1>
+  <p class="lead">UI and API test automation for a demo web shop (Angular front end + REST API) with Playwright Test and strict TypeScript: 47 tests, 95 runs per full run on Chromium, Firefox and WebKit.</p>
+  <p><a href="https://github.com/niranjankagri/playwright-typescript-framework/actions/workflows/ci.yml" aria-label="Live CI status on GitHub Actions"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/playwright-typescript-framework/actions/workflows/ci.yml/badge.svg" alt="Live CI status of Playwright + TypeScript Framework"></a></p>
+  <div class="btns" style="margin:18px 0 26px">
+    <a class="btn primary" href="https://github.com/niranjankagri/playwright-typescript-framework" target="_blank" rel="noopener">View source code</a>
+    <a class="btn" href="https://github.com/niranjankagri/playwright-typescript-framework#readme" target="_blank" rel="noopener">View documentation</a>
+    <a class="btn" href="https://github.com/niranjankagri/playwright-typescript-framework/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a>
+    <a class="btn" href="https://github.com/niranjankagri/playwright-typescript-framework/blob/main/docs/images/report-overview.png" target="_blank" rel="noopener">View test report</a>
+  </div>
+  <section aria-labelledby="purpose"><h2 id="purpose">Purpose</h2><p>Tests the <a href="https://practicesoftwaretesting.com" target="_blank" rel="noopener">Practice Software Testing Toolshop</a>, a public demo shop built for testers, through its UI and its REST API, to show modern TypeScript test design: page objects, fixtures, typed API contracts and network control.</p></section><section aria-labelledby="stack"><h2 id="stack">Technology stack</h2><div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Tools</th></tr></thead><tbody><tr><td>Test runner</td><td>Playwright Test 1.64</td></tr><tr><td>Language</td><td>TypeScript 6, strict mode</td></tr><tr><td>API contracts</td><td>zod 4 schemas (also the TypeScript types)</td></tr><tr><td>Static checks</td><td>tsc, ESLint (type-aware, eslint-plugin-playwright), Prettier</td></tr><tr><td>CI</td><td>GitHub Actions: checks, then api/chromium/firefox/webkit in parallel, then one merged report</td></tr></tbody></table></div></section><section aria-labelledby="architecture"><h2 id="architecture">Architecture overview</h2><pre><code>tests/api/*.api.spec.ts   tests/ui/*.spec.ts
+        │                         │
+  fixtures/test.ts (page objects, API clients, test user, loggedIn option)
+        │                         │
+  api/ AuthApi · ProductsApi · CartsApi        pages/ + components/HeaderComponent
+  + zod schemas                                + @step decorator
+        │                         │
+     REST API                 Browser (3 engines)</code></pre></section><section aria-labelledby="decisions"><h2 id="decisions">Key engineering decisions</h2><ul><li>Fixtures instead of <code>new</code>: tests declare what they need; API tests never start a browser</li><li>Login through the API per test (token injected before page load); a saved login was not used because the shop's tokens expire after 5 minutes</li><li>zod schemas validate every response and provide the types, so contract and code cannot drift; they found a real inconsistency between two endpoints</li><li><code>@step</code> decorator on page-object methods for readable reports and traces; passwords never in step titles</li><li>Each worker registers its own customer, so no shared credentials and no collisions in parallel runs</li></ul></section><section aria-labelledby="features"><h2 id="features">Implemented features</h2><ul><li>Login, catalogue search/filter/sort, product, full checkout of two products, guest sign-in step</li><li>Network tests: mocked product list, empty list, 500 error, inspection of requests the front end sends</li><li>API tests: registration, JWT login, paging contract, carts with 422 validation and a business rule, 404s</li><li>Exact money maths in cents; tags for smoke, negative, e2e, hybrid and network runs</li></ul></section><section aria-labelledby="run"><h2 id="run">Setup and execution</h2><pre><code>npm ci
+npx playwright install --with-deps
+npm test                 # API + 3 browsers
+npm run test:api         # API only
+npm run check            # typecheck + lint + format (what CI runs first)</code></pre></section><section aria-labelledby="results"><h2 id="results">Sample test results</h2><figure><img src="https://raw.githubusercontent.com/niranjankagri/playwright-typescript-framework/main/docs/images/report-overview.png" alt="Playwright HTML report overview" loading="lazy"><figcaption>Merged Playwright HTML report of a full run.</figcaption></figure></section><section aria-labelledby="ci"><h2 id="ci">CI workflow</h2><p>One workflow: static checks first, then four parallel jobs (API, Chromium, Firefox, WebKit), then a single merged HTML report kept as an artifact.</p></section><section aria-labelledby="limitations"><h2 id="limitations">Known limitations and future improvements</h2><h3>Limitations</h3><ul><li>The suite depends on a public demo site; its availability and data affect runs</li><li>Two form-login UI tests are skipped in CI, where the site's bot check blocks automated form logins; login itself is covered through the API</li></ul><h3>Next steps</h3><ul><li>Publish the merged HTML report to GitHub Pages</li><li>Visual comparison of key pages</li></ul></section>
+</main>
+<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a></footer>
+<script src="../theme.js"></script>
+</body>
+</html>
