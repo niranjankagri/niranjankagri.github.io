@@ -52,6 +52,13 @@ MORE = [
       text='My 2021 Appium + TestNG framework, upgraded in 2026 to Appium 3, Java client 11 and Selenium 4 without changing its design: '
            'one set of tests for Android and iOS through a platform layer, capabilities per platform in properties files, '
            'and a custom HTML report with failure screenshots. Runs green on an Android 15 emulator; the iOS side is ready but not yet run.'),
+ # No CI: tests run against the shared public OrangeHRM demo. Facts checked 13 Oct 2026: 4/4 on visible Chrome
+ # and headless Chrome, Edge and Firefox; the logout test had failed since 2024 because of a missing @ in its XPath.
+ dict(title='Selenium Page Object Framework (2024, upgraded)', repo='java-selenium-testng-pom-framework',
+      report='docs/images/extent-tests.png',
+      text='My January 2024 Selenium + TestNG page object framework for OrangeHRM, upgraded step by step in 2026: '
+           'explicit waits instead of fixed sleeps, browser and headless mode from a config file, and an Extent report '
+           'with a screenshot on every failure. The upgrade also fixed a locator bug that had failed the logout test since 2024.'),
  dict(title='Selenium Java Interview Lab', repo='selenium-java-framework', wf='tests.yml', report='docs/images/html-report.png',
       text='148 runnable tests, one per Selenium, TestNG and framework-design topic, plus a PDF of 100+ interview questions.'),
  dict(title='Cucumber BDD Framework', repo='cucumber-java-framework', wf='tests.yml', report='docs/images/html-report.png',
