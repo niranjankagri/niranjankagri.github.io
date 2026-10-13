@@ -45,6 +45,13 @@ FEATURED = [
 ]
 
 MORE = [
+ # No CI: the app under test (Google Calculator) cannot be redistributed, so a CI machine has no APK.
+ # Facts checked 13 Oct 2026: Android suite 1/1 on an Android 15 emulator with Appium 3.8; iOS not run (needs a Mac).
+ dict(title='Mobile Framework (2021, upgraded for Android + iOS)', repo='mobile-test-automation-framework',
+      report='docs/images/report-dashboard.png',
+      text='My 2021 Appium + TestNG framework, upgraded in 2026 to Appium 3, Java client 11 and Selenium 4 without changing its design: '
+           'one set of tests for Android and iOS through a platform layer, capabilities per platform in properties files, '
+           'and a custom HTML report with failure screenshots. Runs green on an Android 15 emulator; the iOS side is ready but not yet run.'),
  dict(title='Selenium Java Interview Lab', repo='selenium-java-framework', wf='tests.yml', report='docs/images/html-report.png',
       text='148 runnable tests, one per Selenium, TestNG and framework-design topic, plus a PDF of 100+ interview questions.'),
  dict(title='Cucumber BDD Framework', repo='cucumber-java-framework', wf='tests.yml', report='docs/images/html-report.png',
@@ -92,12 +99,14 @@ def featured(p):
 
 def more(p):
     repo = p['repo']
+    # A project without a CI workflow ('wf') gets no status badge and no CI link
+    ci = [ext(f'{GH}{repo}/actions/workflows/{p["wf"]}', 'View latest CI runs')] if p.get('wf') else []
     acts = ([f'<a href="projects/{p["page"]}.html">Project details</a>'] if p.get('page') else []) + [
-        ext(GH + repo, 'View source code'), ext(f'{GH}{repo}/actions/workflows/{p["wf"]}', 'View latest CI runs'),
-        ext(f'{GH}{repo}/blob/main/{p["report"]}', 'View test report')]
+        ext(GH + repo, 'View source code')] + ci + [ext(f'{GH}{repo}/blob/main/{p["report"]}', 'View test report')]
+    status = badge(repo, p['wf'], 'Tests') if p.get('wf') else ''
     return f'''      <article class="card"><div class="body">
         <h3>{p['title']}</h3>
-        {badge(repo, p['wf'], 'Tests')}
+        {status}
         <p>{p['text']}</p>
         <div class="actions">{''.join(acts)}</div>
       </div></article>
