@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>k6 Performance Testing · Niranjan Kumar Agri</title>
+<meta name="description" content="Smoke, load, stress, spike and soak tests with Grafana k6 for a shop API kept in the repository: service level objectives as thresholds that fail the CI job, and a stress test that found a real bottleneck.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f43d6'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script>try{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
+    <nav aria-label="Sections"><a href="../#projects">Projects</a><a href="../#experience">Experience</a><a href="../#contact">Contact</a></nav>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">◐</button>
+  </div>
+</header>
+<main id="main" class="wrap page">
+  <p class="crumbs"><a href="../#projects">← All projects</a></p>
+  <p class="eyebrow">Featured project 7 · JavaScript · Performance</p>
+  <h1>k6 Performance Testing</h1>
+  <p class="lead">Smoke, load, stress, spike and soak tests with Grafana k6 for a shop API kept in the repository: service level objectives as thresholds that fail the CI job, and a stress test that found a real bottleneck.</p>
+  <p><a href="https://github.com/niranjankagri/k6-performance-testing/actions/workflows/perf.yml" aria-label="Live CI status on GitHub Actions"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/k6-performance-testing/actions/workflows/perf.yml/badge.svg" alt="Live CI status of k6 Performance Testing"></a></p>
+  <div class="btns" style="margin:18px 0 26px">
+    <a class="btn primary" href="https://github.com/niranjankagri/k6-performance-testing" target="_blank" rel="noopener">View source code</a>
+    <a class="btn" href="https://github.com/niranjankagri/k6-performance-testing#readme" target="_blank" rel="noopener">View documentation</a>
+    <a class="btn" href="https://github.com/niranjankagri/k6-performance-testing/actions/workflows/perf.yml" target="_blank" rel="noopener">View latest CI runs</a>
+    <a class="btn" href="https://github.com/niranjankagri/k6-performance-testing/blob/main/docs/images/load-dashboard.png" target="_blank" rel="noopener">View test report</a>
+  </div>
+  <section aria-labelledby="purpose"><h2 id="purpose">Purpose</h2><p>Shows how I approach performance testing: one test per question, pass/fail criteria agreed up front, realistic workload models, and results that lead to a fix. The app under test, a small shop API, is part of the repository, so the tests never put load on someone else&#39;s server and every CI job measures its own copy.</p></section><section aria-labelledby="stack"><h2 id="stack">Technology stack</h2><div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Tools</th></tr></thead><tbody><tr><td>Load testing</td><td>Grafana k6 2.3 (scenarios, executors, checks, thresholds, custom metrics)</td></tr><tr><td>Scripts</td><td>JavaScript ES modules (k6 runtime)</td></tr><tr><td>App under test</td><td>QuickShop: Node.js 24 HTTP API, no dependencies, with functional tests</td></tr><tr><td>Reports</td><td>k6 web dashboard (HTML), Markdown summary per run, JSON of every metric</td></tr><tr><td>Code quality and CI</td><td>ESLint, Prettier, GitHub Actions: lint, smoke gate, load/stress/spike in parallel, nightly soak</td></tr></tbody></table></div></section><section aria-labelledby="architecture"><h2 id="architecture">Architecture overview</h2><pre><code>k6/tests/*.js     scenarios (who, how many, which executor) + thresholds (SLOs)
+      │
+k6/lib/flows.js   journeys browse() and buy(): checks, think time, business metrics
+k6/lib/api.js     one function per endpoint, stable name tag per request
+k6/lib/config.js  BASE_URL, PROFILE (ci | full), THINK
+      │
+QuickShop (app/)  started by each CI job; checkout limited by 8 &quot;database connections&quot;</code></pre></section><section aria-labelledby="decisions"><h2 id="decisions">Key engineering decisions</h2><ul><li>SLOs per endpoint as thresholds (p95 per endpoint, error rate, checks, business metrics): a missed SLO exits with 99 and fails the job</li><li>Visitors in a closed model (ramping-vus) and orders in an open model (arrival rate) in the same test; dropped iterations have a threshold</li><li>One login per virtual user, a different test user per VU from a SharedArray, random think time</li><li>Each test has a ci size for every push and a full size for a dedicated environment, side by side in the script</li><li>The stress test asserts graceful degradation (every order placed or refused with 503, bounded wait), not the normal SLOs</li></ul></section><section aria-labelledby="features"><h2 id="features">Implemented features</h2><ul><li>Five test types: smoke (gate), load, stress, spike and soak; soak samples the server&#39;s memory every 10 s</li><li>Finding: past about 90 orders/s checkout queued without limit (p95 over 3 s and rising); fixed with load shedding, the slowest checkout is now 624 ms</li><li>Regression demo: a 300 ms slower checkout passes every functional check but fails the checkout SLO (p95 425 ms vs 400 ms)</li><li>Markdown result table on every CI run page; HTML dashboard and JSON as artifacts</li><li>Design notes and 78 interview questions on performance testing and k6, linked to the code (Markdown + PDF)</li></ul></section><section aria-labelledby="run"><h2 id="run">Setup and execution</h2><pre><code>npm install
+npm start                               # QuickShop on http://localhost:3000
+k6 run k6/tests/smoke.js
+k6 run k6/tests/load.js
+k6 run -e THINK=0 k6/tests/stress.js
+k6 run -e PROFILE=full k6/tests/load.js  # realistic size and duration</code></pre></section><section aria-labelledby="results"><h2 id="results">Sample test results</h2><figure><img src="https://raw.githubusercontent.com/niranjankagri/k6-performance-testing/main/docs/images/stress-before-fix.png" alt="k6 dashboard of the first stress test: response times climb without limit" loading="lazy"><figcaption>Stress test before the fix: past the limit, checkout times climb until the abort threshold stops the run.</figcaption></figure><figure><img src="https://raw.githubusercontent.com/niranjankagri/k6-performance-testing/main/docs/images/stress-after-fix.png" alt="k6 dashboard of the stress test after the fix: response times level off" loading="lazy"><figcaption>The same test after adding load shedding: response times level off and every answer is correct.</figcaption></figure><figure><img src="https://raw.githubusercontent.com/niranjankagri/k6-performance-testing/main/docs/images/regression-demo-summary.png" alt="Markdown summary of the regression demo with the failed checkout threshold" loading="lazy"><figcaption>Regression demo: one threshold fails, so the run fails.</figcaption></figure></section><section aria-labelledby="ci"><h2 id="ci">CI workflow</h2><p>On every push and pull request: ESLint, Prettier and the app&#39;s functional tests, then the smoke test as the gate, then the load, stress and spike tests as three parallel jobs, each with its own copy of the app. The soak test runs nightly. Each job writes its result table to the run summary and keeps the HTML dashboard as an artifact.</p></section><section aria-labelledby="limitations"><h2 id="limitations">Known limitations and future improvements</h2><h3>Limitations</h3><ul><li>Shared CI runners are noisy: the CI sizes catch regressions; capacity numbers need dedicated load generators and a production-like environment</li><li>The app under test is a demo with simulated latencies</li></ul><h3>Next steps</h3><ul><li>Stream metrics to Grafana (Prometheus remote write) next to server metrics</li><li>A k6 browser scenario for Web Vitals under load</li></ul></section>
+</main>
+<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a></footer>
+<script src="../theme.js"></script>
+</body>
+</html>

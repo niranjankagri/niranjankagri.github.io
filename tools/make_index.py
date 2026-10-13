@@ -49,6 +49,13 @@ FEATURED = [
       fact='46 tests (32 API, 9 UI, 5 hybrid API + UI) in about 1 m 45 s with 4 parallel workers; in CI the UI and hybrid tests run on Chromium, Firefox and WebKit.',
       text='A requests API client with pydantic contracts, Playwright page objects, login through the API by token injection, a throwaway user per test, and a screenshot in the HTML report for every failed UI test.',
       tags=['Python', 'pytest', 'Playwright', 'requests', 'pydantic', 'GitHub Actions']),
+ # Facts checked 13 Oct 2026: local ci-profile runs (stress before/after the fix) and CI green (lint, smoke, load, stress, spike).
+ dict(n=7, badge='Performance', title='k6 Performance Testing', repo='k6-performance-testing', wf='perf.yml', wfname='Performance',
+      img='k6', alt='k6 web dashboard of a load test: request rate, response times and virtual users over time', page='k6-performance',
+      report='docs/images/load-dashboard.png',
+      fact='The stress test found the limit of the demo shop: past about 90 orders/s checkout queued without bound (p95 over 3 s). After adding load shedding, the same test stays under 650 ms.',
+      text='Smoke, load, stress, spike and soak tests of a shop API kept in the repository; SLOs per endpoint as k6 thresholds that fail the CI job, open and closed workload models, and an HTML dashboard per run.',
+      tags=['k6', 'JavaScript', 'Node.js', 'SLOs', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -143,7 +150,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: six flagship frameworks for web, API and mobile, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: seven flagship projects for web, API, mobile and performance, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -200,7 +207,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>11 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>12 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
