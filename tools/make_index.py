@@ -42,6 +42,13 @@ FEATURED = [
       fact='30 tests (15 UI, 15 API) in about 70 seconds with 4 parallel pabot processes.',
       text='Page objects as resource files, API service objects, Python only where Robot syntax is awkward; CI lints first, then runs on Chrome and Firefox, plus a scheduled nightly run.',
       tags=['Robot Framework 7', 'Python', 'SeleniumLibrary', 'RequestsLibrary', 'pabot']),
+ # Facts checked 13 Oct 2026: 46 tests locally (-n 4, about 1 m 46 s) and CI green on all three browser jobs.
+ dict(n=6, badge='API + UI', title='Python pytest + Playwright Framework', repo='python-pytest-framework', wf='ci.yml', wfname='CI',
+      img='pytest', alt='pytest-html report of the Python framework: 46 tests passed', page='python-pytest',
+      report='docs/images/report-all-passed.png',
+      fact='46 tests (32 API, 9 UI, 5 hybrid API + UI) in about 1 m 45 s with 4 parallel workers; in CI the UI and hybrid tests run on Chromium, Firefox and WebKit.',
+      text='A requests API client with pydantic contracts, Playwright page objects, login through the API by token injection, a throwaway user per test, and a screenshot in the HTML report for every failed UI test.',
+      tags=['Python', 'pytest', 'Playwright', 'requests', 'pydantic', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -136,7 +143,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: five flagship frameworks for web, API and mobile, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: six flagship frameworks for web, API and mobile, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -193,8 +200,8 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>10 frameworks</b><span> on GitHub, each with a GitHub Actions workflow whose latest run passed (checked 12 Oct 2026)</span>
-          <small><a href="#projects">See all ten below</a></small></div>
+        <div class="stat"><b>11 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+          <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
       </div>

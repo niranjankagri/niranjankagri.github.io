@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python pytest + Playwright Framework · Niranjan Kumar Agri</title>
+<meta name="description" content="API, UI and hybrid test automation in Python with pytest, Playwright, requests and pydantic: 46 tests of a notes app in about 1 m 45 s with 4 parallel workers, on Chromium, Firefox and WebKit in GitHub Actions.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f43d6'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script>try{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
+    <nav aria-label="Sections"><a href="../#projects">Projects</a><a href="../#experience">Experience</a><a href="../#contact">Contact</a></nav>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">◐</button>
+  </div>
+</header>
+<main id="main" class="wrap page">
+  <p class="crumbs"><a href="../#projects">← All projects</a></p>
+  <p class="eyebrow">Featured project 6 · Python · API + UI</p>
+  <h1>Python pytest + Playwright Framework</h1>
+  <p class="lead">API, UI and hybrid test automation in Python with pytest, Playwright, requests and pydantic: 46 tests of a notes app in about 1 m 45 s with 4 parallel workers, on Chromium, Firefox and WebKit in GitHub Actions.</p>
+  <p><a href="https://github.com/niranjankagri/python-pytest-framework/actions/workflows/ci.yml" aria-label="Live CI status on GitHub Actions"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/python-pytest-framework/actions/workflows/ci.yml/badge.svg" alt="Live CI status of Python pytest + Playwright Framework"></a></p>
+  <div class="btns" style="margin:18px 0 26px">
+    <a class="btn primary" href="https://github.com/niranjankagri/python-pytest-framework" target="_blank" rel="noopener">View source code</a>
+    <a class="btn" href="https://github.com/niranjankagri/python-pytest-framework#readme" target="_blank" rel="noopener">View documentation</a>
+    <a class="btn" href="https://github.com/niranjankagri/python-pytest-framework/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a>
+    <a class="btn" href="https://github.com/niranjankagri/python-pytest-framework/blob/main/docs/images/report-all-passed.png" target="_blank" rel="noopener">View test report</a>
+  </div>
+  <section aria-labelledby="purpose"><h2 id="purpose">Purpose</h2><p>Shows a Python test stack for one application with a web UI and a REST API on the same backend: the public <a href="https://practice.expandtesting.com/notes/app" target="_blank" rel="noopener">Expand Testing Notes app</a>. The API carries most of the checks, the browser checks what a user sees, and hybrid tests check that the two sides agree.</p></section><section aria-labelledby="stack"><h2 id="stack">Technology stack</h2><div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Tools</th></tr></thead><tbody><tr><td>Language</td><td>Python 3.12</td></tr><tr><td>Test runner</td><td>pytest 9 (fixtures, markers, parametrize, hooks)</td></tr><tr><td>Browser automation</td><td>Playwright for Python 1.63 with pytest-playwright (Chromium, Firefox, WebKit)</td></tr><tr><td>API</td><td>requests 2.34 (one Session per client)</td></tr><tr><td>Contracts</td><td>pydantic 2 models with extra fields forbidden</td></tr><tr><td>Parallel runs and report</td><td>pytest-xdist, pytest-html (one self-contained file), Playwright traces and videos</td></tr><tr><td>Code quality and CI</td><td>ruff (lint + format), GitHub Actions: lint gate, API job, browser matrix, nightly run</td></tr></tbody></table></div></section><section aria-labelledby="architecture"><h2 id="architecture">Architecture overview</h2><pre><code>tests/api, tests/ui, tests/e2e        what is checked
+      │  fixtures (tests/conftest.py): throwaway user per test, logged-in client,
+      │  page with ads blocked, page already logged in, report hooks
+      │
+framework/api        NotesApiClient (requests) + pydantic models
+framework/pages      LoginPage, NotesPage (data-testid locators, no assertions)
+framework/data       unique users and notes (uuid)
+      │
+framework/config     URLs and timeouts from environment variables</code></pre></section><section aria-labelledby="decisions"><h2 id="decisions">Key engineering decisions</h2><ul><li>Every test registers its own user through the API and deletes it in teardown, so tests are independent and safe with pytest-xdist on a shared public site</li><li>UI tests log in by putting the API token into localStorage before the page loads; the login form itself is tested once</li><li>The API client returns raw responses and never asserts, so the same client serves positive and negative tests</li><li>pydantic models with extra=&quot;forbid&quot;: an added or renamed field fails a test at once instead of passing silently</li><li>Page objects hold data-testid locators and actions; tests assert with Playwright&#39;s retrying expect, with no sleeps anywhere</li><li>Demo tests that fail, skip and xfail on purpose carry their own marker and stay out of normal runs</li></ul></section><section aria-labelledby="features"><h2 id="features">Implemented features</h2><ul><li>32 API tests: registration and validation, login, the same 401 for a wrong password and an unknown user, token checks, profile, password change, logout, notes CRUD with PUT and PATCH, bad ids, one user cannot see another user&#39;s notes</li><li>9 UI tests: login form, adding, completing, deleting and searching notes</li><li>5 hybrid tests: data created through the API shown in the app, changes made in the app checked through the API</li><li>HTML report with an embedded screenshot for every failed UI test; Playwright screenshot, video and trace kept for failures</li><li>Framework design notes and 86 interview questions with answers linked to the code (Markdown + PDF)</li></ul></section><section aria-labelledby="run"><h2 id="run">Setup and execution</h2><pre><code>python -m venv .venv &amp;&amp; .venv\Scripts\activate
+pip install -r requirements.txt
+playwright install chromium firefox webkit
+pytest -n 4                              # all 46 tests
+pytest -m api                            # API only
+pytest -m "ui or e2e" --browser firefox  # browser tests on Firefox
+pytest -m demo                           # report demo: 2 failed, 1 skipped, 1 xfailed</code></pre></section><section aria-labelledby="results"><h2 id="results">Sample test results</h2><figure><img src="https://raw.githubusercontent.com/niranjankagri/python-pytest-framework/main/docs/images/report-all-passed.png" alt="pytest-html report: 46 tests passed" loading="lazy"><figcaption>pytest-html report of a full run: 46 passed.</figcaption></figure><figure><img src="https://raw.githubusercontent.com/niranjankagri/python-pytest-framework/main/docs/images/report-demo-failures.png" alt="pytest-html report of the demo run with failures, a skip and an xfail" loading="lazy"><figcaption>The report demo: a UI failure with its screenshot, an API failure with the API&#39;s message, a strict xfail and a skip.</figcaption></figure></section><section aria-labelledby="ci"><h2 id="ci">CI workflow</h2><p>On every push, pull request and night: ruff lint and format check first, then the API tests with 4 workers and the UI + hybrid tests on Chromium, Firefox and WebKit as three parallel jobs. Each job writes a pass/fail table to the run summary and keeps its HTML report and traces as an artifact.</p></section><section aria-labelledby="limitations"><h2 id="limitations">Known limitations and future improvements</h2><h3>Limitations</h3><ul><li>Runs against a shared public demo site, whose availability affects results</li><li>Visual and accessibility checks are not included yet</li></ul><h3>Next steps</h3><ul><li>Accessibility checks with axe-core</li><li>Publish the HTML report to GitHub Pages</li></ul></section>
+</main>
+<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a></footer>
+<script src="../theme.js"></script>
+</body>
+</html>
