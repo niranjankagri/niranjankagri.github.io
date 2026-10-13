@@ -59,13 +59,14 @@ MORE = [
       text='My January 2024 Selenium + TestNG page object framework for OrangeHRM, upgraded step by step in 2026: '
            'explicit waits instead of fixed sleeps, browser and headless mode from a config file, and an Extent report '
            'with a screenshot on every failure. The upgrade also fixed a locator bug that had failed the logout test since 2024.'),
- # No CI: tests run against public practice sites. Facts checked 13 Oct 2026: 5/5 scenarios on visible Chrome and
+ # No CI: tests run against public practice sites. Facts checked 13 Oct 2026 (after the layer split, commit 5bc9fb8): 5/5 scenarios on visible Chrome and
  # headless Chrome, Edge and Firefox; the 2022 build no longer compiled (Java 1.7 target, mixed Cucumber versions).
  dict(title='Cucumber BDD Demo (2022, upgraded)', repo='cucumber-bdd-demo',
       report='docs/images/report-passing.png',
-      text='My first Cucumber project from 2022, which no longer built, brought to Java 17, Cucumber 8 and Selenium 4 '
-           'step by step: one Cucumber version instead of three, hooks that always close the browser and attach a '
-           'screenshot on failure, and real checks for a Scenario Outline whose rows used to pass without asserting anything.'),
+      text='My first Cucumber project from 2022, which no longer built, brought to Java 17, Cucumber 8 (JUnit Platform '
+           'runners) and Selenium 4 step by step, then split into layers: runners, step definitions, page objects, hooks '
+           'and utils. Hooks attach a screenshot on failure, and a Scenario Outline that used to pass without checking '
+           'anything now asserts each row.'),
  dict(title='Selenium Java Interview Lab', repo='selenium-java-framework', wf='tests.yml', report='docs/images/html-report.png',
       text='148 runnable tests, one per Selenium, TestNG and framework-design topic, plus a PDF of 100+ interview questions.'),
  dict(title='Cucumber BDD Framework', repo='cucumber-java-framework', wf='tests.yml', report='docs/images/html-report.png',
