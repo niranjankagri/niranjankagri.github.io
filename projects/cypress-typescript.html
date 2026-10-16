@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cypress + TypeScript Framework · Niranjan Kumar Agri</title>
+<meta name="description" content="End-to-end, API and component tests with Cypress 16 and TypeScript for a React + Node task app kept in the repository: 81 Cypress tests, green in GitHub Actions on Chrome, Firefox and Edge.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f43d6'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script>try{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
+    <nav aria-label="Sections"><a href="../#projects">Projects</a><a href="../#experience">Experience</a><a href="../#contact">Contact</a></nav>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">◐</button>
+  </div>
+</header>
+<main id="main" class="wrap page">
+  <p class="crumbs"><a href="../#projects">← All projects</a></p>
+  <p class="eyebrow">Featured project 8 · TypeScript · E2E + API + Component</p>
+  <h1>Cypress + TypeScript Framework</h1>
+  <p class="lead">End-to-end, API and component tests with Cypress 16 and TypeScript for a React + Node task app kept in the repository: 81 Cypress tests, green in GitHub Actions on Chrome, Firefox and Edge.</p>
+  <p><a href="https://github.com/niranjankagri/cypress-typescript-framework/actions/workflows/ci.yml" aria-label="Live CI status on GitHub Actions"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/cypress-typescript-framework/actions/workflows/ci.yml/badge.svg" alt="Live CI status of Cypress + TypeScript Framework"></a></p>
+  <div class="btns" style="margin:18px 0 26px">
+    <a class="btn primary" href="https://github.com/niranjankagri/cypress-typescript-framework" target="_blank" rel="noopener">View source code</a>
+    <a class="btn" href="https://github.com/niranjankagri/cypress-typescript-framework#readme" target="_blank" rel="noopener">View documentation</a>
+    <a class="btn" href="https://github.com/niranjankagri/cypress-typescript-framework/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a>
+    <a class="btn" href="https://github.com/niranjankagri/cypress-typescript-framework/blob/main/docs/images/report-all-passed.png" target="_blank" rel="noopener">View test report</a>
+  </div>
+  <section aria-labelledby="purpose"><h2 id="purpose">Purpose</h2><p>Shows what Cypress does best: tests that control the browser&#39;s network, clock and login, and component tests next to end-to-end tests. The app under test, TaskBoard, is part of the repository, so no public demo site can break a run, every test can reset the data, and the React components can be mounted on their own.</p></section><section aria-labelledby="stack"><h2 id="stack">Technology stack</h2><div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Tools</th></tr></thead><tbody><tr><td>Test framework</td><td>Cypress 16.2 (e2e and component testing)</td></tr><tr><td>Language</td><td>TypeScript 6.0</td></tr><tr><td>Contracts</td><td>zod 4 strict schemas</td></tr><tr><td>App under test</td><td>React 19 + Vite 8 web app, Node.js 24 API with no dependencies (and its own node:test tests)</td></tr><tr><td>Report</td><td>cypress-mochawesome-reporter: one HTML file per run with failure screenshots</td></tr><tr><td>Code quality and CI</td><td>ESLint (type-aware + Cypress rules), Prettier, GitHub Actions with cypress-io/github-action</td></tr></tbody></table></div></section><section aria-labelledby="architecture"><h2 id="architecture">Architecture overview</h2><pre><code>cypress/e2e/api, e2e/ui, component     what is checked
+      │
+cypress/pages        LoginPage, BoardPage (data-cy selectors, no assertions)
+cypress/support      commands: resetData, loginAs (cy.session), createTask
+                     api.ts (typed cy.request client), schemas.ts (zod)
+      │
+TaskBoard (app/)     React UI + Node API; POST /api/test/reset before every test</code></pre></section><section aria-labelledby="decisions"><h2 id="decisions">Key engineering decisions</h2><ul><li>The app under test lives in the repository: a reset hook and seeded users make every test start from the same data</li><li>Login through cy.session with a validate step; the login form itself is tested once</li><li>Setup data is created through the API, the screen under test through page objects</li><li>zod strictObject contracts: a leaked field fails with its name (checked by leaking a server field on purpose)</li><li>cy.intercept for states the real server rarely produces, the real backend for user flows</li><li>No fixed waits and no chaining after actions: both are lint errors</li></ul></section><section aria-labelledby="features"><h2 id="features">Implemented features</h2><ul><li>31 API tests: login and logout, token checks, tasks CRUD, filters, validation with boundary values, another user&#39;s task answers 404</li><li>33 UI tests: login, adding, completing, renaming and deleting tasks (confirm accepted and cancelled), filters, search</li><li>Network: slow answers, server errors with Retry, network failure, fixture stub, expired login, request body and header checks</li><li>Time: the Overdue badge before, on and after the due date, a 300 ms search debounce and a 3 s toast, with cy.clock</li><li>17 component tests: the form, the task row, the filter bar and the toast mounted alone, callbacks recorded with cy.stub()</li><li>Framework design notes and 86 interview questions with answers linked to the code (Markdown + PDF)</li></ul></section><section aria-labelledby="run"><h2 id="run">Setup and execution</h2><pre><code>npm ci
+npm test                  # build the app, start it, run all API + UI tests
+npm run cy:component      # component tests
+npm run cy:open           # interactive runner
+npm run cy:demo           # report demo: 1 pass, 2 fail, 1 skip on purpose</code></pre></section><section aria-labelledby="results"><h2 id="results">Sample test results</h2><figure><img src="https://raw.githubusercontent.com/niranjankagri/cypress-typescript-framework/main/docs/images/report-all-passed.png" alt="Mochawesome report: 64 of 64 end-to-end and API tests passed" loading="lazy"><figcaption>HTML report of a full end-to-end run: 64 passed.</figcaption></figure><figure><img src="https://raw.githubusercontent.com/niranjankagri/cypress-typescript-framework/main/docs/images/failure-screenshot.png" alt="Cypress screenshot of a failed demo test with the command log and the task board" loading="lazy"><figcaption>Failure screenshot from the report demo: the restored login session, the failed assertion and the board at that moment.</figcaption></figure></section><section aria-labelledby="ci"><h2 id="ci">CI workflow</h2><p>On every push, pull request and night: lint, Prettier, type checks and the app&#39;s own tests first; then the API tests, the UI tests on Chrome, Firefox and Edge, and the component tests as parallel jobs. Each job builds and starts its own copy of the app, writes a summary and keeps its HTML report as an artifact.</p></section><section aria-labelledby="limitations"><h2 id="limitations">Known limitations and future improvements</h2><h3>Limitations</h3><ul><li>Specs run one after another against one server; parallel specs would need a server or data set per worker</li><li>Visual and accessibility checks are not included yet; WebKit is not covered</li></ul><h3>Next steps</h3><ul><li>Accessibility checks with axe-core and visual comparison</li><li>Publish the HTML report to GitHub Pages</li></ul></section>
+</main>
+<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a></footer>
+<script src="../theme.js"></script>
+</body>
+</html>
