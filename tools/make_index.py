@@ -63,6 +63,13 @@ FEATURED = [
       fact='81 Cypress tests: 31 API, 33 UI and 17 component tests; in CI the UI tests run on Chrome, Firefox and Edge.',
       text='A React + Node task app kept in the repository, tested three ways: cy.request with zod contracts, page objects with cy.intercept and cy.clock for errors, slow answers and dates, and React components mounted alone.',
       tags=['Cypress 16', 'TypeScript', 'React', 'zod', 'GitHub Actions']),
+ # Facts checked 16 Oct 2026: npm run contract + demo:breaking locally on a fresh broker; CI green (consumer, provider, broker workflow).
+ dict(n=9, badge='Contract testing', title='Pact Contract Testing', repo='pact-contract-testing', wf='contract.yml', wfname='Contract tests',
+      img='pact', alt='Pact Broker matrix: the main version verified and deployed, a feature-branch version failed', page='pact-contract',
+      report='docs/images/broker-matrix.png',
+      fact='A TypeScript consumer and a Java Spring Boot provider, 6 interactions verified through a self-hosted Pact Broker; can-i-deploy blocks a breaking consumer change while the provider build stays green.',
+      text='Consumer-driven contracts with Pact V4: matchers and provider states with parameters on the consumer side, JUnit 5 verification of the real Spring Boot app with pending and WIP pacts, and publish, can-i-deploy and record-deployment in GitHub Actions.',
+      tags=['Pact', 'TypeScript', 'Java 17', 'Spring Boot', 'Docker', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -157,7 +164,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: eight flagship projects for web, API, mobile and performance, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: nine flagship projects for web, API, mobile, contracts and performance, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -214,7 +221,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>13 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>14 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
