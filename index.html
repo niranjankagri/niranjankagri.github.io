@@ -6,7 +6,7 @@
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: nine flagship projects for web, API, mobile, contracts and performance, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: ten flagship projects for web, API, mobile, contracts, CI/CD and performance, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -63,7 +63,7 @@
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>14 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>15 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
@@ -181,6 +181,18 @@
           <p>Consumer-driven contracts with Pact V4: matchers and provider states with parameters on the consumer side, JUnit 5 verification of the real Spring Boot app with pending and WIP pacts, and publish, can-i-deploy and record-deployment in GitHub Actions.</p>
           <ul class="tags" aria-label="Technologies"><li class="tag">Pact</li><li class="tag">TypeScript</li><li class="tag">Java 17</li><li class="tag">Spring Boot</li><li class="tag">Docker</li><li class="tag">GitHub Actions</li></ul>
           <div class="actions"><a href="projects/pact-contract.html">Project details</a><a href="https://github.com/niranjankagri/pact-contract-testing" target="_blank" rel="noopener">View source code</a><a href="https://github.com/niranjankagri/pact-contract-testing#readme" target="_blank" rel="noopener">View README</a><a href="https://github.com/niranjankagri/pact-contract-testing/actions/workflows/contract.yml" target="_blank" rel="noopener">View latest CI runs</a><a href="https://github.com/niranjankagri/pact-contract-testing/blob/main/docs/images/broker-matrix.png" target="_blank" rel="noopener">View test report</a></div>
+        </div>
+      </article>
+      <article class="card">
+        <img src="img/jenkins.jpg" alt="Jenkins stage graph: checks, image build, kind cluster, deploy, in-cluster smoke, parallel API tests, quality gate" loading="lazy" width="640" height="400">
+        <div class="body">
+          <span class="badge">10 · CI/CD + Kubernetes</span>
+          <h3>Jenkins + Kubernetes Test Pipeline</h3>
+          <a href="https://github.com/niranjankagri/jenkins-kubernetes-pipeline/actions/workflows/ci.yml" aria-label="Live status of the CI workflow of jenkins-kubernetes-pipeline"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/jenkins-kubernetes-pipeline/actions/workflows/ci.yml/badge.svg" alt="CI workflow status" loading="lazy"></a>
+          <p class="fact">Jenkins configured entirely as code builds a service, deploys it to a kind Kubernetes cluster and runs 21 tests against it in about 30 seconds; GitHub Actions starts a real Jenkins on every push and requires the pipeline to pass.</p>
+          <p>A declarative Jenkinsfile with parallel stages, parameters, a quality gate and masked credentials; a namespace per build, readiness probes, a smoke Job inside the cluster and API tests through port-forward, all in scripts that CI shares.</p>
+          <ul class="tags" aria-label="Technologies"><li class="tag">Jenkins</li><li class="tag">Kubernetes</li><li class="tag">Docker</li><li class="tag">JCasC</li><li class="tag">pytest</li><li class="tag">GitHub Actions</li></ul>
+          <div class="actions"><a href="projects/jenkins-kubernetes.html">Project details</a><a href="https://github.com/niranjankagri/jenkins-kubernetes-pipeline" target="_blank" rel="noopener">View source code</a><a href="https://github.com/niranjankagri/jenkins-kubernetes-pipeline#readme" target="_blank" rel="noopener">View README</a><a href="https://github.com/niranjankagri/jenkins-kubernetes-pipeline/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a><a href="https://github.com/niranjankagri/jenkins-kubernetes-pipeline/blob/main/docs/images/jenkins-stages.png" target="_blank" rel="noopener">View test report</a></div>
         </div>
       </article>
     </div>
