@@ -7,7 +7,7 @@ Static pages served by GitHub Pages, no build step:
 
 | File | What |
 |---|---|
-| `index.html` | home page: summary, work results with how they were measured, ten featured projects, more projects, experience, skills, contact |
+| `index.html` | home page: summary, work results with how they were measured, eleven featured projects, more projects, experience, skills, contact |
 | `projects/*.html` | one page per featured project: purpose, stack, architecture, decisions, features, how to run, results, CI, limitations |
 | `style.css`, `theme.js` | shared styles; light/dark toggle |
 | `img/` | crops of each framework's own test report |

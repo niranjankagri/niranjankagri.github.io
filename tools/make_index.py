@@ -77,6 +77,15 @@ FEATURED = [
       fact='Jenkins configured entirely as code builds a service, deploys it to a kind Kubernetes cluster and runs 21 tests against it in about 30 seconds; GitHub Actions starts a real Jenkins on every push and requires the pipeline to pass.',
       text='A declarative Jenkinsfile with parallel stages, parameters, a quality gate and masked credentials; a namespace per build, readiness probes, a smoke Job inside the cluster and API tests through port-forward, all in scripts that CI shares.',
       tags=['Jenkins', 'Kubernetes', 'Docker', 'JCasC', 'pytest', 'GitHub Actions']),
+
+ # Facts checked 17 Oct 2026: 48 unit/tooling tests and the UI suite green locally and in CI (Chromium, Firefox, WebKit).
+ # Not claimed yet: AI-generated test counts or triage results (the first live recording run is still to do).
+ dict(n=11, badge='AI-assisted testing', title='AI-Assisted Test Automation (Claude)', repo='ai-assisted-test-automation', wf='ci.yml', wfname='CI',
+      img='ai-testing', alt='Pipeline: a test case goes to Claude, then a quality gate, then human review; failed runs go to AI triage', page='ai-assisted-testing',
+      report='docs/images/pipeline.png',
+      fact='Claude drafts Playwright tests from plain-language test cases; a three-stage gate (rules, compile, three runs) decides what a person reviews, and nothing is merged without a named reviewer.',
+      text='All Java: a demo app in the repository, the Anthropic Java SDK with typed structured outputs, repair rounds fed by the gate, an approve step that marks AI-written tests, and AI failure triage into product bug, test bug, environment or flaky. Answers are recorded, so CI replays them without an API key.',
+      tags=['Java 21', 'Claude API', 'Playwright', 'TestNG', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -171,7 +180,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: ten flagship projects for web, API, mobile, contracts, CI/CD and performance, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: eleven flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -228,7 +237,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>15 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>16 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
