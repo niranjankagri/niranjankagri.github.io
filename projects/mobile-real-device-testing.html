@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mobile Testing on Real Devices (BrowserStack) · Niranjan Kumar Agri</title>
+<meta name="description" content="Tests on real phones in BrowserStack&#x27;s device cloud: a mobile-first shop on Safari on a real iPhone and Chrome on a real Android phone (Selenium, BrowserStack Local tunnel), and a native iOS app on a real iPhone (Appium XCUITest). Developed for free on Chrome mobile emulation; every real-device minute planned and counted.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f43d6'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script>try{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
+    <nav aria-label="Sections"><a href="../#projects">Projects</a><a href="../#experience">Experience</a><a href="../#contact">Contact</a></nav>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">◐</button>
+  </div>
+</header>
+<main id="main" class="wrap page">
+  <p class="crumbs"><a href="../#projects">← All projects</a></p>
+  <p class="eyebrow">Featured project 16 · Real devices · BrowserStack</p>
+  <h1>Mobile Testing on Real Devices (BrowserStack)</h1>
+  <p class="lead">Tests on real phones in BrowserStack&#x27;s device cloud: a mobile-first shop on Safari on a real iPhone and Chrome on a real Android phone (Selenium, BrowserStack Local tunnel), and a native iOS app on a real iPhone (Appium XCUITest). Developed for free on Chrome mobile emulation; every real-device minute planned and counted.</p>
+  <p><a href="https://github.com/niranjankagri/mobile-real-device-testing/actions/workflows/ci.yml" aria-label="Live CI status on GitHub Actions"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/mobile-real-device-testing/actions/workflows/ci.yml/badge.svg" alt="Live CI status of Mobile Testing on Real Devices (BrowserStack)"></a></p>
+  <div class="btns" style="margin:18px 0 26px">
+    <a class="btn primary" href="https://github.com/niranjankagri/mobile-real-device-testing" target="_blank" rel="noopener">View source code</a>
+    <a class="btn" href="https://github.com/niranjankagri/mobile-real-device-testing#readme" target="_blank" rel="noopener">View documentation</a>
+    <a class="btn" href="https://github.com/niranjankagri/mobile-real-device-testing/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a>
+    <a class="btn" href="https://github.com/niranjankagri/mobile-real-device-testing/blob/main/docs/images/real-device-results.png" target="_blank" rel="noopener">View test report</a>
+  </div>
+  <section aria-labelledby="purpose"><h2 id="purpose">Purpose</h2><p>Emulators and desktop browsers miss what only a phone has: the real Safari engine, the on-screen keyboard, touch, OS behaviour. This project runs the same suite on emulation and on real devices, and shows how a real-device-only failure was diagnosed with a probe instead of guesswork.</p></section><section aria-labelledby="stack"><h2 id="stack">Technology stack</h2><div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Tools</th></tr></thead><tbody><tr><td>Web</td><td>Selenium 4 against PocketShop (in the repository), served by the JDK HTTP server, reached by real devices through BrowserStack Local</td></tr><tr><td>Native</td><td>Appium Java client 11, XCUITest, BrowserStack's sample iOS app on App Automate</td></tr><tr><td>Devices</td><td>iPhone 16 (iOS 18, Safari and native), Samsung Galaxy S24 (Android 14, Chrome), Chrome mobile emulation</td></tr><tr><td>Tests</td><td>TestNG, Java 21: 13 web tests, 5 native tests</td></tr><tr><td>CI</td><td>GitHub Actions: emulation on every push; real devices only when started by hand, so a push never spends minutes</td></tr></tbody></table></div></section><section aria-labelledby="architecture"><h2 id="architecture">Architecture overview</h2><pre><code>this machine: PocketShop :4330 ◄── BrowserStack Local tunnel ◄── real iPhone (Safari) / real Galaxy S24 (Chrome)
+                                                                  ▲
+Selenium tests ──── WebDriver ──► BrowserStack hub ──────────────┘
+Appium tests  ──── WebDriver ──► BrowserStack hub ──► real iPhone ──► sample app (XCUITest)</code></pre></section><section aria-labelledby="decisions"><h2 id="decisions">Key engineering decisions</h2><ul><li>Develop on Chrome mobile emulation; spend device minutes only to prove and to diagnose</li><li>One device session per suite; state reset through localStorage instead of new sessions</li><li>Native locators from one discovery session (element trees saved to files): no trial and error on the device</li><li>A probe instead of a guess when the real Android phone failed</li><li>An app in the repository reached through a tunnel: no bot checks, no shared environment</li></ul></section><section aria-labelledby="features"><h2 id="features">Implemented features</h2><ul><li>Phone checks: viewport meta, one column, no sideways scrolling, hamburger menu, 44 px touch targets</li><li>Keyboards and autofill per field, and 16 px inputs against the iOS Safari zoom-on-focus problem</li><li>Found only on the real Android phone: with the keyboard open, the automated tap landed on the page, not the button</li><li>Native iOS: text on the real keyboard, a native alert, a web view, tab navigation</li><li>About 9.5 Automate and 1.3 App Automate minutes used for everything, including the failed tries</li><li>Design notes and 52 interview questions on real-device testing (Markdown + PDF)</li></ul></section><section aria-labelledby="run"><h2 id="run">Setup and execution</h2><pre><code>mvnw.cmd test                     :: web suite, Chrome mobile emulation (free)
+mvnw.cmd test -Dtarget=iphone     :: web suite, Safari on a real iPhone
+mvnw.cmd test -Dtarget=android    :: web suite, Chrome on a real Android phone
+mvnw.cmd test -Dsuite=app         :: native app, real iPhone</code></pre></section><section aria-labelledby="results"><h2 id="results">Sample test results</h2><figure><img src="https://raw.githubusercontent.com/niranjankagri/mobile-real-device-testing/main/docs/images/real-device-results.png" alt="Results of the real-device runs" loading="lazy"><figcaption>Real-device runs on BrowserStack, and the failure only the real Android phone showed.</figcaption></figure></section><section aria-labelledby="ci"><h2 id="ci">CI workflow</h2><p>On every push: the web suite in headless Chrome mobile emulation. Real devices through "Run workflow" with a choice of iPhone web, Android web, iPhone app or all, using repository secrets.</p></section><section aria-labelledby="limitations"><h2 id="limitations">Known limitations and future improvements</h2><h3>Limitations</h3><ul><li>Two phones; a product would choose its device matrix from analytics</li><li>The native part uses BrowserStack's sample app: the Sauce Labs demo app could not be re-signed for BrowserStack's devices</li></ul><h3>Next steps</h3><ul><li>A device matrix in parallel sessions</li><li>Performance on a throttled network profile</li></ul></section>
+</main>
+<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a></footer>
+<script src="../theme.js"></script>
+</body>
+</html>

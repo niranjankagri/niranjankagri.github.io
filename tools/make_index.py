@@ -119,6 +119,14 @@ FEATURED = [
       fact='Every run starts real PostgreSQL and Kafka in Docker; the tests prove duplicate events are applied once and broken events reach the dead-letter topic without blocking the partition, with no sleeps anywhere.',
       text='An event-driven order service tested through its GraphQL API and Kafka topics: migrations on the real database, schema and validation errors, published events, idempotent consumption, retries and dead-letter handling, plus mutation checks of the tests themselves.',
       tags=['Java 21', 'Spring Boot', 'Testcontainers', 'Kafka', 'GraphQL', 'PostgreSQL']),
+
+ # Facts checked 17 Oct 2026: BrowserStack runs: web 13/13 on iPhone 16 (iOS 18.6, Safari, 109 s) and Galaxy S24 (Android 14, Chrome, 79 s); native app 5/5 on iPhone 16 (54 s); CI run green (emulation); ~9.5 Automate + 1.3 App Automate minutes used.
+ dict(n=16, badge='Real devices', title='Mobile Testing on Real Devices (BrowserStack)', repo='mobile-real-device-testing', wf='ci.yml', wfname='CI',
+      img='real-devices', alt='Results table: web suite passed on a real iPhone and a real Android phone, native app suite passed on a real iPhone', page='mobile-real-device-testing',
+      report='docs/images/real-device-results.png',
+      fact='The same mobile web suite passed on Safari on a real iPhone and Chrome on a real Android phone, and the Android phone found a failure emulation never showed: with the keyboard open, the tap missed the checkout button.',
+      text='A mobile-first shop tested with Selenium on real phones through BrowserStack Local (layout, touch targets, keyboards, iOS zoom, checkout), a native iOS app tested with Appium XCUITest on a real iPhone, all within a 100-minute trial.',
+      tags=['BrowserStack', 'Real devices', 'Selenium', 'Appium', 'iOS', 'Android']),
 ]
 
 MORE = [
@@ -213,7 +221,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: fifteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: sixteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -270,7 +278,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>20 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>21 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
