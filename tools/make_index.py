@@ -95,6 +95,14 @@ FEATURED = [
       fact='32 hand-written eval cases in six areas, each run three times; prompt-injection and data-leak areas must pass 100%, and the LLM judge is only trusted after it agrees with hand-labelled answers.',
       text='An HR policy assistant on Claude and the harness that decides whether it can ship: structured replies, deterministic checks for facts, citations, a canary and colleagues\' data, a calibrated groundedness judge, pass rates per area, and 86 tests of the harness itself.',
       tags=['Java 21', 'Claude API', 'LLM evals', 'TestNG', 'GitHub Actions']),
+
+ # Facts checked 17 Oct 2026: CI run 39007129438 green on all 4 jobs; 86 Playwright + 28 unit tests; 8 of 8 planted defects caught.
+ dict(n=13, badge='Accessibility + visual', title='Accessibility and Visual Regression Testing', repo='accessibility-visual-testing', wf='ci.yml', wfname='CI',
+      img='a11y-visual', alt='Screenshot diff: the planted spacing and button colour changes highlighted in red', page='accessibility-visual-testing',
+      report='docs/images/visual-diff.png',
+      fact='Eight realistic defects are planted in a regressed build of the app, and the suite must report each one with the check named for it: all eight are caught.',
+      text='WCAG 2.2 AA checks with axe-core in light and dark mode and in every state, keyboard and focus tests for what axe cannot see, reflow and reduced motion, and 21 screenshot baselines rendered in the Playwright Linux image with zero pixel tolerance.',
+      tags=['Playwright', 'TypeScript', 'axe-core', 'WCAG 2.2', 'Docker', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -189,7 +197,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: twelve flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: thirteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -246,7 +254,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>17 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>18 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
