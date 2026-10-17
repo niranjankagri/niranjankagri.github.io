@@ -86,6 +86,15 @@ FEATURED = [
       fact='Claude drafts Playwright tests from plain-language test cases; a three-stage gate (rules, compile, three runs) decides what a person reviews, and nothing is merged without a named reviewer.',
       text='All Java: a demo app in the repository, the Anthropic Java SDK with typed structured outputs, repair rounds fed by the gate, an approve step that marks AI-written tests, and AI failure triage into product bug, test bug, environment or flaky. Answers are recorded, so CI replays them without an API key.',
       tags=['Java 21', 'Claude API', 'Playwright', 'TestNG', 'GitHub Actions']),
+
+ # Facts checked 17 Oct 2026: 86 harness tests green locally (no model calls). Not claimed yet: eval pass rates
+ # (the first live recording run is still to do).
+ dict(n=12, badge='LLM evals', title='Testing an LLM Feature (Claude)', repo='llm-feature-testing', wf='ci.yml', wfname='CI',
+      img='llm-evals', alt='Eval flow: golden set, assistant, deterministic checks, calibrated LLM judge, pass rate per tag', page='llm-feature-testing',
+      report='docs/images/eval-flow.png',
+      fact='32 hand-written eval cases in six areas, each run three times; prompt-injection and data-leak areas must pass 100%, and the LLM judge is only trusted after it agrees with hand-labelled answers.',
+      text='An HR policy assistant on Claude and the harness that decides whether it can ship: structured replies, deterministic checks for facts, citations, a canary and colleagues\' data, a calibrated groundedness judge, pass rates per area, and 86 tests of the harness itself.',
+      tags=['Java 21', 'Claude API', 'LLM evals', 'TestNG', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -180,7 +189,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: eleven flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: twelve flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -237,7 +246,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>16 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>17 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
