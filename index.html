@@ -6,7 +6,7 @@
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: fourteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: fifteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -63,7 +63,7 @@
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>19 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>20 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
@@ -241,6 +241,18 @@
           <p>OWASP ZAP baseline and full scans of a hardened and a vulnerable build on a private Docker network, a rules file with FAIL/WARN/IGNORE decisions, a verdict job in CI, and API tests for IDOR, mass assignment and brute force.</p>
           <ul class="tags" aria-label="Technologies"><li class="tag">OWASP ZAP</li><li class="tag">DAST</li><li class="tag">OWASP Top 10</li><li class="tag">Docker</li><li class="tag">TypeScript</li><li class="tag">GitHub Actions</li></ul>
           <div class="actions"><a href="projects/security-testing-zap.html">Project details</a><a href="https://github.com/niranjankagri/security-testing-zap" target="_blank" rel="noopener">View source code</a><a href="https://github.com/niranjankagri/security-testing-zap#readme" target="_blank" rel="noopener">View README</a><a href="https://github.com/niranjankagri/security-testing-zap/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a><a href="https://github.com/niranjankagri/security-testing-zap/blob/main/docs/images/zap-verdict.png" target="_blank" rel="noopener">View test report</a></div>
+        </div>
+      </article>
+      <article class="card">
+        <img src="img/testcontainers.jpg" alt="Overview of the integration tests: what each test class proves and how events are handled" loading="lazy" width="640" height="400">
+        <div class="body">
+          <span class="badge">15 · Integration testing</span>
+          <h3>Integration Testing with Testcontainers (Kafka, GraphQL)</h3>
+          <a href="https://github.com/niranjankagri/integration-testing-testcontainers/actions/workflows/ci.yml" aria-label="Live status of the CI workflow of integration-testing-testcontainers"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/integration-testing-testcontainers/actions/workflows/ci.yml/badge.svg" alt="CI workflow status" loading="lazy"></a>
+          <p class="fact">Every run starts real PostgreSQL and Kafka in Docker; the tests prove duplicate events are applied once and broken events reach the dead-letter topic without blocking the partition, with no sleeps anywhere.</p>
+          <p>An event-driven order service tested through its GraphQL API and Kafka topics: migrations on the real database, schema and validation errors, published events, idempotent consumption, retries and dead-letter handling, plus mutation checks of the tests themselves.</p>
+          <ul class="tags" aria-label="Technologies"><li class="tag">Java 21</li><li class="tag">Spring Boot</li><li class="tag">Testcontainers</li><li class="tag">Kafka</li><li class="tag">GraphQL</li><li class="tag">PostgreSQL</li></ul>
+          <div class="actions"><a href="projects/integration-testing-testcontainers.html">Project details</a><a href="https://github.com/niranjankagri/integration-testing-testcontainers" target="_blank" rel="noopener">View source code</a><a href="https://github.com/niranjankagri/integration-testing-testcontainers#readme" target="_blank" rel="noopener">View README</a><a href="https://github.com/niranjankagri/integration-testing-testcontainers/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a><a href="https://github.com/niranjankagri/integration-testing-testcontainers/blob/main/docs/images/test-overview.png" target="_blank" rel="noopener">View test report</a></div>
         </div>
       </article>
     </div>

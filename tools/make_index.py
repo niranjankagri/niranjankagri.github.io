@@ -111,6 +111,14 @@ FEATURED = [
       fact='Ten vulnerabilities are planted in a second build of the app: ZAP catches the seven it can see, API tests catch the three access-control flaws no scanner can, and the hardened build must scan clean.',
       text='OWASP ZAP baseline and full scans of a hardened and a vulnerable build on a private Docker network, a rules file with FAIL/WARN/IGNORE decisions, a verdict job in CI, and API tests for IDOR, mass assignment and brute force.',
       tags=['OWASP ZAP', 'DAST', 'OWASP Top 10', 'Docker', 'TypeScript', 'GitHub Actions']),
+
+ # Facts checked 17 Oct 2026: CI run 39044080833 green; 21 tests (18 against real PostgreSQL 18 + Kafka 4.1 containers, 3 unit tests), about 21 s of test time; two mutation checks.
+ dict(n=15, badge='Integration testing', title='Integration Testing with Testcontainers (Kafka, GraphQL)', repo='integration-testing-testcontainers', wf='ci.yml', wfname='CI',
+      img='testcontainers', alt='Overview of the integration tests: what each test class proves and how events are handled', page='integration-testing-testcontainers',
+      report='docs/images/test-overview.png',
+      fact='Every run starts real PostgreSQL and Kafka in Docker; the tests prove duplicate events are applied once and broken events reach the dead-letter topic without blocking the partition, with no sleeps anywhere.',
+      text='An event-driven order service tested through its GraphQL API and Kafka topics: migrations on the real database, schema and validation errors, published events, idempotent consumption, retries and dead-letter handling, plus mutation checks of the tests themselves.',
+      tags=['Java 21', 'Spring Boot', 'Testcontainers', 'Kafka', 'GraphQL', 'PostgreSQL']),
 ]
 
 MORE = [
@@ -205,7 +213,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: fourteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: fifteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -262,7 +270,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>19 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>20 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
