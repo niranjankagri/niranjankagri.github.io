@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Testing with OWASP ZAP · Niranjan Kumar Agri</title>
+<meta name="description" content="Security checks a QA team can run on every change: OWASP ZAP baseline and full scans in Docker with clear pass/fail rules, and API tests for the vulnerabilities a scanner cannot see. The app comes in a hardened and a deliberately vulnerable build, and every planted vulnerability must be caught.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f43d6'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../style.css">
+<script>try{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
+    <nav aria-label="Sections"><a href="../#projects">Projects</a><a href="../#experience">Experience</a><a href="../#contact">Contact</a></nav>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark mode">◐</button>
+  </div>
+</header>
+<main id="main" class="wrap page">
+  <p class="crumbs"><a href="../#projects">← All projects</a></p>
+  <p class="eyebrow">Featured project 14 · Security testing · OWASP ZAP</p>
+  <h1>Security Testing with OWASP ZAP</h1>
+  <p class="lead">Security checks a QA team can run on every change: OWASP ZAP baseline and full scans in Docker with clear pass/fail rules, and API tests for the vulnerabilities a scanner cannot see. The app comes in a hardened and a deliberately vulnerable build, and every planted vulnerability must be caught.</p>
+  <p><a href="https://github.com/niranjankagri/security-testing-zap/actions/workflows/ci.yml" aria-label="Live CI status on GitHub Actions"><img class="ci" width="150" height="20" src="https://github.com/niranjankagri/security-testing-zap/actions/workflows/ci.yml/badge.svg" alt="Live CI status of Security Testing with OWASP ZAP"></a></p>
+  <div class="btns" style="margin:18px 0 26px">
+    <a class="btn primary" href="https://github.com/niranjankagri/security-testing-zap" target="_blank" rel="noopener">View source code</a>
+    <a class="btn" href="https://github.com/niranjankagri/security-testing-zap#readme" target="_blank" rel="noopener">View documentation</a>
+    <a class="btn" href="https://github.com/niranjankagri/security-testing-zap/actions/workflows/ci.yml" target="_blank" rel="noopener">View latest CI runs</a>
+    <a class="btn" href="https://github.com/niranjankagri/security-testing-zap/blob/main/docs/images/zap-verdict.png" target="_blank" rel="noopener">View test report</a>
+  </div>
+  <section aria-labelledby="purpose"><h2 id="purpose">Purpose</h2><p>A scan that has only ever been clean has not shown that it can find anything. This project proves its setup: ten vulnerabilities are planted in a second build of the same app, each mapped to the tool that must report it, and a verdict job fails the build if one is missed or if the hardened build has a new warning.</p></section><section aria-labelledby="stack"><h2 id="stack">Technology stack</h2><div class="table-wrap"><table><thead><tr><th scope="col">Area</th><th scope="col">Tools</th></tr></thead><tbody><tr><td>App</td><td>NoteVault, Node 24 running TypeScript directly, no dependencies; hardened and vulnerable build from one code base</td></tr><tr><td>DAST</td><td>OWASP ZAP 2.17.0 in Docker: baseline scan (passive) and full scan (active attacks), rules file with FAIL, WARN and IGNORE</td></tr><tr><td>Tests</td><td>node:test API tests for IDOR, mass assignment, brute force, CSRF on login, session fixation, user enumeration; unit tests for the verdict logic</td></tr><tr><td>Isolation</td><td>both builds and ZAP on a private Docker network, no ports published, repository mounted read-only</td></tr><tr><td>CI</td><td>GitHub Actions: checks, one scan job per build in parallel, a verdict job that writes the result table into the job summary</td></tr></tbody></table></div></section><section aria-labelledby="architecture"><h2 id="architecture">Architecture overview</h2><pre><code>docker network notevault-scan
+  notevault-hardened ──┐
+  notevault-vulnerable ┴─◄ ZAP baseline + full scan ──► JSON reports
+verify.ts: hardened = no FAIL / WARN · vulnerable = every planted defect as its rule id
+npm test:  IDOR · mass assignment · brute force (what ZAP cannot know)</code></pre></section><section aria-labelledby="decisions"><h2 id="decisions">Key engineering decisions</h2><ul><li>Defects are switches in one code base (has("defect-id")), so the two builds cannot drift apart; a unit test fails if one disappears</li><li>The rules file is the policy: FAIL for the planted defects and classic high-impact problems, IGNORE only with a written reason</li><li>A small verdict script decides from the JSON reports instead of relying on ZAP exit codes</li><li>Access control is tested with knowledge of who owns what, because a scanner cannot know it</li><li>The vulnerable build never leaves a private Docker network</li></ul></section><section aria-labelledby="features"><h2 id="features">Implemented features</h2><ul><li>Six header and cookie defects caught by the baseline scan, reflected XSS by the full scan, three access-control defects by API tests</li><li>The scan found two real weaknesses in the hardened build (a CSRF error page with an empty token, ambiguous paths accepted) and one false positive, all documented</li><li>Hardened build: Content-Security-Policy, frame protection, nosniff, cross-origin isolation, HttpOnly/Secure/SameSite cookie, scrypt hashes, rate limit, new session id at sign-in</li><li>Verdict table in the GitHub job summary; ZAP HTML and JSON reports as artifacts</li><li>Design notes and 66 interview questions on security testing with ZAP, linked to the code (Markdown + PDF)</li></ul></section><section aria-labelledby="run"><h2 id="run">Setup and execution</h2><pre><code>npm ci
+npm test                 :: API security tests, no Docker
+npm run scan:full        :: ZAP baseline + full scan of both builds (Docker)
+npm run verify -- --full :: the verdict</code></pre></section><section aria-labelledby="results"><h2 id="results">Sample test results</h2><figure><img src="https://raw.githubusercontent.com/niranjankagri/security-testing-zap/main/docs/images/zap-verdict.png" alt="ZAP verdict of a CI run" loading="lazy"><figcaption>A CI run: the hardened build has no alerts beyond the two documented informational ones; every planted vulnerability is caught.</figcaption></figure></section><section aria-labelledby="ci"><h2 id="ci">CI workflow</h2><p>On every push: static checks and the API security tests; then the baseline and full scan of each build in parallel jobs; then the verdict, written into the job summary. The whole run takes under four minutes.</p></section><section aria-labelledby="limitations"><h2 id="limitations">Known limitations and future improvements</h2><h3>Limitations</h3><ul><li>Unauthenticated scans: signed-in pages are covered by the API tests, not by ZAP</li><li>HTTP on a private network: HSTS and TLS need a scan of a deployed environment; DAST does not replace SAST, dependency scanning or a penetration test</li></ul><h3>Next steps</h3><ul><li>An authenticated ZAP context</li><li>An API scan from an OpenAPI definition</li></ul></section>
+</main>
+<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a></footer>
+<script src="../theme.js"></script>
+</body>
+</html>

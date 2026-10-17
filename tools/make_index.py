@@ -103,6 +103,14 @@ FEATURED = [
       fact='Eight realistic defects are planted in a regressed build of the app, and the suite must report each one with the check named for it: all eight are caught.',
       text='WCAG 2.2 AA checks with axe-core in light and dark mode and in every state, keyboard and focus tests for what axe cannot see, reflow and reduced motion, and 21 screenshot baselines rendered in the Playwright Linux image with zero pixel tolerance.',
       tags=['Playwright', 'TypeScript', 'axe-core', 'WCAG 2.2', 'Docker', 'GitHub Actions']),
+
+ # Facts checked 17 Oct 2026: CI run 39034198614 green on all 4 jobs; hardened build: no FAIL/WARN alerts; 10 of 10 planted defects caught (7 by ZAP, 3 by API tests); 36 node:test tests.
+ dict(n=14, badge='Security testing', title='Security Testing with OWASP ZAP', repo='security-testing-zap', wf='ci.yml', wfname='CI',
+      img='zap-security', alt='ZAP verdict: hardened build clean, every planted vulnerability caught', page='security-testing-zap',
+      report='docs/images/zap-verdict.png',
+      fact='Ten vulnerabilities are planted in a second build of the app: ZAP catches the seven it can see, API tests catch the three access-control flaws no scanner can, and the hardened build must scan clean.',
+      text='OWASP ZAP baseline and full scans of a hardened and a vulnerable build on a private Docker network, a rules file with FAIL/WARN/IGNORE decisions, a verdict job in CI, and API tests for IDOR, mass assignment and brute force.',
+      tags=['OWASP ZAP', 'DAST', 'OWASP Top 10', 'Docker', 'TypeScript', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -197,7 +205,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: thirteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: fourteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
@@ -254,7 +262,7 @@ HTML = f'''<!doctype html>
       </div>
       <h2>In my public portfolio</h2>
       <div class="stats">
-        <div class="stat"><b>18 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
+        <div class="stat"><b>19 frameworks</b><span> on GitHub with GitHub Actions CI; every card shows the live status of its workflow</span>
           <small><a href="#projects">See them below</a></small></div>
         <div class="stat"><b>3 real bugs</b><span> found in a public demo app by my Appium framework, each kept as a test</span>
           <small><a href="projects/appium.html#bugs">What they are</a></small></div>
