@@ -78,22 +78,22 @@ FEATURED = [
       text='A declarative Jenkinsfile with parallel stages, parameters, a quality gate and masked credentials; a namespace per build, readiness probes, a smoke Job inside the cluster and API tests through port-forward, all in scripts that CI shares.',
       tags=['Jenkins', 'Kubernetes', 'Docker', 'JCasC', 'pytest', 'GitHub Actions']),
 
- # Facts checked 17 Oct 2026: 48 unit/tooling tests and the UI suite green locally and in CI (Chromium, Firefox, WebKit).
- # Not claimed yet: AI-generated test counts or triage results (the first live recording run is still to do).
+ # Facts checked 19 Oct 2026: 52 unit/tooling tests and the UI suite green locally and in CI (Chromium, Firefox, WebKit); CI job 'samples' green on hand-written sample answers (labelled as such).
+ # Not claimed yet: any Claude result (AI-generated test counts, triage accuracy): the first live recording run is still to do.
  dict(n=11, badge='AI-assisted testing', title='AI-Assisted Test Automation (Claude)', repo='ai-assisted-test-automation', wf='ci.yml', wfname='CI',
       img='ai-testing', alt='Pipeline: a test case goes to Claude, then a quality gate, then human review; failed runs go to AI triage', page='ai-assisted-testing',
       report='docs/images/pipeline.png',
       fact='Claude drafts Playwright tests from plain-language test cases; a three-stage gate (rules, compile, three runs) decides what a person reviews, and nothing is merged without a named reviewer.',
-      text='All Java: a demo app in the repository, the Anthropic Java SDK with typed structured outputs, repair rounds fed by the gate, an approve step that marks AI-written tests, and AI failure triage into product bug, test bug, environment or flaky. Answers are recorded, so CI replays them without an API key.',
+      text='All Java: a demo app in the repository, the Anthropic Java SDK with typed structured outputs, repair rounds fed by the gate, an approve step that marks AI-written tests, and AI failure triage into product bug, test bug, environment or flaky. Answers are recorded, so CI replays them without an API key; until the first live run, CI runs the pipeline on hand-written sample answers that every report labels as samples.',
       tags=['Java 21', 'Claude API', 'Playwright', 'TestNG', 'GitHub Actions']),
 
- # Facts checked 17 Oct 2026: 86 harness tests green locally (no model calls). Not claimed yet: eval pass rates
+ # Facts checked 19 Oct 2026: 90 harness tests green locally and in CI (no model calls), incl. the eval on hand-written samples with planted flaws (all caught). Not claimed yet: Claude's eval pass rates
  # (the first live recording run is still to do).
  dict(n=12, badge='LLM evals', title='Testing an LLM Feature (Claude)', repo='llm-feature-testing', wf='ci.yml', wfname='CI',
       img='llm-evals', alt='Eval flow: golden set, assistant, deterministic checks, calibrated LLM judge, pass rate per tag', page='llm-feature-testing',
       report='docs/images/eval-flow.png',
       fact='32 hand-written eval cases in six areas, each run three times; prompt-injection and data-leak areas must pass 100%, and the LLM judge is only trusted after it agrees with hand-labelled answers.',
-      text='An HR policy assistant on Claude and the harness that decides whether it can ship: structured replies, deterministic checks for facts, citations, a canary and colleagues\' data, a calibrated groundedness judge, pass rates per area, and 86 tests of the harness itself.',
+      text='An HR policy assistant on Claude and the harness that decides whether it can ship: structured replies, deterministic checks for facts, citations, a canary and colleagues\' data, a calibrated groundedness judge, pass rates per area, and 90 tests of the harness itself, including a run on hand-written answers with planted leaks that the harness must catch.',
       tags=['Java 21', 'Claude API', 'LLM evals', 'TestNG', 'GitHub Actions']),
 
  # Facts checked 17 Oct 2026: CI run 39007129438 green on all 4 jobs; 86 Playwright + 28 unit tests; 8 of 8 planted defects caught.
