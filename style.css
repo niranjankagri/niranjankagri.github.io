@@ -128,7 +128,11 @@ figcaption{color:var(--muted);font-size:14px;margin-top:6px}
 .note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;font-size:15px}
 
 @media (max-width:760px){
-  .nav nav{display:none}
+  /* Phones: the section links move to a second row under the name, instead of disappearing */
+  .nav .wrap{flex-wrap:wrap;row-gap:0}
+  .nav .theme{margin-left:auto}
+  .nav nav{order:3;width:100%;margin:0 0 2px -8px;overflow-x:auto;scrollbar-width:none}
+  .nav nav a{padding:8px 8px 12px;white-space:nowrap}
   .two{grid-template-columns:1fr}
   .hero{padding-top:36px}
 }
