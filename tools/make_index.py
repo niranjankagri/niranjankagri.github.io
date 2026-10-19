@@ -166,15 +166,18 @@ MORE = [
 
 
 def ext(href, label):
+    """A link that opens in a new tab (GitHub pages, reports)."""
     return f'<a href="{href}" target="_blank" rel="noopener">{label}</a>'
 
 
 def badge(repo, wf, name):
+    """The live CI status badge of a workflow, linked to its runs."""
     return (f'<a href="{GH}{repo}/actions/workflows/{wf}" aria-label="Live status of the {name} workflow of {repo}">'
             f'<img class="ci" width="150" height="20" src="{GH}{repo}/actions/workflows/{wf}/badge.svg" alt="{name} workflow status" loading="lazy"></a>')
 
 
 def featured(p):
+    """One featured-project card: screenshot, title, CI badge, the verified fact, text, tags and links."""
     repo = p['repo']
     acts = [f'<a href="projects/{p["page"]}.html">Project details</a>', ext(GH + repo, 'View source code'),
             ext(f'{GH}{repo}#readme', 'View README'), ext(f'{GH}{repo}/actions/workflows/{p["wf"]}', 'View latest CI runs'),
@@ -198,6 +201,7 @@ def featured(p):
 
 
 def more(p):
+    """One smaller card for the More projects list; projects without CI get no badge and no CI link."""
     repo = p['repo']
     # A project without a CI workflow ('wf') gets no status badge and no CI link
     ci = [ext(f'{GH}{repo}/actions/workflows/{p["wf"]}', 'View latest CI runs')] if p.get('wf') else []

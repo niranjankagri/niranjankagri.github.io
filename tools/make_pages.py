@@ -11,16 +11,19 @@ e = html.escape
 
 
 def ul(items):
+    """An HTML list of the given items (already HTML)."""
     return '<ul>' + ''.join(f'<li>{x}</li>' for x in items) + '</ul>'
 
 
 def table(rows, head):
+    """A scrollable HTML table with a header row."""
     h = ''.join(f'<th scope="col">{c}</th>' for c in head)
     b = ''.join('<tr>' + ''.join(f'<td>{c}</td>' for c in r) + '</tr>' for r in rows)
     return f'<div class="table-wrap"><table><thead><tr>{h}</tr></thead><tbody>{b}</tbody></table></div>'
 
 
 def page(p):
+    """The whole detail page of one featured project, built from its entry in PROJECTS."""
     repo = GH + p['repo']
     sections = [
         ('purpose', 'Purpose', p['purpose']),
@@ -78,6 +81,7 @@ def page(p):
 
 
 def fig(src, alt, caption):
+    """A captioned image (the alt text is escaped)."""
     return f'<figure><img src="{src}" alt="{e(alt)}" loading="lazy"><figcaption>{caption}</figcaption></figure>'
 
 
