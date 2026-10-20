@@ -694,6 +694,7 @@ PAGES = {
             'Requirement coverage, automation coverage and automated requirement coverage, with gaps and breakdowns by feature, criticality, test type and platform',
             'Execution history: stability classes with evidence, recurring failures, duration regressions, trends, run comparison',
             'Cypress (mochawesome JSON or HTML) and Allure results folders import into the same model: 8 real Cypress runs and 5 Allure runs, each Allure run matching the JUnit XML of the same job',
+            'CI pipeline executions: the jobs of one run are grouped (re-run attempts, branch, commit); a gate never decides on a pipeline with a missing job. Shown on a real TaskBoard run whose Firefox job was cancelled: 114 of 114 existing results passed, the gate says incomplete',
             'Requirements imported from a CSV export (preview, row-level errors, no duplicates on re-import); test-case links are never touched',
             'Dashboard with overview, requirements, tests, runs, stability and trends pages; trend values checked against the stored records with plain SQL; filters kept in the address',
             'Quality gate reports in JSON, HTML and Markdown (GitHub job summary)',
@@ -704,13 +705,15 @@ PAGES = {
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-test-history.png', 'History of one test',
                 'The history of the Selenium test that timed out once on Firefox on 13 Oct 2026.')
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/gate-report-release.png', 'HTML report of the release gate',
-                'The sample release gate fails: two critical requirements have no automated test.'),
+                'The sample release gate fails: two critical requirements have no automated test.')
+          + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-pipelines.png', 'Pipelines page',
+                'Two real CI runs of the TaskBoard Cypress pipeline: the one cancelled by a newer push is incomplete because its Firefox job never reported.'),
   ci='<p>On every push: lint, format and strict type checks; unit and integration tests on Python 3.12 and 3.13; the dashboard in Chromium (including a 390 px phone width); the sample gates, each asserting its exit code; a self gate on the plan\'s acceptance criteria; and the documented demonstration from a clean checkout.</p>',
   limits=['Three input formats (JUnit XML, mochawesome, Allure results); mochawesome records no browser, build or retries, so those are given on the command line',
           'Tests are identified by name: renaming a test starts a new history',
           'The dashboard is read-only and unauthenticated: for local use or behind access control',
           'The requirement catalog in the demonstration is synthetic; the test results are real'],
-  next=['Grouping of CI jobs into one pipeline run', 'Security review of the dashboard and the parsers'],
+  next=['Security review of the dashboard and the parsers', 'Release 1.1.0 after the remaining checks'],
  ),
  'rest-api': dict(
   repo='api-automation', workflow='tests.yml', report='docs/images/html-report.png',
