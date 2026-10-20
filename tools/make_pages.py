@@ -676,7 +676,7 @@ PAGES = {
   purpose='<p>Each automation framework reports on its own run, but a release decision needs answers across all of them: which requirements are tested, which critical ones have no automated test, what failed and what it puts at risk, which tests are flaky, and whether this build meets the agreed criteria. '
           'This platform answers those questions from the results the frameworks already write, with every number a documented formula that keeps its counts (for example 90.5 % (38/42)), and a gate that a pipeline can act on.</p>',
   stack=[['Language', 'Python 3.12+, one package (qualityintel) with the command qi; pydantic 2 models, mypy --strict'],
-         ['Input', 'JUnit XML from pytest, Robot Framework (--xunit), Maven Surefire/TestNG and Playwright Test; requirements and gates in TOML'],
+         ['Input', 'JUnit XML from pytest, Robot Framework (--xunit), Maven Surefire/TestNG and Playwright Test; requirements from CSV or TOML; gates in TOML'],
          ['Storage', 'SQLite (standard library) for execution history; all SQL in one module'],
          ['Dashboard', 'FastAPI JSON API with OpenAPI docs and a static HTML/JS front end with a strict Content-Security-Policy'],
          ['Quality', 'pytest (branch coverage 98 %), Playwright browser tests, ruff with docstring rules, an architecture test for the layering rule'],
@@ -692,6 +692,7 @@ PAGES = {
   features=['Imports 43 real result files from four producers; the counts match each file\'s own totals',
             'Requirement coverage, automation coverage and automated requirement coverage, with gaps and breakdowns by feature, criticality, test type and platform',
             'Execution history: stability classes with evidence, recurring failures, duration regressions, trends, run comparison',
+            'Requirements imported from a CSV export (preview, row-level errors, no duplicates on re-import); test-case links are never touched',
             'Dashboard with overview, requirements, tests, runs and stability pages; filters kept in the address',
             'Quality gate reports in JSON, HTML and Markdown (GitHub job summary)',
             'Gates its own release on the project plan\'s ten acceptance criteria, using its own test results'],
@@ -707,7 +708,7 @@ PAGES = {
           'Tests are identified by name: renaming a test starts a new history',
           'The dashboard is read-only and unauthenticated: for local use or behind access control',
           'The requirement catalog in the demonstration is synthetic; the test results are real'],
-  next=['Requirement import from CSV', 'Trend charts in the dashboard', 'Cypress and Allure adapters', 'Grouping of CI jobs into one pipeline run'],
+  next=['Trend charts in the dashboard', 'Cypress and Allure adapters', 'Grouping of CI jobs into one pipeline run'],
  ),
  'rest-api': dict(
   repo='api-automation', workflow='tests.yml', report='docs/images/html-report.png',
