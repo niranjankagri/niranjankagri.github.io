@@ -127,6 +127,17 @@ FEATURED = [
       fact='The same mobile web suite passed on Safari on a real iPhone and Chrome on a real Android phone, and the Android phone found a failure emulation never showed: with the keyboard open, the tap missed the checkout button.',
       text='A mobile-first shop tested with Selenium on real phones through BrowserStack Local (layout, touch targets, keyboards, iOS zoom, checkout), a native iOS app tested with Appium XCUITest on a real iPhone, all within a 100-minute trial.',
       tags=['BrowserStack', 'Real devices', 'Selenium', 'Appium', 'iOS', 'Android']),
+
+ # Facts checked 20 Oct 2026 against the repository (README, tests) and CI run 39377038850 (all 7 jobs green, release v1.0.0):
+ # 43 real result files from 4 producers; sample coverage 38/42, 37/43, 32/42; 2 critical requirements without automation;
+ # 4 flaky candidates; 503 unit/integration + 13 browser tests, 98 % branch coverage. Only the requirement catalog is synthetic.
+ dict(n=17, badge='Quality engineering', title='Automation Coverage & Quality Intelligence', repo='automation-coverage-quality-intelligence',
+      wf='ci.yml', wfname='CI', img='quality-intelligence',
+      alt='Dashboard overview on the sample data: requirement coverage 90.5 %, automation coverage 86.0 %, execution pass rate 100 %, two critical requirements without automation',
+      page='quality-intelligence', report='docs/images/gate-report-release.png',
+      fact='Reads the JUnit XML that pytest, Robot Framework, Selenium/TestNG and Playwright already write (43 real CI files in the repo) and links it to requirements: 38 of 42 sample requirements have tests, 2 critical ones have no automated test, so the release gate fails, and 4 tests are flagged as flaky candidates with the evidence.',
+      text='A platform on top of existing test automation, for release decisions: requirement and automation coverage as separate, documented metrics, execution history in SQLite with flaky-test and slow-down detection, a read-only dashboard, and a CI quality gate whose exit code is 0 passed, 1 failed or 3 incomplete, so missing results can never pass. It gates its own release on its acceptance criteria.',
+      tags=['Python', 'FastAPI', 'SQLite', 'pydantic', 'Playwright', 'GitHub Actions']),
 ]
 
 MORE = [
@@ -225,7 +236,7 @@ HTML = f'''<!doctype html>
 <title>Niranjan Kumar Agri · Technical Lead QA | Senior SDET</title>
 <meta name="description" content="Technical Lead QA, Senior SDET and Test Automation Architect with 12+ years in software engineering and QA. Java, Selenium, Playwright, Appium, Robot Framework, API automation, performance testing, CI/CD. Open to European relocation.">
 <meta property="og:title" content="Niranjan Kumar Agri · Technical Lead QA | Senior SDET | Test Automation Architect">
-<meta property="og:description" content="Test automation portfolio: sixteen flagship projects for web, API, mobile, contracts, CI/CD, performance and AI-assisted testing, each with CI, documentation and test reports.">
+<meta property="og:description" content="Test automation portfolio: seventeen flagship projects for web, API, mobile, contracts, CI/CD, performance, AI-assisted testing and quality analytics, each with CI, documentation and test reports.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://niranjankagri.github.io/">
 <meta property="og:image" content="https://niranjankagri.github.io/img/profile-2026-10b.jpg">
