@@ -680,7 +680,7 @@ PAGES = {
          ['Storage', 'SQLite (standard library) for execution history; all SQL in one module'],
          ['Dashboard', 'FastAPI JSON API with OpenAPI docs and a static HTML/JS front end with a strict Content-Security-Policy'],
          ['Quality', 'pytest (branch coverage 98 %), Playwright browser tests, ruff with docstring rules, an architecture test for the layering rule'],
-         ['CI', 'GitHub Actions: 10 jobs on Linux and Windows, including a dependency audit, sample quality gates, a self gate and a demonstration from a clean checkout']],
+         ['CI', 'GitHub Actions: 11 jobs on pinned Ubuntu 26.04 and Windows 2025 images, including a dependency audit, a canary on the latest image, sample quality gates, a self gate and a demonstration from a clean checkout']],
   architecture=fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/data-flow.svg', 'Data flow of the platform',
                    'Result files and the requirement catalog are read into a typed model; traceability, history and gates compute everything; the command line and the dashboard only present it.'),
   decisions=['Coverage and pass rate are separate numbers, never one blended score; a zero denominator is shown as n/a, not 0 % or 100 %',
@@ -714,7 +714,7 @@ PAGES = {
           'Tests are identified by name: renaming a test starts a new history',
           'The dashboard login is one shared account (basic authentication): for a team, put TLS or the organisation\'s login proxy in front',
           'The requirement catalog in the demonstration is synthetic; the test results are real'],
-  next=['CI maintenance: pinned runner images', 'Release 1.1.0 after the remaining checks'],
+  next=['Direct requirement sync with a test-management tool', 'Live reload of the dashboard when the history changes'],
  ),
  'rest-api': dict(
   repo='api-automation', workflow='tests.yml', report='docs/images/html-report.png',
