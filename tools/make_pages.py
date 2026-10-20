@@ -695,6 +695,7 @@ PAGES = {
             'Requirement coverage, automation coverage and automated requirement coverage, with gaps and breakdowns by feature, criticality, test type and platform',
             'Execution history: stability classes with evidence, recurring failures, duration regressions, trends, run comparison',
             'Cypress (mochawesome JSON or HTML) and Allure results folders import into the same model: 8 real Cypress runs and 5 Allure runs, each Allure run matching the JUnit XML of the same job',
+            'Collects real CI results every day from four public automation repositories (enterprise TestNG, pytest, Cypress, Robot Framework) out of their workflow artifacts: on 20 Oct 2026, 22 pipeline runs and 3,792 test results, each job count matching the producer\'s own CI log, and a cancelled run recorded as incomplete',
             'CI pipeline executions: the jobs of one run are grouped (re-run attempts, branch, commit); a gate never decides on a pipeline with a missing job. Shown on a real TaskBoard run whose Firefox job was cancelled: 114 of 114 existing results passed, the gate says incomplete',
             'Requirements imported from a CSV export (preview, row-level errors, no duplicates on re-import); test-case links are never touched',
             'Dashboard with overview, requirements, tests, runs, stability and trends pages; trend values checked against the stored records with plain SQL; filters kept in the address',
