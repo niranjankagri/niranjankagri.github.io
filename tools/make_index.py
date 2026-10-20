@@ -135,7 +135,7 @@ FEATURED = [
       wf='ci.yml', wfname='CI', img='quality-intelligence',
       alt='Dashboard overview on the sample data: requirement coverage 90.5 %, automation coverage 86.0 %, execution pass rate 100 %, two critical requirements without automation',
       page='quality-intelligence', report='docs/images/gate-report-release.png',
-      fact='Reads the JUnit XML that pytest, Robot Framework, Selenium/TestNG and Playwright already write (43 real CI files in the repo) and links it to requirements: 38 of 42 sample requirements have tests, 2 critical ones have no automated test, so the release gate fails, and 4 tests are flagged as flaky candidates with the evidence.',
+      fact='Reads the results that pytest, Robot Framework, Selenium/TestNG, Playwright and Cypress already write (JUnit XML, mochawesome, Allure; real CI files in the repo) and links them to requirements: 38 of 42 sample requirements have tests, 2 critical ones have no automated test, so the release gate fails, and 4 tests are flagged as flaky candidates with the evidence.',
       text='A platform on top of existing test automation, for release decisions: requirement and automation coverage as separate, documented metrics, execution history in SQLite with flaky-test and slow-down detection, a read-only dashboard, and a CI quality gate whose exit code is 0 passed, 1 failed or 3 incomplete, so missing results can never pass. It gates its own release on its acceptance criteria.',
       tags=['Python', 'FastAPI', 'SQLite', 'pydantic', 'Playwright', 'GitHub Actions']),
 ]
