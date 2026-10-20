@@ -693,7 +693,7 @@ PAGES = {
             'Requirement coverage, automation coverage and automated requirement coverage, with gaps and breakdowns by feature, criticality, test type and platform',
             'Execution history: stability classes with evidence, recurring failures, duration regressions, trends, run comparison',
             'Requirements imported from a CSV export (preview, row-level errors, no duplicates on re-import); test-case links are never touched',
-            'Dashboard with overview, requirements, tests, runs and stability pages; filters kept in the address',
+            'Dashboard with overview, requirements, tests, runs, stability and trends pages; trend values checked against the stored records with plain SQL; filters kept in the address',
             'Quality gate reports in JSON, HTML and Markdown (GitHub job summary)',
             'Gates its own release on the project plan\'s ten acceptance criteria, using its own test results'],
   run='<pre><code>python -m venv .venv\n.venv\\Scripts\\activate\npip install -e .\npython tools/demo.py                       :: ten documented steps, each checks its exit code\nqi dashboard --catalog samples/catalog.toml --database demo-output/quality.db</code></pre>',
@@ -708,7 +708,7 @@ PAGES = {
           'Tests are identified by name: renaming a test starts a new history',
           'The dashboard is read-only and unauthenticated: for local use or behind access control',
           'The requirement catalog in the demonstration is synthetic; the test results are real'],
-  next=['Trend charts in the dashboard', 'Cypress and Allure adapters', 'Grouping of CI jobs into one pipeline run'],
+  next=['Cypress and Allure adapters', 'Grouping of CI jobs into one pipeline run'],
  ),
  'rest-api': dict(
   repo='api-automation', workflow='tests.yml', report='docs/images/html-report.png',
