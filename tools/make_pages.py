@@ -2,12 +2,15 @@
 # Every project fact comes from that project's own README or CI runs.
 import html
 import os
+import sys
 
 # Repository root (this file lives in tools/)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'projects')
 GH = 'https://github.com/niranjankagri/'
 e = html.escape
+sys.path.insert(0, os.path.dirname(__file__))
+from project_data import PROJECTS  # noqa: E402
 
 
 def ul(items):
@@ -81,8 +84,17 @@ def page(p):
 
 
 def fig(src, alt, caption):
-    """A captioned image (the alt text is escaped)."""
-    return f'<figure><img src="{src}" alt="{e(alt)}" loading="lazy"><figcaption>{caption}</figcaption></figure>'
+    """A captioned static image with an accessible keyboard viewer."""
+    import hashlib
+    slug = 'image-' + hashlib.sha1(src.encode('utf-8')).hexdigest()[:12]
+    return (f'<figure><button class="figure-trigger" type="button" data-image-dialog="{slug}" '
+            f'aria-label="Enlarge static report screenshot: {e(alt, quote=True)}">'
+            f'<img src="{e(src, quote=True)}" alt="{e(alt, quote=True)}" loading="lazy" width="960" height="600">'
+            f'<span class="sr-only">Open image viewer</span></button>'
+            f'<figcaption><b>Static report screenshot.</b> {caption}</figcaption></figure>'
+            f'<dialog class="image-viewer" id="{slug}" aria-label="Static report screenshot">'
+            f'<form method="dialog"><button type="button" data-dialog-close aria-label="Close image viewer">Close</button></form>'
+            f'<img src="{e(src, quote=True)}" alt="{e(alt, quote=True)}" width="960" height="600"><p class="sr-only">{caption}</p></dialog>')
 
 
 ENTERPRISE_SVG = '''<div class="diagram" role="img" aria-label="Architecture: tests use pages, API services and database queries, which use components, an API client and a query executor, which use the driver and configuration; the browsers run locally or on Selenium Grid and drive the ShopEase UI; the API client calls the ShopEase API; the query executor reads the database; tests write evidence into the Allure report.">
@@ -383,7 +395,7 @@ PAGES = {
             'Framework design notes and 86 interview questions with answers linked to the code (Markdown + PDF)'],
   run='<pre><code>npm ci\nnpm test                  # build the app, start it, run all API + UI tests\nnpm run cy:component      # component tests\nnpm run cy:open           # interactive runner\nnpm run cy:demo           # report demo: 1 pass, 2 fail, 1 skip on purpose</code></pre>',
   results=fig('https://raw.githubusercontent.com/niranjankagri/cypress-typescript-framework/main/docs/images/report-all-passed.png',
-              'Mochawesome report: 64 of 64 end-to-end and API tests passed', 'HTML report of a full end-to-end run: 64 passed.')
+              'Static Cypress report screenshot of one API and UI run: 64 tests passed; component tests are separate', 'One API and UI run shown in the report; the repository total of 81 Cypress tests includes 17 component tests.')
           + fig('https://raw.githubusercontent.com/niranjankagri/cypress-typescript-framework/main/docs/images/failure-screenshot.png',
                 'Cypress screenshot of a failed demo test with the command log and the task board',
                 'Failure screenshot from the report demo: the restored login session, the failed assertion and the board at that moment.'),
@@ -674,7 +686,7 @@ PAGES = {
   title='Automation Coverage & Quality Intelligence',
   summary='A quality engineering platform on top of existing test automation: it imports the results that pytest, Robot Framework, Selenium/TestNG, Playwright and Cypress suites already produce (JUnit XML, mochawesome, Allure), links them to requirements, measures coverage, analyses execution history and decides release quality gates in CI.',
   purpose='<p>Each automation framework reports on its own run, but a release decision needs answers across all of them: which requirements are tested, which critical ones have no automated test, what failed and what it puts at risk, which tests are flaky, and whether this build meets the agreed criteria. '
-          'This platform answers those questions from the results the frameworks already write, with every number a documented formula that keeps its counts (for example 90.5 % (38/42)), and a gate that a pipeline can act on.</p>',
+          'This platform answers those questions from the results the frameworks already write. Execution history comes from collected CI result files, while the requirement catalog used by the demonstration is synthetic; the two data sources are kept distinct.</p>',
   stack=[['Language', 'Python 3.12+, one package (qualityintel) with the command qi; pydantic 2 models, mypy --strict'],
          ['Input', 'JUnit XML from pytest, Robot Framework (--xunit), Maven Surefire/TestNG and Playwright Test; Cypress mochawesome reports; Allure results folders; requirements from CSV or TOML; gates in TOML'],
          ['Storage', 'SQLite (standard library) for execution history; all SQL in one module'],
@@ -703,13 +715,13 @@ PAGES = {
             'Gates its own release on the project plan\'s ten acceptance criteria, using its own test results'],
   run='<pre><code>python -m venv .venv\n.venv\\Scripts\\activate\npip install -e .\npython tools/demo.py                       :: eleven documented steps, each checks its exit code\nqi dashboard --catalog samples/catalog.toml --database demo-output/quality.db</code></pre>',
   results=fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-stability.png', 'Stability page of the dashboard',
-              'Real sample data: four flaky candidates, each with the evidence (a pass and a fail on the same build), and the runs per context.')
+              'Static dashboard screenshot using repository result records: four flaky candidates, each with a pass and fail on the same build.')
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-test-history.png', 'History of one test',
-                'The history of the Selenium test that timed out once on Firefox on 13 Oct 2026.')
+                'Static historical screenshot of a Selenium test timeout on Firefox, recorded on 13 Oct 2026.')
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/gate-report-release.png', 'HTML report of the release gate',
-                'The sample release gate fails: two critical requirements have no automated test.')
+                'Static sample gate report based on the synthetic requirement catalog: two critical requirements have no automated test.')
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-pipelines.png', 'Pipelines page',
-                'Two real CI runs of the TaskBoard Cypress pipeline: the one cancelled by a newer push is incomplete because its Firefox job never reported.'),
+                'Static historical dashboard screenshot of two actual TaskBoard CI runs; the cancelled run is marked incomplete because Firefox did not report.'),
   ci='<p>On every push: lint, format and strict type checks; unit and integration tests on Python 3.12 and 3.13; the dashboard in Chromium (including a 390 px phone width); the sample gates, each asserting its exit code; a self gate on the plan\'s acceptance criteria; and the documented demonstration from a clean checkout.</p>',
   limits=['Three input formats (JUnit XML, mochawesome, Allure results); mochawesome records no browser, build or retries, so those are given on the command line',
           'Tests are identified by name: renaming a test starts a new history',
@@ -742,7 +754,123 @@ PAGES = {
  ),
 }
 
+def render_case_study(project, legacy=None):
+    """Case study template that uses canonical data and existing detailed notes."""
+    legacy = legacy or {}
+    title = project['title']
+    summary = project['description']
+    repo = project['source_url']
+    canonical = 'https://niranjankagri.github.io/projects/' + project['page'] + '.html'
+    image_url = 'https://niranjankagri.github.io/img/' + project['image'] + '.jpg'
+    category = ', '.join(project['category'])
+    tech = ', '.join(project['technologies'])
+
+    if legacy.get('stack'):
+        stack_content = table(legacy['stack'], ['Area', 'Tools'])
+    else:
+        stack_content = f'<p>{e(tech)}</p>'
+    architecture = legacy.get('architecture') or (
+        f'<p>The source repository documents the implementation structure for this {e(project["project_kind"].lower())}. '
+        f'<a href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">Review the README and architecture notes</a>.</p>')
+    decisions = ul(legacy.get('decisions', [
+        'Keep the execution repeatable using the project documentation and checked-in configuration.',
+        'Report only the scope represented by the tests and linked workflow evidence.',
+        'Use workflow output as evidence for that run; it is not a production quality or defect-rate measure.'
+    ]))
+    run = legacy.get('run') or (
+        f'<p>The repository README lists prerequisites and the exact commands for this project. '
+        f'<a href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">Open local setup and execution instructions</a>.</p>')
+    limitations = '<h3>Known limitations</h3>' + ul(legacy.get('limits', [
+        'The evidence describes a public portfolio repository, its checked-in examples and the linked workflow; it does not establish production customer impact.',
+        'Historical workflow results can change as code, dependencies and hosted runners change.'
+    ]))
+    if legacy.get('next'):
+        limitations += '<h3>Possible next steps</h3>' + ul(legacy['next'])
+    extra = legacy.get('extra', [])
+    report_images = legacy.get('results', '')
+    case_specific = ''
+    result_notes = ''
+    if project['id'] == 'appium-framework':
+        case_specific = '<p>Three real defects in the demo application are retained as regression checks in the project.</p>'
+    elif project['id'] == 'automation-coverage-quality-intelligence':
+        case_specific = '<p>Representative sample gate failure: two critical requirements in the synthetic requirement catalog have no automated test. This is a demonstration result, not a finding about a live product.</p>'
+        result_notes = ('<p>Execution files are collected from real repository and CI artifacts. The requirement catalog is synthetic. '
+            'Sanitised actual CI results, synthetic catalogue data, sample fixtures and replayed results are labelled by their source. '
+            'The public dashboard reads collected history and is refreshed by scheduled collection; its freshness is shown by the collection date.</p>'
+            '<p><a href="https://quality-intelligence-0ur1.onrender.com" target="_blank" rel="noopener">Open the live Quality Intelligence dashboard</a>. '
+            'The live dashboard smoke workflow passed on 21 Oct 2026: '
+            '<a href="https://github.com/niranjankagri/automation-coverage-quality-intelligence/actions/runs/39531061806" target="_blank" rel="noopener">view workflow evidence</a>.</p>')
+    elif project['id'] in ('ai-assisted-test-automation', 'llm-feature-testing'):
+        case_specific = '<p>Representative harness failures are hand-written examples with planted rule violations, leaks or wrong facts, depending on the project. CI replays these samples; no live model result is claimed.</p>'
+        result_notes = ('<p>Current CI uses hand-written sample answers and documented replay fixtures. These runs test the harness, '
+            'including planted failure examples; they are not live model outputs and do not establish model quality or accuracy.</p>')
+    elif project['id'] == 'cypress-typescript-framework':
+        case_specific = '<p>The static API and UI report is a passing demo-app run; no production defect count is claimed. Other failure examples and component checks are documented in the source repository.</p>'
+        result_notes = ('<p>The report image shows one API and UI execution with 64 passing checks. The repository has 81 Cypress tests '
+            '(31 API, 33 UI and 17 component), plus a separate Node unit suite of 15 tests. The screenshot is not the full suite total.</p>')
+    else:
+        case_specific = '<p>No additional production defect count is claimed. The linked source and dated evidence provide the representative checks available for this project.</p>'
+
+    workflow = ''
+    if project['workflow_url']:
+        workflow = (f'<div class="workflow-row"><span class="badge">Workflow configured</span>'
+                    f'<a class="badge-link" href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">'
+                    f'<img class="ci" src="{e(project["workflow_url"] + "/badge.svg", quote=True)}" '
+                    f'alt="GitHub Actions workflow status; open workflow history if the badge is unavailable" width="150" height="20">'
+                    f'<span class="badge-fallback" hidden>Workflow badge unavailable · open history</span></a></div>')
+    else:
+        workflow = '<span class="badge">No automated workflow</span>'
+    live = (f'<a class="btn" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Live demo</a>'
+            if project['live_demo'] else '')
+    workflow_section = ''
+    if project['workflow_url']:
+        workflow_section = f'<p>{e(project["workflow_name"])}: <a href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">open workflow history</a>. The dated evidence above records what was verified.</p>'
+    else:
+        workflow_section = '<p>No automated workflow is configured. Repository and manual execution notes are linked above.</p>'
+    if project['id'] == 'automation-coverage-quality-intelligence':
+        workflow_section = ('<p>Daily collection imports existing result files; it does not call repository APIs from the visitor page. '
+            'The dashboard is a live service, while the screenshots below are static report images.</p>')
+
+    sections = [
+        ('purpose', 'Problem and purpose', legacy.get('purpose') or f'<p>{e(summary)}</p>'),
+        ('contribution', 'My contribution', '<p>I built and maintain this public project, including the framework or test harness, its documentation, and the execution evidence linked here.</p>'),
+        ('architecture', 'Architecture', architecture),
+        ('stack', 'Technology and tools', stack_content),
+        *extra,
+        ('decisions', 'Engineering decisions and tradeoffs', decisions),
+        ('scope', 'Test scope and execution approach', f'<span id="features"></span><p>{e(summary)}</p>'),
+        ('results', 'Results with dated evidence', f'<div class="evidence-box"><p><b>{e(project["result_kind"])}</b></p><p>{e(project["evidence_label"])}</p><p>{e(project["result"])}</p><p>Evidence date: <time datetime="{e(project["evidence_date"], quote=True)}">{e(project["evidence_date"])}</time> · <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open evidence</a></p>{workflow}</div>{result_notes}{report_images}'),
+        ('defects', 'Defects and representative failures', case_specific),
+        ('run', 'Local setup and execution', run),
+        ('workflow', 'Workflow and reports', '<span id="ci"></span>' + workflow_section),
+        ('limitations', 'Known limitations', limitations),
+    ]
+    body = ''.join(f'<section aria-labelledby="{i}"><h2 id="{i}">{heading}</h2>{content}</section>' for i, heading, content in sections)
+    links = (f'<a class="btn primary" href="{e(repo, quote=True)}" target="_blank" rel="noopener">Source code</a>'
+             f'<a class="btn" href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">README and setup</a>')
+    if project['workflow_url']:
+        links += f'<a class="btn" href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">Workflow history</a>'
+    links += f'<a class="btn" href="{e(project["report_url"], quote=True)}" target="_blank" rel="noopener">Report or image</a>{live}'
+    return f'''<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(title)} · Project case study | Niranjan Kumar Agri</title><meta name="description" content="{e(summary)}">
+<link rel="canonical" href="{canonical}"><meta property="og:title" content="{e(title)} · Niranjan Kumar Agri"><meta property="og:description" content="{e(summary)}"><meta property="og:type" content="article"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{image_url}"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../style.css"><script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script></head>
+<body><a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap">
+<a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
+<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-icon" aria-hidden="true">☰</span><span class="sr-only">Open navigation</span></button>
+<nav id="primary-nav" aria-label="Primary navigation"><a href="../projects.html" aria-current="page">Projects</a><a href="../index.html#experience">Experience</a><a href="../index.html#skills">Skills</a><a href="../index.html#contact">Contact</a><a href="../Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf" download>Download CV</a></nav><button class="theme" id="theme" type="button" aria-label="Use dark theme">◐</button></div></header>
+<main id="main" class="wrap page"><nav class="crumbs" aria-label="Breadcrumb"><a href="../">Home</a> / <a href="../projects.html">Projects</a> / <span aria-current="page">{e(title)}</span></nav>
+<p class="eyebrow">{e(project['project_kind'])} · {e(category)}</p><h1>{e(title)}</h1><p class="lead">{e(summary)}</p><p class="project-kind-note">Technologies: {e(tech)}</p>
+<div class="case-links">{links}</div>{body}<p class="crumbs"><a href="../projects.html">← Back to Projects</a></p></main>
+<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a> · <a href="../projects.html">Projects</a></footer>
+<script src="../theme.js" defer></script></body></html>'''
+
+
 os.makedirs(OUT, exist_ok=True)
-for name, p in PAGES.items():
-    open(f'{OUT}/{name}.html', 'w', encoding='utf-8', newline='\n').write(page(p))
-    print('written', name)
+for project in PROJECTS:
+    legacy = PAGES.get(project['page'])
+    content = render_case_study(project, legacy)
+    with open(os.path.join(OUT, project['page'] + '.html'), 'w', encoding='utf-8', newline='\n') as f:
+        f.write(content)
+    print('written', project['page'])
