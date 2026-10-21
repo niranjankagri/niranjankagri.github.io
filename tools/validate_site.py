@@ -4,13 +4,12 @@ from __future__ import annotations
 from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
-import re
 import sys
 from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
-from project_data import FEATURED_PROJECTS, PROJECTS  # noqa: E402
+from project_data import COMPARISON_DETAILS, FEATURED_PROJECTS, PROJECTS, ROLE_VIEWS  # noqa: E402
 
 ALLOWED = {'Web & API', 'Mobile', 'Performance', 'Security', 'Accessibility', 'AI & LLM', 'CI/CD', 'Quality Intelligence', 'Learning Labs'}
 ERRORS: list[str] = []
@@ -31,7 +30,8 @@ if len(PROJECTS) != 25:
 if len(FEATURED_PROJECTS) != 6:
     fail(f'Expected six featured projects, found {len(FEATURED_PROJECTS)}.')
 required = {'id', 'page', 'title', 'category', 'technologies', 'description', 'result', 'image', 'alt',
-            'evidence_date', 'evidence_url', 'evidence_label', 'source_url', 'readme_url'}
+            'short_purpose', 'comparison_layers', 'comparison_targets', 'comparison_approach',
+            'comparison_limits', 'evidence_date', 'evidence_url', 'evidence_label', 'source_url', 'readme_url'}
 for p in PROJECTS:
     missing = sorted(field for field in required if not p.get(field))
     if missing:
@@ -50,6 +50,19 @@ for p in PROJECTS:
     case = ROOT / 'projects' / (p.get('page', '') + '.html')
     if not case.is_file():
         fail(f'{p["id"]}: case study was not generated.')
+    if not p.get('short_purpose') or len(p['short_purpose']) > 160:
+        fail(f'{p["id"]}: card purpose is missing or too long.')
+    if 'roles' not in p or not isinstance(p['roles'], list):
+        fail(f'{p["id"]}: role metadata must be a list, even when no role is highlighted.')
+
+if set(COMPARISON_DETAILS) != set(ids):
+    fail('Comparison metadata must cover exactly the shared project catalog.')
+for role_id, role in ROLE_VIEWS.items():
+    if not role.get('skills') or not role.get('impact') or any(project_id not in ids for project_id in role.get('projects', [])):
+        fail(f'{role_id}: role view has missing focus content or an unknown project.')
+for project in PROJECTS:
+    if any(role_id not in ROLE_VIEWS for role_id in project.get('roles', [])):
+        fail(f'{project["id"]}: role metadata references an unknown role.')
 
 class Document(HTMLParser):
     def __init__(self, path: Path):
@@ -197,6 +210,25 @@ if 'Hiring a Technical Lead QA, Senior SDET, or Test Automation Architect? Letâ€
     fail('Homepage contact heading does not match the requested wording.')
 if 'quality-intelligence-0ur1.onrender.com' not in (ROOT / 'projects' / 'quality-intelligence.html').read_text(encoding='utf-8'):
     fail('Quality Intelligence case study is missing the live dashboard link.')
+if home.count('data-role-panel=') != len(ROLE_VIEWS):
+    fail('Homepage role explorer does not contain every configured role view.')
+if 'aria-label="Project filters"' not in explorer or 'data-preview-project' not in explorer or 'data-compare-project' not in explorer:
+    fail('Project explorer is missing its filters, preview or comparison controls.')
+if not all(value in explorer for value in ('Featured first', 'Recently verified', 'Alphabetical', 'Clear all')):
+    fail('Project explorer is missing a required sorting or reset option.')
+for project in PROJECTS:
+    case = (ROOT / 'projects' / (project['page'] + '.html')).read_text(encoding='utf-8')
+    if 'My contribution' in case or 'I built and maintain this public project' in case:
+        fail(f'{project["page"]}: generic contribution text must not replace project-specific scope.')
+    if 'data-project-return' not in case or 'class="toc"' not in case or 'toc-title">On this page<' not in case:
+        fail(f'{project["page"]}: missing back-to-results or contents navigation.')
+    if 'Evidence explorer' not in case or 'Known limitations' not in case:
+        fail(f'{project["page"]}: missing evidence or limitation context.')
+    for anchor in ('contribution', 'features', 'defects'):
+        if f'id="{anchor}"' not in case:
+            fail(f'{project["page"]}: missing compatibility anchor #{anchor}.')
+if not (ROOT / 'img' / 'enterprise-architecture.svg').is_file():
+    fail('Enterprise architecture preview SVG was not generated.')
 if not (ROOT / 'robots.txt').is_file() or not (ROOT / 'sitemap.xml').is_file():
     fail('robots.txt or sitemap.xml is missing.')
 
