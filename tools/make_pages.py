@@ -2,7 +2,9 @@
 # Every project fact comes from that project's own README or CI runs.
 import html
 import os
+import re
 import sys
+from urllib.parse import quote
 
 # Repository root (this file lives in tools/)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -84,19 +86,32 @@ def page(p):
 '''
 
 
-def fig(src, alt, caption):
-    """A captioned static image with an accessible keyboard viewer."""
+def fig(src, alt, caption, media_label=None):
+    """Build a lazy, captioned static image with a keyboard accessible viewer."""
     import hashlib
-    slug = 'image-' + hashlib.sha1(src.encode('utf-8')).hexdigest()[:12]
-    return (f'<figure><button class="figure-trigger" type="button" data-image-dialog="{slug}" '
-            f'aria-label="Enlarge static report screenshot: {e(alt, quote=True)}">'
-            f'<img src="{e(src, quote=True)}" alt="{e(alt, quote=True)}" loading="lazy" width="960" height="600">'
+    identity = src + '|' + str(caption) + '|' + str(media_label)
+    slug = 'image-' + hashlib.sha1(identity.encode('utf-8')).hexdigest()[:12]
+    legacy_slug = 'image-' + hashlib.sha1(src.encode('utf-8')).hexdigest()[:12]
+    if media_label is None:
+        if src.lower().endswith('.svg') or 'architecture' in src.lower() or 'data-flow' in src.lower():
+            media_label = 'Architecture diagram'
+        elif 'dashboard' in src.lower():
+            media_label = 'Dashboard screenshot'
+        elif 'ci-' in src.lower() or 'jenkins-stages' in src.lower():
+            media_label = 'CI workflow screenshot'
+        else:
+            media_label = 'Test report screenshot'
+    width, height = (1040, 520) if src.lower().endswith('.svg') else (960, 600)
+    label_id = slug + '-caption'
+    return (f'<figure data-legacy-anchor="{legacy_slug}"><button class="figure-trigger" type="button" data-image-dialog="{slug}" '
+            f'aria-haspopup="dialog" aria-label="Open {e(media_label.lower(), quote=True)}: {e(alt, quote=True)}">'
+            f'<img src="{e(src, quote=True)}" alt="{e(alt, quote=True)}" loading="lazy" width="{width}" height="{height}">'
             f'<span class="sr-only">Open image viewer</span></button>'
-            f'<figcaption><b>Static report screenshot.</b> {caption}</figcaption></figure>'
-            f'<dialog class="image-viewer" id="{slug}" aria-label="Static report screenshot">'
+            f'<figcaption><b>{e(media_label)}.</b> {caption} <span class="capture-note">Static image; capture date is not recorded in the portfolio data.</span></figcaption></figure>'
+            f'<dialog class="image-viewer" id="{slug}" aria-labelledby="{label_id}">'
             f'<form method="dialog"><button type="button" data-dialog-close aria-label="Close image viewer">Close</button></form>'
-            f'<img src="{e(src, quote=True)}" alt="{e(alt, quote=True)}" width="960" height="600"><p class="sr-only">{caption}</p></dialog>')
-
+            f'<img src="{e(src, quote=True)}" alt="{e(alt, quote=True)}" width="{width}" height="{height}">'
+            f'<p class="viewer-caption" id="{label_id}"><b>{e(media_label)}.</b> {caption} Static image; capture date is not recorded in the portfolio data.</p></dialog>')
 
 ENTERPRISE_SVG = '''<div class="diagram" role="img" aria-label="Architecture: tests use pages, API services and database queries, which use components, an API client and a query executor, which use the driver and configuration; the browsers run locally or on Selenium Grid and drive the ShopEase UI; the API client calls the ShopEase API; the query executor reads the database; tests write evidence into the Allure report.">
 <svg viewBox="0 0 760 330" xmlns="http://www.w3.org/2000/svg">
@@ -118,6 +133,18 @@ ENTERPRISE_SVG = '''<div class="diagram" role="img" aria-label="Architecture: te
   <path d="M170 43 H560" stroke-dasharray="5 4"/><text class="lbl" x="365" y="36" text-anchor="middle">evidence: steps, requests, rows, screenshots, logs</text>
   <text class="lbl" x="650" y="92" text-anchor="middle">application under test (same repository)</text>
 </svg></div>'''
+
+# Reuse the featured diagram as a small, standalone preview asset.
+_svg_match = re.search(r'<svg\b.*?</svg>', ENTERPRISE_SVG, flags=re.DOTALL)
+if _svg_match:
+    _enterprise_svg = _svg_match.group(0)
+    _root_end = _enterprise_svg.find('>')
+    _enterprise_svg = (_enterprise_svg[:_root_end] + ' role="img" aria-labelledby="enterprise-architecture-title">'
+        '<title id="enterprise-architecture-title">Enterprise automation framework architecture</title>'
+        '<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;fill:#14131f}.lbl{fill:#5a5970;font-size:11.5px}rect{fill:#fff;stroke:#4338ca;stroke-width:1.5}rect.ext{stroke:#0f6e6a;stroke-dasharray:4 3}path,line{stroke:#5a5970;stroke-width:1.4;fill:none}</style>' + _enterprise_svg[_root_end + 1:])
+    with open(os.path.join(ROOT, 'img', 'enterprise-architecture.svg'), 'w', encoding='utf-8', newline='\n') as _asset:
+        _asset.write(_enterprise_svg)
+
 
 PAGES = {
  'enterprise': dict(
@@ -755,8 +782,120 @@ PAGES = {
  ),
 }
 
+ARCHITECTURE_COMPONENTS = {
+    'enterprise-test-automation-framework': [
+        {'name': 'Test suites', 'purpose': 'Business-level assertions are grouped by API, UI, database, integration, end-to-end and platform behavior.', 'technology': 'Java 17, TestNG', 'inputs': 'Test data and the configured application environment.', 'outputs': 'Assertions, named Allure steps and test results.', 'path': 'automation/src/test/java/com/enterprise/automation/tests'},
+        {'name': 'Pages, services and queries', 'purpose': 'Keep selectors, API resources and SQL out of test methods.', 'technology': 'Java page objects, API services and JDBC query classes.', 'inputs': 'Actions and data requests from the test layer.', 'outputs': 'UI actions, HTTP responses and database rows.', 'path': 'automation/src/main/java/com/enterprise/automation'},
+        {'name': 'Driver and configuration', 'purpose': 'Provide the configured local or remote browser and environment-specific settings.', 'technology': 'Selenium WebDriver, immutable configuration and Selenium Grid.', 'inputs': 'Browser, environment, execution mode and parallelism settings.', 'outputs': 'A browser session per test thread and resolved configuration.', 'path': 'automation/src/main/java/com/enterprise/automation/driver'},
+        {'name': 'Application under test', 'purpose': 'Expose the same shop records through the user interface, REST API and database.', 'technology': 'The ShopEase demo application and H2 database.', 'inputs': 'Browser requests, API calls and test data.', 'outputs': 'UI state, API responses and persisted demo records.', 'path': 'demo-app/src/main/java/com/enterprise/demoapp'},
+        {'name': 'Execution evidence', 'purpose': 'Attach failure diagnostics and per-test context to the run report.', 'technology': 'TestNG listeners, Logback and Allure.', 'inputs': 'Test steps, responses, rows, screenshots, logs and run metadata.', 'outputs': 'Dated test reports and failure diagnostics.', 'path': 'automation/src/main/java/com/enterprise/automation/reporting'},
+    ],
+    'automation-coverage-quality-intelligence': [
+        {'name': 'Result ingestion', 'purpose': 'Read existing JUnit XML, mochawesome and Allure files into the common typed model.', 'technology': 'Python adapters under qualityintel.ingest.', 'inputs': 'Test result files from producers and CI artifacts.', 'outputs': 'Validated test results and import errors.', 'path': 'src/qualityintel/ingest'},
+        {'name': 'Typed models', 'purpose': 'Keep requirements, test cases, mappings and results explicit and validated.', 'technology': 'Python dataclasses and Pydantic models.', 'inputs': 'Catalogs and normalized test results.', 'outputs': 'Typed records for downstream calculations.', 'path': 'src/qualityintel/models'},
+        {'name': 'Traceability', 'purpose': 'Match test results to test cases and requirements, then compute coverage and gaps.', 'technology': 'Python matching and coverage services.', 'inputs': 'Typed result records, mappings and the requirement catalog.', 'outputs': 'Coverage measures, gaps, execution status and pipeline summaries.', 'path': 'src/qualityintel/traceability'},
+        {'name': 'History and analysis', 'purpose': 'Store run history and calculate trends, stability classes and duration changes.', 'technology': 'SQLite and Python history services.', 'inputs': 'Validated result and collection records.', 'outputs': 'Persisted history and evidence-backed analyses.', 'path': 'src/qualityintel/history'},
+        {'name': 'Release gates', 'purpose': 'Evaluate configured release criteria and keep failed and incomplete outcomes distinct.', 'technology': 'Python gate evaluator and TOML configuration.', 'inputs': 'Computed metrics, results and configured thresholds.', 'outputs': 'Passed, failed or incomplete decisions with reports.', 'path': 'src/qualityintel/gates'},
+        {'name': 'CLI and dashboard', 'purpose': 'Present the core calculations without owning their business rules.', 'technology': 'Python CLI, FastAPI and a static HTML/CSS/JavaScript dashboard.', 'inputs': 'Catalogs, stored history and core service outputs.', 'outputs': 'Command results, dashboard pages and read-only API responses.', 'path': 'src/qualityintel/dashboard'},
+    ],
+}
+
+STORIES = {
+    'enterprise-test-automation-framework': {
+        'problem': 'The demo shop exposes the same business data through UI, API and database paths; tests need to verify those paths without putting Selenium, HTTP or SQL details in every test.',
+        'decision': 'Keep business assertions in TestNG suites, move selectors and technical access into lower layers, give each test its own data, and retry transient infrastructure failures only.',
+        'limitation': 'The measured run is against the repository demo application. It does not establish production customer impact.',
+    },
+    'k6-performance-testing': {
+        'problem': 'The stress test found checkout queuing beyond about 90 orders per second, with p95 response time above 3 seconds.',
+        'decision': 'Add load shedding and rerun the same stress-test profile so the comparison uses the same workload definition.',
+        'limitation': 'The result applies to the demo shop and linked test profile; it is not a capacity guarantee for another deployment.',
+        'before': 'Past about 90 orders/s, checkout queued without bound and p95 exceeded 3 seconds.',
+        'after': 'After load shedding, the same test stayed under 650 ms.',
+    },
+}
+
+
+def architecture_explorer(project):
+    """Render selectable, source-linked architecture components for two documented systems."""
+    components = ARCHITECTURE_COMPONENTS.get(project['id'])
+    if not components:
+        return ''
+    items = []
+    for index, component in enumerate(components):
+        component_id = f"architecture-{project['page']}-{index + 1}"
+        source = f"https://github.com/niranjankagri/{project['repo']}/tree/main/{component['path']}"
+        items.append(f'<details class="architecture-component" data-architecture-item open id="{component_id}">'
+                     f'<summary>{e(component["name"])}</summary><div><p>{e(component["purpose"])}</p>'
+                     f'<dl><dt>Technology</dt><dd>{e(component["technology"])}</dd>'
+                     f'<dt>Inputs</dt><dd>{e(component["inputs"])}</dd><dt>Outputs</dt><dd>{e(component["outputs"])}</dd></dl>'
+                     f'<a href="{e(source, quote=True)}" target="_blank" rel="noopener">Open related source: {e(component["path"])}</a></div></details>')
+    return ('<section class="architecture-explorer" aria-labelledby="architecture-explorer-title">'
+            '<h3 id="architecture-explorer-title">Explore the architecture components</h3>'
+            '<p>Open a component to inspect its purpose, technology, inputs, outputs and source path. Every component remains available by keyboard.</p>'
+            '<div class="architecture-components">' + ''.join(items) + '</div></section>')
+
+
+def engineering_story(project):
+    """Present documented problem, decision and result without adding inferred impact."""
+    story = STORIES.get(project['id'])
+    if not story:
+        return ''
+    evidence = f'<p class="story-evidence">Evidence checked {e(project["evidence_date"])} | <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">{e(project["evidence_label"])}</a></p>'
+    cards = [('<h3>Problem</h3>' + f'<p>{e(story["problem"])}</p>'),
+             ('<h3>Decision</h3>' + f'<p>{e(story["decision"])}</p>')]
+    if 'before' in story:
+        cards.append('<h3>Comparable run - before</h3>' + f'<p>{e(story["before"])}</p>')
+        cards.append('<h3>Comparable run - after</h3>' + f'<p>{e(story["after"])}</p>')
+    else:
+        cards.append('<h3>Observed result</h3>' + f'<p>{e(project["result"])}</p>')
+    cards.append('<p class="story-limitation"><b>Evidence boundary:</b> ' + e(story['limitation']) + '</p>')
+    return '<div class="engineering-story"><div class="story-grid">' + ''.join('<article>' + card + '</article>' for card in cards) + '</div>' + evidence + '</div>'
+
+
+
+def evidence_explorer(project, legacy):
+    """Build evidence panels while distinguishing static images from dated run records."""
+    panels = []
+    if project['id'] in ARCHITECTURE_COMPONENTS:
+        path = 'docs/architecture.md' if project['id'] == 'enterprise-test-automation-framework' else 'docs/architecture.md'
+        architecture_url = f"https://github.com/niranjankagri/{project['repo']}/blob/main/{path}"
+        content = ('<p>The interactive architecture map above lists components and their source paths. '
+                   f'<a href="{e(architecture_url, quote=True)}" target="_blank" rel="noopener">Open the repository architecture guide</a>.</p>')
+        panels.append(('architecture', 'Architecture', content))
+    report_markup = legacy.get('results') if legacy else ''
+    if not report_markup:
+        report_url = f"https://raw.githubusercontent.com/niranjankagri/{project['repo']}/main/{project.get('report', 'README.md')}"
+        report_markup = fig(report_url, project['alt'], 'Static report image linked from the project record; its capture date is not recorded here.')
+    report_note = f'<p class="capture-note">Static material from the public repository. The linked verification record was checked {e(project["evidence_date"])}; that date is not a screenshot capture date.</p>'
+    panels.append(('report', 'Test report', report_markup + report_note))
+    if project['id'] == 'enterprise-test-automation-framework':
+        url = 'https://raw.githubusercontent.com/niranjankagri/enterprise-test-automation-framework/main/docs/images/report-failed-test.png'
+        failure = fig(url, 'Allure report showing a deliberately failing demo check', 'A static report example; it demonstrates how an individual failure is represented, not the latest nightly outcome.', 'Test report screenshot')
+        panels.append(('failure', 'Failure example', failure))
+    elif project['id'] == 'automation-coverage-quality-intelligence':
+        url = 'https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-test-history.png'
+        failure = fig(url, 'Historical dashboard test record showing a Selenium timeout on Firefox', 'A historical failure example recorded on 13 Oct 2026; it is not the current live dashboard state.', 'Dashboard screenshot')
+        panels.append(('failure', 'Failure example', failure))
+    if project['workflow_url']:
+        ci_content = (f'<div class="evidence-box"><p><b>Workflow evidence</b></p><p>{e(project["result_kind"])}</p>'
+                      f'<p>{e(project["result"])}</p><p>Evidence checked {e(project["evidence_date"])}. '
+                      f'<a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open dated evidence: {e(project["evidence_label"])}</a></p>'
+                      f'<p><a href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">Open workflow history</a></p></div>')
+    else:
+        ci_content = (f'<div class="evidence-box"><p><b>Manual or repository evidence</b></p><p>{e(project["result"])}</p>'
+                      f'<p>Evidence checked {e(project["evidence_date"])}. <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open {e(project["evidence_label"])}</a></p>'
+                      '<p>No automated workflow is configured for this project.</p></div>')
+    panels.append(('ci', 'CI evidence' if project['workflow_url'] else 'Execution evidence', ci_content))
+    buttons = ''.join(f'<button type="button" role="tab" id="evidence-tab-{project["page"]}-{key}" aria-controls="evidence-panel-{project["page"]}-{key}" aria-selected="{"true" if index == 0 else "false"}" tabindex="{"0" if index == 0 else "-1"}" hidden>{e(label)}</button>' for index, (key, label, _) in enumerate(panels))
+    bodies = ''.join(f'<div class="evidence-panel" role="tabpanel" id="evidence-panel-{project["page"]}-{key}" aria-labelledby="evidence-tab-{project["page"]}-{key}" tabindex="0">{content}</div>' for key, _, content in panels)
+    return ('<div class="evidence-explorer" data-evidence-tabs>'
+            '<p>Static screenshots are labelled as images; dated workflow links identify the execution evidence and its check date.</p>'
+            f'<div class="evidence-tablist" role="tablist" aria-label="Project evidence">{buttons}</div>{bodies}</div>')
+
+
 def render_case_study(project, legacy=None):
-    """Case study template that uses canonical data and existing detailed notes."""
+    # Render one generated case study from shared project facts and verified notes.
     legacy = legacy or {}
     title = project['title']
     summary = project['description']
@@ -766,103 +905,155 @@ def render_case_study(project, legacy=None):
     category = ', '.join(project['category'])
     tech = ', '.join(project['technologies'])
 
-    if legacy.get('stack'):
-        stack_content = table(legacy['stack'], ['Area', 'Tools'])
-    else:
-        stack_content = f'<p>{e(tech)}</p>'
+    stack_content = table(legacy['stack'], ['Area', 'Tools']) if legacy.get('stack') else f'<p>{e(tech)}</p>'
     architecture = legacy.get('architecture') or (
-        f'<p>The source repository documents the implementation structure for this {e(project["project_kind"].lower())}. '
+        f'<p>{e(project["text"])}. '
         f'<a href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">Review the README and architecture notes</a>.</p>')
-    decisions = ul(legacy.get('decisions', [
-        'Keep the execution repeatable using the project documentation and checked-in configuration.',
-        'Report only the scope represented by the tests and linked workflow evidence.',
-        'Use workflow output as evidence for that run; it is not a production quality or defect-rate measure.'
-    ]))
+    architecture += architecture_explorer(project)
+    if legacy.get('decisions'):
+        decisions = ul(legacy['decisions'])
+    else:
+        decisions = f'<p>{e(project["comparison_approach"])}</p>'
     run = legacy.get('run') or (
-        f'<p>The repository README lists prerequisites and the exact commands for this project. '
+        f'<p>The repository README lists prerequisites and exact execution commands. '
         f'<a href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">Open local setup and execution instructions</a>.</p>')
-    limitations = '<h3>Known limitations</h3>' + ul(legacy.get('limits', [
-        'The evidence describes a public portfolio repository, its checked-in examples and the linked workflow; it does not establish production customer impact.',
-        'Historical workflow results can change as code, dependencies and hosted runners change.'
-    ]))
-    if legacy.get('next'):
-        limitations += '<h3>Possible next steps</h3>' + ul(legacy['next'])
+    limitations_list = list(legacy.get('limits', []))
+    if project['comparison_limits'] not in limitations_list:
+        limitations_list.append(project['comparison_limits'])
+    limitations = '<h3>Known limitations and evidence scope</h3>' + ul([e(item) for item in limitations_list])
     extra = legacy.get('extra', [])
-    report_images = legacy.get('results', '')
     case_specific = ''
     result_notes = ''
     if project['id'] == 'appium-framework':
         case_specific = '<p>Three real defects in the demo application are retained as regression checks in the project.</p>'
     elif project['id'] == 'automation-coverage-quality-intelligence':
-        case_specific = '<p>Representative sample gate failure: two critical requirements in the synthetic requirement catalog have no automated test. This is a demonstration result, not a finding about a live product.</p>'
-        result_notes = ('<p>Execution files are collected from real repository and CI artifacts. The requirement catalog is synthetic. '
-            'Sanitised actual CI results, synthetic catalogue data, sample fixtures and replayed results are labelled by their source. '
-            'The public dashboard reads collected history and is refreshed by scheduled collection; its freshness is shown by the collection date.</p>'
-            '<p><a href="https://quality-intelligence-0ur1.onrender.com" target="_blank" rel="noopener">Open the live Quality Intelligence dashboard</a>. '
-            'The live dashboard smoke workflow passed on 21 Oct 2026: '
-            '<a href="https://github.com/niranjankagri/automation-coverage-quality-intelligence/actions/runs/39531061806" target="_blank" rel="noopener">view workflow evidence</a>.</p>')
+        case_specific = '<p>Two critical requirements without automation are shown in the synthetic demonstration catalog. This is a sample gate outcome, not a finding about a live product.</p>'
+        result_notes = ('<p>Execution data is collected periodically from CI artifacts; the portfolio makes no streaming claim. '
+            'The requirement catalog is synthetic, while the collected CI result files are real. Static dashboard images are identified in the Evidence explorer.</p>'
+            f'<p><a href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open the live Quality Intelligence dashboard</a>.</p>')
     elif project['id'] in ('ai-assisted-test-automation', 'llm-feature-testing'):
-        case_specific = '<p>Representative harness failures are hand-written examples with planted rule violations, leaks or wrong facts, depending on the project. CI replays these samples; no live model result is claimed.</p>'
+        case_specific = '<p>Representative harness failures use hand-written examples with planted rule violations, leaks or wrong facts. CI replays these samples; no live model result is claimed.</p>'
         result_notes = ('<p>Current CI uses hand-written sample answers and documented replay fixtures. These runs test the harness, '
             'including planted failure examples; they are not live model outputs and do not establish model quality or accuracy.</p>')
     elif project['id'] == 'cypress-typescript-framework':
-        case_specific = '<p>The static API and UI report is a passing demo-app run; no production defect count is claimed. Other failure examples and component checks are documented in the source repository.</p>'
+        case_specific = '<p>The static API and UI report is a passing demo-app run; it is not a production defect count. Other failure examples and component checks are documented in the source repository.</p>'
         result_notes = ('<p>The report image shows one API and UI execution with 64 passing checks. The repository has 81 Cypress tests '
             '(31 API, 33 UI and 17 component), plus a separate Node unit suite of 15 tests. The screenshot is not the full suite total.</p>')
-    else:
-        case_specific = '<p>No additional production defect count is claimed. The linked source and dated evidence provide the representative checks available for this project.</p>'
 
     workflow = f'<div class="workflow-row">{ci_status(project)}</div>'
-    live = (f'<a class="btn" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Live demo</a>'
+    live = (f'<a class="btn primary" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open live dashboard</a>'
             if project['live_demo'] else '')
     workflow_section = ''
     if project['workflow_url']:
-        workflow_section = f'<p>{e(project["workflow_name"])}: <a href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">open workflow history</a>. The dated evidence above records what was verified.</p>'
+        workflow_section = (f'<p>{e(project["workflow_name"])}: '
+            f'<a href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">open workflow history</a>. '
+            'The dated evidence above describes the verified execution.</p>')
     else:
         workflow_section = '<p>No automated workflow is configured. Repository and manual execution notes are linked above.</p>'
     if project['id'] == 'automation-coverage-quality-intelligence':
-        workflow_section = ('<p>Daily collection imports existing result files; it does not call repository APIs from the visitor page. '
-            'The dashboard is a live service, while the screenshots below are static report images.</p>')
+        workflow_section = ('<p>Scheduled collection reads existing workflow artifacts. The visitor page does not poll repository APIs; '
+            'the Render dashboard is periodically refreshed and retains its last collected snapshot.</p>')
+
+    scope_items = legacy.get('features')
+    if scope_items:
+        scope_content = '<p>Project-specific checks and execution details documented in the repository:</p>' + ul(scope_items)
+    else:
+        scope_content = (f'<p>{e(project["comparison_layers"])}</p>'
+                         f'<p><b>Browsers, devices or execution target:</b> {e(project["comparison_targets"])}</p>'
+                         f'<p>{e(project["text"])}</p>')
+    scope_content = ('<span id="contribution" class="legacy-anchor" aria-hidden="true"></span>'
+                     '<span id="features" class="legacy-anchor" aria-hidden="true"></span>' + scope_content)
 
     sections = [
-        ('purpose', 'Problem and purpose', legacy.get('purpose') or f'<p>{e(summary)}</p>'),
-        ('contribution', 'My contribution', '<p>I built and maintain this public project, including the framework or test harness, its documentation, and the execution evidence linked here.</p>'),
+        ('purpose', 'Problem and purpose', legacy.get('purpose') or f'<p>{e(project["short_purpose"])}</p>'),
         ('architecture', 'Architecture', architecture),
         ('stack', 'Technology and tools', stack_content),
         *extra,
-        ('decisions', 'Engineering decisions and tradeoffs', decisions),
-        ('scope', 'Test scope and execution approach', f'<span id="features"></span><p>{e(summary)}</p>'),
-        ('results', 'Results with dated evidence', f'<div class="evidence-box"><p><b>{e(project["result_kind"])}</b></p><p>{e(project["evidence_label"])}</p><p>{e(project["result"])}</p><p>Evidence date: <time datetime="{e(project["evidence_date"], quote=True)}">{e(project["evidence_date"])}</time> · <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open evidence</a></p>{workflow}</div>{result_notes}{report_images}'),
-        ('defects', 'Defects and representative failures', case_specific),
+        ('decisions', 'Engineering decisions and approach', decisions),
+    ]
+    story = engineering_story(project)
+    if story:
+        sections.append(('story', 'Problem, decision and result', story))
+    sections.extend([
+        ('scope', 'Test scope and execution approach', scope_content),
+        ('results', 'Results with dated evidence', f'<div class="evidence-box"><p><b>{e(project["result_kind"])}</b></p><p>{e(project["evidence_label"])}</p><p>{e(project["result"])}</p><p>Evidence checked: <time datetime="{e(project["evidence_date"], quote=True)}">{readable_date(project["evidence_date"])}</time> | <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open dated evidence</a></p>{workflow}</div>{result_notes}'),
+        ('evidence', 'Evidence explorer', evidence_explorer(project, legacy)),
+    ])
+    if case_specific:
+        sections.append(('defects', 'Representative failure evidence', case_specific))
+    sections.extend([
         ('run', 'Local setup and execution', run),
         ('workflow', 'Workflow and reports', '<span id="ci"></span>' + workflow_section),
         ('limitations', 'Known limitations', limitations),
-    ]
-    body = ''.join(f'<section aria-labelledby="{i}"><h2 id="{i}">{heading}</h2>{content}</section>' for i, heading, content in sections)
-    toc = ''.join(f'<li><a href="#{i}">{heading}</a></li>' for i, heading, _ in sections)
-    tags = ''.join(f'<li class="tag">{e(t)}</li>' for t in project['technologies'])
-    links = (f'<a class="btn primary" href="{e(repo, quote=True)}" target="_blank" rel="noopener">Source code</a>'
-             f'<a class="btn" href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">README and setup</a>')
+    ])
+    if not case_specific:
+        evidence_index = next(index for index, section in enumerate(sections) if section[0] == 'evidence')
+        section_id, heading, content = sections[evidence_index]
+        sections[evidence_index] = (section_id, heading,
+                                    '<span id="defects" class="legacy-anchor" aria-hidden="true"></span>' + content)
+    body = ''.join(f'<section aria-labelledby="{section_id}"><h2 id="{section_id}">{heading}</h2>{content}</section>' for section_id, heading, content in sections)
+    toc = ''.join(f'<li><a href="#{section_id}">{heading}</a></li>' for section_id, heading, _ in sections)
+    tags = ''.join(f'<li><a class="tag tag-link" href="../projects.html?skill={quote(tag, safe="")}">{e(tag)}</a></li>' for tag in project['technologies'])
+
+    source_link = f'<a class="btn" href="{e(repo, quote=True)}" target="_blank" rel="noopener">Source code</a>'
+    links = live + source_link
+    links += f'<a class="btn" href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">Setup and README</a>'
     if project['workflow_url']:
         links += f'<a class="btn" href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">Workflow history</a>'
-    links += f'<a class="btn" href="{e(project["report_url"], quote=True)}" target="_blank" rel="noopener">Report or image</a>{live}'
-    return f'''<!doctype html>
+    report_label = 'Static report image' if project.get('report', '').lower().endswith(('.png', '.jpg', '.jpeg', '.svg')) else 'Open report asset'
+    links += f'<a class="btn" href="{e(project["report_url"], quote=True)}" target="_blank" rel="noopener">{report_label}</a>'
+
+    index = PROJECTS.index(project)
+    neighbors = []
+    if index > 0:
+        previous = PROJECTS[index - 1]
+        neighbors.append(f'<a class="neighbor previous" href="{previous["page"]}.html"><span>Previous project</span><b>{e(previous["title"])}</b></a>')
+    if index < len(PROJECTS) - 1:
+        following = PROJECTS[index + 1]
+        neighbors.append(f'<a class="neighbor next" href="{following["page"]}.html"><span>Next project</span><b>{e(following["title"])}</b></a>')
+    related_scores = []
+    project_categories = set(project['category'])
+    project_tech = set(tag.casefold() for tag in project['technologies'])
+    for candidate in PROJECTS:
+        if candidate['id'] == project['id']:
+            continue
+        score = len(project_categories & set(candidate['category'])) + len(project_tech & set(tag.casefold() for tag in candidate['technologies']))
+        if score:
+            related_scores.append((score, candidate))
+    related = sorted(related_scores, key=lambda item: (-item[0], PROJECTS.index(item[1])))[:3]
+    related_markup = ''.join(f'<li><a href="{item["page"]}.html">{e(item["title"])}</a><p>{e(item["short_purpose"])}</p></li>' for _, item in related)
+    adjacent = '<nav class="case-neighbors" aria-label="Adjacent projects">' + ''.join(neighbors) + '</nav>' if neighbors else ''
+    related_section = ('<section class="related-projects" aria-labelledby="related-title"><h2 id="related-title">Related projects</h2>'
+                       '<p>Related by shared categories or technology tags.</p><ul>' + related_markup + '</ul></section>')
+
+    document = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(title)} · Project case study | Niranjan Kumar Agri</title><meta name="description" content="{e(summary)}">
-<link rel="canonical" href="{canonical}"><meta property="og:title" content="{e(title)} · Niranjan Kumar Agri"><meta property="og:description" content="{e(summary)}"><meta property="og:type" content="article"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{image_url}"><meta name="twitter:card" content="summary_large_image">
+<title>{e(title)} | Project case study | Niranjan Kumar Agri</title><meta name="description" content="{e(summary)}">
+<link rel="canonical" href="{canonical}"><meta property="og:title" content="{e(title)} | Niranjan Kumar Agri"><meta property="og:description" content="{e(summary)}"><meta property="og:type" content="article"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{image_url}"><meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="../style.css"><script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script></head>
 <body>
 {header('../', 'case')}
 <main id="main" class="wrap page case">
 <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Home</a> / <a href="../projects.html">Projects</a> / <span aria-current="page">{e(title)}</span></nav>
-<header class="case-hero"><p class="eyebrow">{e(project['project_kind'])} · {e(category)}</p><h1>{e(title)}</h1><p class="lead">{e(summary)}</p>
+<header class="case-hero"><p class="eyebrow">{e(project['project_kind'])} | {e(category)}</p><h1>{e(title)}</h1><p class="lead">{e(summary)}</p>
 <ul class="tags" aria-label="Technologies">{tags}</ul><div class="case-links">{links}</div></header>
-<div class="case-summary"><p class="fact">{e(project['result'])}</p><div class="case-summary-foot"><p class="evidence">Evidence {readable_date(project['evidence_date'])} · <a href="{e(project['evidence_url'], quote=True)}" target="_blank" rel="noopener">{e(project['evidence_label'])}</a></p>{ci_status(project)}</div></div>
-<div class="case-layout"><nav class="toc" aria-label="On this page"><p class="toc-title">On this page</p><ol>{toc}</ol></nav>
-<div class="case-body">{body}<p class="crumbs back"><a href="../projects.html">← Back to Projects</a></p></div></div>
+<div class="case-summary"><p class="fact">{e(project['result'])}</p><div class="case-summary-foot"><p class="evidence">Evidence checked {readable_date(project['evidence_date'])} | <a href="{e(project['evidence_url'], quote=True)}" target="_blank" rel="noopener">{e(project['evidence_label'])}</a></p>{ci_status(project)}</div></div>
+<div class="case-layout"><details class="toc" id="case-toc" open><summary class="toc-title">On this page</summary><ol>{toc}</ol></details>
+<div class="case-body">{body}{related_section}{adjacent}<p class="crumbs back"><a data-project-return href="../projects.html">Back to Projects</a></p></div></div>
 </main>
 {footer('../')}
 <script src="../theme.js" defer></script></body></html>'''
+    seen_legacy_images = set()
+
+    def preserve_image_anchor(match):
+        anchor = match.group(1)
+        alias = ''
+        if anchor not in seen_legacy_images:
+            seen_legacy_images.add(anchor)
+            alias = f'<span id="{anchor}" class="legacy-anchor" aria-hidden="true"></span>'
+        return '<figure>' + alias
+
+    return re.sub(r'<figure data-legacy-anchor="(image-[a-f0-9]+)">', preserve_image_anchor, document)
 
 
 os.makedirs(OUT, exist_ok=True)

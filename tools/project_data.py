@@ -374,6 +374,91 @@ FEATURED_IDS = set(FEATURED_ORDER)
 LIVE_DASHBOARD = 'https://quality-intelligence-0ur1.onrender.com'
 PROJECTS_URL = 'https://niranjankagri.github.io/projects.html'
 
+# Role views highlight work without removing any item from the project collection.
+ROLE_VIEWS = {
+    'senior-sdet': {
+        'label': 'Senior SDET',
+        'summary': 'Hands-on framework engineering across API, browser, mobile, performance and quality tooling.',
+        'skills': ['Framework design', 'API testing', 'Browser automation', 'Test data isolation', 'CI evidence'],
+        'projects': ['enterprise-test-automation-framework', 'playwright-typescript-framework',
+                     'playwright-framework', 'python-pytest-framework', 'appium-framework',
+                     'k6-performance-testing'],
+        'impact': '12+ years across software engineering and QA, including automation of 84% of one regulated product release test scope.',
+    },
+    'qa-lead': {
+        'label': 'QA Lead',
+        'summary': 'Team leadership, test strategy, traceability, defect triage and evidence-based release sign-off.',
+        'skills': ['Test strategy', 'Requirements traceability', 'Release readiness', 'Team leadership', 'Risk evidence'],
+        'projects': ['automation-coverage-quality-intelligence', 'enterprise-test-automation-framework',
+                     'robot-framework-automation', 'k6-performance-testing', 'mobile-real-device-testing'],
+        'impact': 'Led and mentored four QA engineers and owned test strategy, traceability, defect triage and release sign-off.',
+    },
+    'automation-architect': {
+        'label': 'Automation Architect',
+        'summary': 'Layered test platforms, reusable interfaces, parallel execution, CI gates and actionable reporting.',
+        'skills': ['Layered architecture', 'Parallel execution', 'CI/CD', 'Reporting', 'Contract testing'],
+        'projects': ['enterprise-test-automation-framework', 'automation-coverage-quality-intelligence',
+                     'playwright-typescript-framework', 'pact-contract-testing', 'jenkins-kubernetes-pipeline'],
+        'impact': 'Portfolio examples document framework boundaries, execution tradeoffs and the evidence each automation layer produces.',
+    },
+}
+
+# Concise, evidence-backed comparison facts used by the explorer. Rows deliberately
+# say when a browser matrix is not part of the project (for example, API-only work).
+COMPARISON_DETAILS = {
+    'enterprise-test-automation-framework': ('UI, API, database, integration, end-to-end and unit tests', 'Chrome, Firefox, Edge and Docker Selenium Grid', 'Test-owned data, infrastructure-only retries, Allure evidence'),
+    'playwright-typescript-framework': ('UI, API and network tests', 'Chromium, Firefox and WebKit', 'API login per test, zod response contracts, per-worker users'),
+    'playwright-framework': ('UI, API and network tests', 'Chromium, Firefox and WebKit', 'Browser per thread, context per test, failure traces and videos'),
+    'appium-framework': ('Android UI and device behavior', 'Android 15 emulator', 'Screen objects, state-aware waits, infrastructure-specific retries'),
+    'robot-framework-automation': ('Browser UI and API tests', 'Chrome and Firefox', 'Robot resource page objects, API service objects, parallel pabot runs'),
+    'python-pytest-framework': ('API, UI and hybrid API + UI tests', 'Chromium, Firefox and WebKit in CI', 'Typed API contracts, API login, per-test users'),
+    'k6-performance-testing': ('HTTP smoke, load, stress, spike and soak tests', 'HTTP workload; no browser matrix', 'Endpoint SLO thresholds and open/closed workload models'),
+    'cypress-typescript-framework': ('API, UI and component tests', 'Chrome, Firefox and Edge in CI', 'Network control, component mounting and zod contracts'),
+    'pact-contract-testing': ('Consumer/provider contract verification', 'No browser matrix; TypeScript consumer and Java provider', 'Pact V4 states, broker verification and can-i-deploy'),
+    'jenkins-kubernetes-pipeline': ('Pipeline smoke and API tests', 'kind Kubernetes cluster', 'Jenkins configured as code, isolated namespace per build, quality gate'),
+    'ai-assisted-test-automation': ('Test-generation and triage harness; generated Playwright tests', 'CI replays hand-written samples; no live model result claimed', 'Rules, compilation and repeated-run gate before human review'),
+    'llm-feature-testing': ('LLM evaluation harness and deterministic safety checks', 'CI replays hand-written samples; no live model result claimed', 'Calibrated judge beside deterministic checks; sensitive areas have explicit gates'),
+    'accessibility-visual-testing': ('Accessibility, keyboard/focus and visual regression checks', 'Playwright browser matrix; see workflow evidence', 'axe-core plus checks axe cannot cover and zero-tolerance image comparisons'),
+    'security-testing-zap': ('DAST scans and API access-control tests', 'Docker private network', 'Separate scanner findings from API-only authorization checks'),
+    'integration-testing-testcontainers': ('GraphQL, database and Kafka integration tests', 'PostgreSQL and Kafka containers', 'Real service dependencies, idempotency and dead-letter assertions'),
+    'mobile-real-device-testing': ('Mobile web and native iOS tests', 'Real iPhone, Galaxy S24 and mobile emulation', 'Device minutes reserved for checks emulation cannot establish'),
+    'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates and dashboard browser tests', 'Chromium dashboard tests; daily CI artifacts from 23 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
+    'mobile-test-automation-framework': ('Android run; iOS implementation documented but not run', 'Android 15 emulator', 'Platform layer with per-platform capabilities'),
+    'java-selenium-testng-pom-framework': ('UI smoke checks', 'Chrome, Edge and Firefox (manual run)', 'Page objects, explicit waits and configurable headless execution'),
+    'cucumber-bdd-demo': ('BDD UI scenarios', 'Chrome, Edge and Firefox (manual run)', 'Cucumber runners and separated framework layers'),
+    'selenium-java-framework': ('Selenium and TestNG interview examples', 'See repository guide; no current browser matrix recorded', 'One runnable example per framework-design topic'),
+    'cucumber-java-framework': ('BDD UI scenarios', 'See linked CI workflow evidence', 'Cucumber scenarios with a self-contained HTML report'),
+    'api-automation': ('REST API end-to-end scenario', 'HTTP API; no browser matrix', 'One manager per API resource and a custom HTML report'),
+    'api-automation-framework': ('REST API checks', 'HTTP API; no browser matrix', 'Same suite retained across Extent, Allure and custom TestNG reports'),
+    'jsonplaceholder-auto': ('REST API checks', 'HTTP API; no browser matrix', 'Original API example with Hamcrest matchers and Extent report'),
+}
+
+COMPARISON_LIMITATIONS = {
+    'enterprise-test-automation-framework': 'Tests a demo application with an in-memory H2 database; it is not a production deployment.',
+    'playwright-typescript-framework': 'The suite depends on a public demo shop; two form-login UI checks are skipped in CI because its bot check blocks them.',
+    'playwright-framework': 'Evidence describes the public portfolio repository and its linked CI runs, not customer production impact.',
+    'appium-framework': 'The verified run uses an Android emulator and a demo application; no real-device result is claimed.',
+    'k6-performance-testing': 'The measured limit and load-shedding result apply to the repository demo shop and the linked stress-test profile.',
+    'ai-assisted-test-automation': 'CI replays hand-written sample answers; no live model output or model-quality score is claimed.',
+    'automation-coverage-quality-intelligence': 'The requirement catalog is synthetic; collected CI results are real. The shared dashboard account is documented in the case study.',
+    'llm-feature-testing': 'CI uses hand-written examples with planted flaws; no live model pass rate is claimed.',
+    'mobile-real-device-testing': 'The device matrix covers one iPhone and one Android phone; it is not a representative customer device matrix.',
+}
+
+ARCHITECTURE_PREVIEWS = {
+    'enterprise-test-automation-framework': ('img/enterprise-architecture.svg', 'Architecture diagram of TestNG suites, framework layers, browsers, the demo shop, API, database and Allure evidence.'),
+    'automation-coverage-quality-intelligence': ('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/data-flow.svg', 'Architecture diagram showing result ingestion, traceability, history, gates and the dashboard.'),
+}
+
+CARD_PURPOSE = {
+    'enterprise-test-automation-framework': 'A layered test platform for one demo shop across browser, API, database and integration checks.',
+    'playwright-typescript-framework': 'A typed UI and API suite for a public demo shop, exercised across three browser engines.',
+    'automation-coverage-quality-intelligence': 'A quality platform that links collected CI results to a clearly labelled synthetic requirements catalog.',
+    'appium-framework': 'An Android test framework with device-aware waits and failure evidence for each run.',
+    'k6-performance-testing': 'A performance suite that tests a shop API against endpoint service-level thresholds.',
+    'ai-assisted-test-automation': 'A human-reviewed pipeline for generating and triaging Playwright tests with Claude.',
+}
+
 
 def normalise_project(source):
     """Return one complete record for page, card, evidence, and filter generation."""
@@ -393,6 +478,13 @@ def normalise_project(source):
                 result_kind += ' · older evidence; recheck the linked source'
         except ValueError:
             pass
+    original_text = project.get('text') or description
+    short_purpose = CARD_PURPOSE.get(repo) or original_text.split('. ', 1)[0].rstrip('.')
+    if len(short_purpose) > 145:
+        short_purpose = short_purpose[:142].rsplit(' ', 1)[0].rstrip(' ,;:') + '…'
+    comparison = COMPARISON_DETAILS[repo]
+    roles = [role_id for role_id, role in ROLE_VIEWS.items() if repo in role['projects']]
+    architecture_preview = ARCHITECTURE_PREVIEWS.get(repo, ('', ''))
     return {
         **project,
         'id': repo,
@@ -401,6 +493,7 @@ def normalise_project(source):
         'category': CATEGORY_BY_REPO[repo],
         'technologies': project.get('tags', []),
         'description': description,
+        'short_purpose': short_purpose,
         'result': result,
         'result_kind': result_kind,
         'image': image,
@@ -416,6 +509,14 @@ def normalise_project(source):
         'live_demo': LIVE_DASHBOARD if repo == 'automation-coverage-quality-intelligence' else '',
         'featured': repo in FEATURED_IDS,
         'project_kind': 'Featured project' if repo in FEATURED_IDS else ('Learning lab' if 'Learning Labs' in CATEGORY_BY_REPO[repo] else 'Project'),
+        'roles': roles,
+        'comparison_layers': comparison[0],
+        'comparison_targets': comparison[1],
+        'comparison_approach': comparison[2],
+        'comparison_limits': COMPARISON_LIMITATIONS.get(
+            repo, 'The evidence is limited to the public repository and linked run; it does not establish customer production impact.'),
+        'architecture_preview': architecture_preview[0],
+        'architecture_preview_alt': architecture_preview[1],
     }
 
 
