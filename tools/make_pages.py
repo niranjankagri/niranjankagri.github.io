@@ -847,7 +847,7 @@ def architecture_explorer(project):
         tabs.append(f'<button id="{tab_id}" type="button" role="tab" aria-selected="{"true" if index == 0 else "false"}" '
                     f'aria-controls="{panel_id}" tabindex="{0 if index == 0 else -1}" data-architecture-tab="{index}">'
                     f'{e(component["name"])}</button>')
-        items.append(f'<details class="architecture-component" data-architecture-item id="{component_id}">'
+        items.append(f'<details class="architecture-component" data-architecture-item name="architecture-{project["page"]}" id="{component_id}">'
                      f'<summary>{e(component["name"])}</summary><div>{panel}</div></details>')
     return ('<section class="architecture-explorer" aria-labelledby="architecture-explorer-title">'
             '<h3 id="architecture-explorer-title">Explore the architecture</h3>'
