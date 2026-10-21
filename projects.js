@@ -67,7 +67,7 @@
     var values = [];
     if (q) values.push('Search: ' + search.value.trim());
     selected('category').forEach(function (value) { values.push('Category: ' + value); });
-    selected('tech').forEach(function (value) { values.push('Technology: ' + value); });
+    selected('tech').forEach(function (value) { values.push('Language: ' + value); });
     values.forEach(function (value) {
       var item = document.createElement('li');
       item.textContent = value;

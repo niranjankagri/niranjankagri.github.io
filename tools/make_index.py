@@ -1,64 +1,13 @@
 """Generate the portfolio home page from the shared project catalogue."""
 from __future__ import annotations
 
-import html
 import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(__file__))
+from components import CV, EMAIL, GITHUB, HOME, LINKEDIN, footer, header, icon, project_card  # noqa: E402
 from project_data import FEATURED_PROJECTS, PROJECTS  # noqa: E402
-
-e = html.escape
-CV = 'Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf'
-HOME = 'https://niranjankagri.github.io/'
-GITHUB = 'https://github.com/niranjankagri/'
-LINKEDIN = 'https://www.linkedin.com/in/niranjan-kumar-agri/'
-EMAIL = 'niranjankagri@gmail.com'
-
-
-def icon(name: str) -> str:
-    paths = {
-        'download': 'M11 3h2v9.6l3.3-3.3 1.4 1.4L12 16.4l-5.7-5.7 1.4-1.4 3.3 3.3zM4 18h16v2H4z',
-        'mail': 'M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7.2L4 7.3V17h16V7.3z',
-        'github': 'M12 .5a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z',
-        'linkedin': 'M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 21 11.3 21 14.7V21h-4v-5.6c0-1.33-.03-3.05-1.86-3.05-1.86 0-2.14 1.45-2.14 2.95V21H9z',
-    }
-    return f'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{paths[name]}"/></svg>'
-
-
-def external(url: str, label: str) -> str:
-    return f'<a href="{e(url, quote=True)}" target="_blank" rel="noopener">{e(label)}</a>'
-
-
-def project_card(p: dict) -> str:
-    tags = ''.join(f'<li class="tag">{e(t)}</li>' for t in p['technologies'])
-    categories = ', '.join(p['category'])
-    workflow = ''
-    if p['workflow_url']:
-        badge_url = p['workflow_url'].replace('/actions/workflows/', '/actions/workflows/') + '/badge.svg'
-        workflow = f'''<div class="workflow-row"><span class="badge">Workflow configured</span>
-          <a class="badge-link" href="{e(p['workflow_url'], quote=True)}" target="_blank" rel="noopener" aria-label="Open {e(p['workflow_name'])} workflow history for {e(p['title'])}">
-            <img class="ci" src="{e(badge_url, quote=True)}" alt="GitHub Actions workflow badge; open workflow history if the badge is unavailable" width="150" height="20" loading="lazy">
-          </a></div>'''
-    else:
-        workflow = '<span class="badge">No automated workflow</span>'
-    live = f'<a href="{e(p["live_demo"], quote=True)}" target="_blank" rel="noopener">Live demo</a>' if p['live_demo'] else ''
-    return f'''<article class="card project-card" data-project-id="{e(p['id'], quote=True)}">
-      <a class="card-image" href="projects/{e(p['page'], quote=True)}.html" tabindex="-1" aria-hidden="true">
-        <img src="img/{e(p['image'], quote=True)}.jpg" alt="" width="640" height="400" loading="lazy">
-      </a>
-      <div class="body">
-        <span class="kind">{e(p['project_kind'])} · {e(categories)}</span>
-        <h3><a href="projects/{e(p['page'], quote=True)}.html">{e(p['title'])}</a></h3>
-        <p>{e(p['description'])}</p>
-        <p class="fact">{e(p['result'])}</p>
-        <ul class="tags" aria-label="Technologies">{tags}</ul>
-        {workflow}
-        <p class="evidence">{e(p['result_kind'])} · evidence {e(p['evidence_date'])} · {external(p['evidence_url'], p['evidence_label'])}</p>
-        <div class="actions"><a href="projects/{e(p['page'], quote=True)}.html">View case study</a>{external(p['source_url'], 'Source code')}{live}</div>
-      </div>
-    </article>'''
 
 
 HTML = f'''<!doctype html>
@@ -80,33 +29,28 @@ HTML = f'''<!doctype html>
 <script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="nav"><div class="wrap">
-  <a class="home" href="./" aria-current="page"><picture><source srcset="img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
-  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-icon" aria-hidden="true">☰</span><span class="sr-only">Open navigation</span></button>
-  <nav id="primary-nav" aria-label="Primary navigation">
-    <a href="projects.html">Projects <span class="nav-count">{len(PROJECTS)}</span></a><a href="#experience">Experience</a><a href="#skills">Skills</a><a href="#contact">Contact</a>
-  </nav>
-  <button class="theme" id="theme" type="button" aria-label="Use dark theme" title="Change color theme">◐</button>
-</div></header>
+{header('', 'home', len(PROJECTS))}
 <main id="main" class="wrap">
   <section class="hero" aria-labelledby="hero-title"><div class="hero-grid">
     <div class="hero-text">
       <p class="eyebrow">Technical Lead QA · Senior SDET · Test Automation Architect</p>
       <h1 id="hero-title">I build automation frameworks and quality strategies that accelerate reliable releases.</h1>
       <p class="lead">I combine hands-on framework engineering with QA leadership, from test strategy and traceability to CI pipelines and release decisions. My work spans regulated software, web and API automation, mobile, performance, and AI-assisted testing.</p>
-      <p class="where"><span>Based in Bengaluru, India</span><span>Open to European relocation</span></p>
-      <div class="btns primary-actions"><a class="btn primary" href="projects.html">Explore projects</a><a class="btn primary" href="{CV}" download>{icon('download')}Download CV</a></div>
+      <p class="where"><span>Based in Haldwani, Uttarakhand, India</span><span>Open to European relocation</span></p>
+      <div class="btns primary-actions"><a class="btn primary" href="projects.html">Explore projects {icon('arrow')}</a><a class="btn" href="{CV}" download>{icon('download')}Download CV</a></div>
       <div class="btns secondary-actions"><a class="text-action" href="{GITHUB}" target="_blank" rel="noopener">{icon('github')}GitHub</a><a class="text-action" href="{LINKEDIN}" target="_blank" rel="noopener">{icon('linkedin')}LinkedIn</a><a class="text-action" href="mailto:{EMAIL}">{icon('mail')}Email</a></div>
     </div>
     <picture class="portrait"><source srcset="img/profile-2026-10b.webp" type="image/webp"><img src="img/profile-2026-10b.jpg" alt="Portrait of Niranjan Kumar Agri in a dark navy suit and white shirt" width="560" height="700" decoding="async" fetchpriority="high"></picture>
   </div></section>
 
-  <section class="impact" aria-labelledby="impact-title"><h2 id="impact-title">Professional impact</h2><div class="stats">
-    <article class="stat"><strong>12+ years</strong><span>in software engineering and quality assurance, from Java development to QA leadership</span></article>
-    <article class="stat"><strong>84%</strong><span>of one regulated product release test scope automated</span><small>Measured as the share of test cases in the release scope that were automated and ready to run, including all multi-user performance and upgrade suites. This describes automation coverage, not product quality.</small></article>
-    <article class="stat"><strong>4 engineers</strong><span>led and mentored, with ownership of test strategy, traceability, defect triage and release sign-off</span></article>
-  </div></section>
+  <section class="impact" aria-labelledby="impact-title"><h2 id="impact-title" class="sr-only">Professional impact</h2>
+    <div class="stats">
+      <article class="stat"><strong>12+ years</strong><span>in software engineering and quality assurance, from Java development to QA leadership</span></article>
+      <article class="stat"><strong>84%</strong><span>of one regulated product release test scope automated</span></article>
+      <article class="stat"><strong>4 engineers</strong><span>led and mentored, with ownership of test strategy, traceability, defect triage and release sign-off</span></article>
+    </div>
+    <p class="stat-note"><b>84%</b> is measured as the share of test cases in the release scope that were automated and ready to run, including all multi-user performance and upgrade suites. This describes automation coverage, not product quality.</p>
+  </section>
 
   <section id="projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="projects-title">Featured projects</h2><p class="sub">Six projects selected for engineering depth, range and evidence. Every card links to its case study and source.</p></div><a class="btn" href="projects.html">View all {len(PROJECTS)} projects</a></div>
     <div class="grid featured-grid">{''.join(project_card(p) for p in FEATURED_PROJECTS)}</div>
@@ -163,7 +107,7 @@ HTML = f'''<!doctype html>
     <div class="btns"><a class="btn primary" href="mailto:{EMAIL}">{icon('mail')}Email me</a><button class="btn" type="button" data-copy-email="{EMAIL}">Copy email</button><a class="btn" href="{LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a><a class="btn" href="{GITHUB}" target="_blank" rel="noopener">GitHub</a><a class="btn" href="{CV}" download>Download CV</a></div><p class="copy-status" role="status" aria-live="polite"></p><p class="sub">{EMAIL}</p>
   </div></section>
 </main>
-<footer>© 2026 Niranjan Kumar Agri · Hosted on GitHub Pages · <a href="{GITHUB}niranjankagri.github.io">Website source</a></footer>
+{footer('')}
 <script src="theme.js" defer></script>
 </body></html>
 '''

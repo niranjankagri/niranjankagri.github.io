@@ -10,6 +10,7 @@ OUT = os.path.join(ROOT, 'projects')
 GH = 'https://github.com/niranjankagri/'
 e = html.escape
 sys.path.insert(0, os.path.dirname(__file__))
+from components import ci_status, footer, header, readable_date  # noqa: E402
 from project_data import PROJECTS  # noqa: E402
 
 
@@ -811,15 +812,7 @@ def render_case_study(project, legacy=None):
     else:
         case_specific = '<p>No additional production defect count is claimed. The linked source and dated evidence provide the representative checks available for this project.</p>'
 
-    workflow = ''
-    if project['workflow_url']:
-        workflow = (f'<div class="workflow-row"><span class="badge">Workflow configured</span>'
-                    f'<a class="badge-link" href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">'
-                    f'<img class="ci" src="{e(project["workflow_url"] + "/badge.svg", quote=True)}" '
-                    f'alt="GitHub Actions workflow status; open workflow history if the badge is unavailable" width="150" height="20">'
-                    f'<span class="badge-fallback" hidden>Workflow badge unavailable · open history</span></a></div>')
-    else:
-        workflow = '<span class="badge">No automated workflow</span>'
+    workflow = f'<div class="workflow-row">{ci_status(project)}</div>'
     live = (f'<a class="btn" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Live demo</a>'
             if project['live_demo'] else '')
     workflow_section = ''
@@ -846,6 +839,8 @@ def render_case_study(project, legacy=None):
         ('limitations', 'Known limitations', limitations),
     ]
     body = ''.join(f'<section aria-labelledby="{i}"><h2 id="{i}">{heading}</h2>{content}</section>' for i, heading, content in sections)
+    toc = ''.join(f'<li><a href="#{i}">{heading}</a></li>' for i, heading, _ in sections)
+    tags = ''.join(f'<li class="tag">{e(t)}</li>' for t in project['technologies'])
     links = (f'<a class="btn primary" href="{e(repo, quote=True)}" target="_blank" rel="noopener">Source code</a>'
              f'<a class="btn" href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">README and setup</a>')
     if project['workflow_url']:
@@ -856,14 +851,17 @@ def render_case_study(project, legacy=None):
 <title>{e(title)} · Project case study | Niranjan Kumar Agri</title><meta name="description" content="{e(summary)}">
 <link rel="canonical" href="{canonical}"><meta property="og:title" content="{e(title)} · Niranjan Kumar Agri"><meta property="og:description" content="{e(summary)}"><meta property="og:type" content="article"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{image_url}"><meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="../style.css"><script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script></head>
-<body><a class="skip" href="#main">Skip to content</a><header class="nav"><div class="wrap">
-<a class="home" href="../"><picture><source srcset="../img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="../img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture>Niranjan Kumar Agri</a>
-<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-icon" aria-hidden="true">☰</span><span class="sr-only">Open navigation</span></button>
-<nav id="primary-nav" aria-label="Primary navigation"><a href="../projects.html" aria-current="page">Projects</a><a href="../index.html#experience">Experience</a><a href="../index.html#skills">Skills</a><a href="../index.html#contact">Contact</a><a href="../Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf" download>Download CV</a></nav><button class="theme" id="theme" type="button" aria-label="Use dark theme">◐</button></div></header>
-<main id="main" class="wrap page"><nav class="crumbs" aria-label="Breadcrumb"><a href="../">Home</a> / <a href="../projects.html">Projects</a> / <span aria-current="page">{e(title)}</span></nav>
-<p class="eyebrow">{e(project['project_kind'])} · {e(category)}</p><h1>{e(title)}</h1><p class="lead">{e(summary)}</p><p class="project-kind-note">Technologies: {e(tech)}</p>
-<div class="case-links">{links}</div>{body}<p class="crumbs"><a href="../projects.html">← Back to Projects</a></p></main>
-<footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a> · <a href="../projects.html">Projects</a></footer>
+<body>
+{header('../', 'case')}
+<main id="main" class="wrap page case">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="../">Home</a> / <a href="../projects.html">Projects</a> / <span aria-current="page">{e(title)}</span></nav>
+<header class="case-hero"><p class="eyebrow">{e(project['project_kind'])} · {e(category)}</p><h1>{e(title)}</h1><p class="lead">{e(summary)}</p>
+<ul class="tags" aria-label="Technologies">{tags}</ul><div class="case-links">{links}</div></header>
+<div class="case-summary"><p class="fact">{e(project['result'])}</p><div class="case-summary-foot"><p class="evidence">Evidence {readable_date(project['evidence_date'])} · <a href="{e(project['evidence_url'], quote=True)}" target="_blank" rel="noopener">{e(project['evidence_label'])}</a></p>{ci_status(project)}</div></div>
+<div class="case-layout"><nav class="toc" aria-label="On this page"><p class="toc-title">On this page</p><ol>{toc}</ol></nav>
+<div class="case-body">{body}<p class="crumbs back"><a href="../projects.html">← Back to Projects</a></p></div></div>
+</main>
+{footer('../')}
 <script src="../theme.js" defer></script></body></html>'''
 
 
