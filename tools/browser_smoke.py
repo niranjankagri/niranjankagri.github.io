@@ -606,9 +606,44 @@ def exercise(
                         )
                         for width in (320, 375, 390, 720, 768, 1024, 1182, 1280, 1440):
                             page.set_viewport_size({"width": width, "height": 900})
-                            assert not page.evaluate(
-                                "document.documentElement.scrollWidth > document.documentElement.clientWidth"
-                            ), (route, theme, width)
+                            viewport = page.evaluate(
+                                """() => {
+                                  const root = document.documentElement;
+                                  const overflow = [...document.body.querySelectorAll('*')]
+                                    .map(element => {
+                                      const rect = element.getBoundingClientRect();
+                                      const style = getComputedStyle(element);
+                                      return {
+                                        tag: element.tagName.toLowerCase(),
+                                        id: element.id,
+                                        className: String(element.className || '').slice(0, 80),
+                                        left: Math.round(rect.left * 100) / 100,
+                                        right: Math.round(rect.right * 100) / 100,
+                                        width: Math.round(rect.width * 100) / 100,
+                                        scrollWidth: element.scrollWidth,
+                                        clientWidth: element.clientWidth,
+                                        display: style.display,
+                                        position: style.position
+                                      };
+                                    })
+                                    .filter(item => item.display !== 'none' &&
+                                      (item.left < -1 || item.right > innerWidth + 1 ||
+                                       item.scrollWidth > item.clientWidth + 1))
+                                    .slice(0, 20);
+                                  return {
+                                    innerWidth,
+                                    clientWidth: root.clientWidth,
+                                    scrollWidth: root.scrollWidth,
+                                    overflow
+                                  };
+                                }"""
+                            )
+                            assert viewport["scrollWidth"] <= viewport["clientWidth"], (
+                                route,
+                                theme,
+                                width,
+                                viewport,
+                            )
                             if route == "/":
                                 role_heights = page.locator(
                                     "[data-role-panel]"
