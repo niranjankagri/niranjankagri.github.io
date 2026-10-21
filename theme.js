@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   var root = document.documentElement;
+  root.classList.add('js');
   var themeButton = document.getElementById('theme');
   var themeKey = 'na-theme';
 
@@ -38,14 +39,23 @@
   function closeMenu(returnFocus) {
     if (!menuButton || !nav) return;
     menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-label', 'Open navigation');
+    var menuText = menuButton.querySelector('.sr-only');
+    if (menuText) menuText.textContent = 'Open navigation';
     nav.classList.remove('is-open');
     if (returnFocus) menuButton.focus();
   }
   if (menuButton && nav) {
+    var menuLabel = menuButton.querySelector('.sr-only');
+    function updateMenuLabel(open) {
+      if (menuLabel) menuLabel.textContent = open ? 'Close navigation' : 'Open navigation';
+      menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    }
     menuButton.addEventListener('click', function () {
       var open = menuButton.getAttribute('aria-expanded') === 'true';
       menuButton.setAttribute('aria-expanded', String(!open));
       nav.classList.toggle('is-open', !open);
+      updateMenuLabel(!open);
       if (!open) {
         var first = nav.querySelector('a');
         if (first) first.focus();
@@ -58,6 +68,182 @@
       if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') closeMenu(true);
     });
   }
+
+  /* Keep keyboard focus inside native dialogs, including WebKit builds that do not cycle it. */
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Tab') return;
+    var dialog = Array.prototype.slice.call(document.querySelectorAll('dialog[open]')).pop();
+    if (!dialog) return;
+    var focusable = Array.prototype.slice.call(dialog.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])'
+    )).filter(function (element) {
+      return !element.closest('[hidden]') && element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0;
+    });
+    if (!focusable.length) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+    var currentIndex = focusable.indexOf(document.activeElement);
+    var nextIndex = currentIndex === -1 ? (event.shiftKey ? focusable.length - 1 : 0) :
+      (currentIndex + (event.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
+    event.preventDefault();
+    focusable[nextIndex].focus();
+  });
+
+  /* Role disclosures keep every role and every project available in the page. */
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll('[data-role-panel]'));
+  var roleStatus = document.getElementById('role-selection-status');
+  var syncingRoles = false;
+  function setRoleInUrl(roleId, mode) {
+    var params = new URLSearchParams(window.location.search);
+    if (roleId) params.set('role', roleId);
+    else params.delete('role');
+    var next = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + '#role-explorer';
+    if (mode === 'replace') window.history.replaceState({}, '', next);
+    else window.history.pushState({}, '', next);
+  }
+  function updateRolePanels(roleId) {
+    syncingRoles = true;
+    rolePanels.forEach(function (panel) {
+      var selected = panel.dataset.rolePanel === roleId;
+      panel.open = selected;
+      var summary = panel.querySelector('summary');
+      if (summary) {
+        if (selected) summary.setAttribute('aria-current', 'location');
+        else summary.removeAttribute('aria-current');
+      }
+    });
+    window.setTimeout(function () { syncingRoles = false; }, 0);
+    if (roleStatus) {
+      var selectedPanel = rolePanels.find(function (panel) { return panel.dataset.rolePanel === roleId; });
+      roleStatus.textContent = selectedPanel ? selectedPanel.querySelector('summary').textContent.trim() + ' focus selected. Its skills, evidence and project links are expanded; all other work remains available.' : 'Choose a role to see a focused set of skills and project links.';
+    }
+  }
+  if (rolePanels.length) {
+    var initialRole = new URLSearchParams(window.location.search).get('role');
+    if (!rolePanels.some(function (panel) { return panel.dataset.rolePanel === initialRole; })) initialRole = '';
+    updateRolePanels(initialRole);
+    rolePanels.forEach(function (panel) {
+      panel.addEventListener('toggle', function () {
+        if (syncingRoles) return;
+        var roleId = panel.open ? panel.dataset.rolePanel : '';
+        if (panel.open) rolePanels.forEach(function (other) { if (other !== panel) other.open = false; });
+        setRoleInUrl(roleId, 'push');
+        updateRolePanels(roleId);
+      });
+    });
+    window.addEventListener('popstate', function () {
+      var roleId = new URLSearchParams(window.location.search).get('role');
+      if (!rolePanels.some(function (panel) { return panel.dataset.rolePanel === roleId; })) roleId = '';
+      updateRolePanels(roleId);
+    });
+    document.querySelectorAll('[data-role-reset]').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        setRoleInUrl('', 'push');
+        updateRolePanels('');
+      });
+    });
+  }
+
+  /* A restrained pointer glow runs only on fine pointers and respects reduced motion. */
+  var hero = document.querySelector('.hero-grid');
+  var finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (hero && finePointer && !reduceMotion) {
+    var pendingPointer = null;
+    hero.addEventListener('pointermove', function (event) {
+      if (pendingPointer) return;
+      pendingPointer = window.requestAnimationFrame(function () {
+        var bounds = hero.getBoundingClientRect();
+        hero.style.setProperty('--glow-x', Math.round(event.clientX - bounds.left) + 'px');
+        hero.style.setProperty('--glow-y', Math.round(event.clientY - bounds.top) + 'px');
+        pendingPointer = null;
+      });
+    }, { passive: true });
+  }
+
+  /* Keep the case-study contents list aligned with the section in view. */
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  if (tocLinks.length && 'IntersectionObserver' in window) {
+    var tocObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        tocLinks.forEach(function (link) {
+          if (link.hash === '#' + entry.target.id) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-18% 0px -72% 0px' });
+    tocLinks.forEach(function (link) {
+      var target = document.getElementById(link.hash.slice(1));
+      if (target) tocObserver.observe(target);
+    });
+  }
+
+  var returnLink = document.querySelector('[data-project-return]');
+  if (returnLink) {
+    try {
+      var returnState = JSON.parse(window.sessionStorage.getItem('portfolio:project-return') || 'null');
+      if (returnState && returnState.url) {
+        returnLink.href = returnState.url;
+        if (new URLSearchParams(returnState.url.split('?')[1] || '').toString()) {
+          returnLink.textContent = 'Back to filtered results';
+          returnLink.setAttribute('aria-label', 'Back to filtered project results');
+        }
+      }
+    } catch (error) { /* Direct visits still have a working Projects link. */ }
+  }
+
+  /* Enable tab behavior only after JavaScript loads; every panel stays visible without it. */
+  document.querySelectorAll('[data-evidence-tabs]').forEach(function (container) {
+    var tabs = Array.prototype.slice.call(container.querySelectorAll('[role="tab"]'));
+    var tablist = container.querySelector('[role="tablist"]');
+    if (!tabs.length || !tablist) return;
+    tablist.hidden = false;
+    function activate(index, moveFocus) {
+      tabs.forEach(function (tab, tabIndex) {
+        var selected = tabIndex === index;
+        tab.hidden = false;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        var panel = document.getElementById(tab.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !selected;
+        if (selected && moveFocus) tab.focus();
+      });
+    }
+    tabs.forEach(function (tab, index) {
+      tab.hidden = false;
+      tab.addEventListener('click', function () { activate(index, false); });
+      tab.addEventListener('keydown', function (event) {
+        var next = index;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % tabs.length;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index + tabs.length - 1) % tabs.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        activate(next, true);
+      });
+    });
+    var selectedIndex = tabs.findIndex(function (tab) { return tab.getAttribute('aria-selected') === 'true'; });
+    activate(selectedIndex < 0 ? 0 : selectedIndex, false);
+  });
+
+  document.querySelectorAll('.architecture-components').forEach(function (group) {
+    var components = Array.prototype.slice.call(group.querySelectorAll('[data-architecture-item]'));
+    components.forEach(function (component, index) {
+      component.open = index === 0;
+      component.addEventListener('toggle', function () {
+        if (!component.open) return;
+        components.forEach(function (other) { if (other !== component) other.open = false; });
+      });
+    });
+  });
+
+  var toc = document.getElementById('case-toc');
+  if (toc && window.matchMedia('(max-width: 760px)').matches) toc.open = false;
 
   var sectionLinks = Array.prototype.slice.call(document.querySelectorAll('.nav nav a[href^="#"]'));
   if (sectionLinks.length && 'IntersectionObserver' in window) {
@@ -122,15 +308,6 @@
         if (typeof dialog.close === 'function') dialog.close();
         else dialog.removeAttribute('open');
       }
-    });
-    dialog.addEventListener('keydown', function (event) {
-      if (event.key !== 'Tab') return;
-      var targets = Array.prototype.slice.call(dialog.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'))
-        .filter(function (el) { return !el.disabled && !el.hidden; });
-      if (!targets.length) { event.preventDefault(); return; }
-      var first = targets[0], last = targets[targets.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     });
     dialog.addEventListener('close', function () { if (previous) previous.focus(); });
     dialog.addEventListener('cancel', function () { if (previous) previous.focus(); });

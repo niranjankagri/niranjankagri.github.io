@@ -1,13 +1,43 @@
 """Generate the portfolio home page from the shared project catalogue."""
 from __future__ import annotations
 
+import html
 import os
 import sys
+from urllib.parse import quote
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(__file__))
 from components import CV, EMAIL, GITHUB, HOME, LINKEDIN, footer, header, icon, project_card  # noqa: E402
-from project_data import FEATURED_PROJECTS, PROJECTS  # noqa: E402
+from project_data import FEATURED_PROJECTS, PROJECTS, PROJECT_BY_ID, ROLE_VIEWS  # noqa: E402
+
+
+def skill_link(term: str, label: str) -> str:
+    """Link a skill to its matching projects and show the full-catalog match count."""
+    query = term.casefold()
+    count = sum(query in ' '.join([p['title'], p.get('text', ''), p['description'], p['result'], p['result_kind'], p['evidence_label'], *p['technologies']]).casefold()
+                for p in PROJECTS)
+    return f'<a href="projects.html?skill={quote(term, safe="")}">{html.escape(label)} <span class="skill-count">{count} projects</span></a>'
+
+
+def role_explorer() -> str:
+    """Render all role views as native disclosures, retaining a no-script path."""
+    panels = []
+    for role_id, role in ROLE_VIEWS.items():
+        skills = ''.join(f'<li><a class="tag tag-link" href="projects.html?skill={quote(skill, safe="")}">{html.escape(skill)}</a></li>'
+                         for skill in role['skills'])
+        projects = ''.join(f'<li><a href="projects/{html.escape(PROJECT_BY_ID[project_id]["page"])}.html">{html.escape(PROJECT_BY_ID[project_id]["title"])}</a></li>'
+                           for project_id in role['projects'])
+        panels.append(f'<details class="role-panel" data-role-panel="{role_id}"><summary><span>{html.escape(role["label"])}</span><span class="role-prompt">Show matching skills and projects</span></summary>'
+                      f'<div class="role-panel-body"><p>{html.escape(role["summary"])}</p><h3>Relevant skills</h3><ul class="tags role-skills">{skills}</ul>'
+                      f'<h3>Related project work</h3><ul class="role-projects">{projects}</ul><p class="role-impact">{html.escape(role["impact"])}</p>'
+                      f'<a class="btn" href="projects.html?role={role_id}">View these projects in the explorer</a></div></details>')
+    return ('<section class="role-explorer" id="role-explorer" aria-labelledby="role-explorer-title">'
+            '<div class="section-heading"><div><p class="eyebrow">Role-based tour</p><h2 id="role-explorer-title">Explore my work as...</h2>'
+            '<p class="sub">Open a role to see how the project collection, skills and documented outcomes map to that focus. No project is hidden by a role view.</p></div>'
+            '<div class="role-actions"><a class="text-action" href="#role-explorer" data-role-reset>Reset role focus</a><a class="text-action" href="projects.html">View everything</a></div></div>'
+            '<p id="role-selection-status" class="role-selection-status" role="status" aria-live="polite">Choose a role to see a focused set of skills and project links.</p>'
+            '<div class="role-options">' + ''.join(panels) + '</div></section>')
 
 
 HTML = f'''<!doctype html>
@@ -52,6 +82,8 @@ HTML = f'''<!doctype html>
     <p class="stat-note"><b>84%</b> is measured as the share of test cases in the release scope that were automated and ready to run, including all multi-user performance and upgrade suites. This describes automation coverage, not product quality.</p>
   </section>
 
+  {role_explorer()}
+
   <section id="projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="projects-title">Featured projects</h2><p class="sub">Six projects selected for engineering depth, range and evidence. Every card links to its case study and source.</p></div><a class="btn" href="projects.html">View all {len(PROJECTS)} projects</a></div>
     <div class="grid featured-grid">{''.join(project_card(p) for p in FEATURED_PROJECTS)}</div>
   </section>
@@ -89,15 +121,15 @@ HTML = f'''<!doctype html>
   <section id="skills" aria-labelledby="skills-title"><p class="eyebrow">Strengths and tools</p><h2 id="skills-title">Skills</h2><p class="sub">Professional experience is separated from tools and approaches demonstrated in portfolio projects.</p>
     <div class="skills">
       <article class="skill"><h3>QA leadership · Professional</h3><p>Test strategy, test planning, RTM, release sign-off, defect triage and management, mentoring, offshore team coordination.</p></article>
-      <article class="skill"><h3>Automation · Professional</h3><p>Selenium WebDriver, Robot Framework, Java, Python, API testing, CI/CD integration.</p><a href="projects.html?category=Web+%26+API">Supporting projects</a></article>
-      <article class="skill"><h3>Automation · Portfolio experience</h3><p>Playwright, Cypress, Appium, TestNG, JUnit, Cucumber, Pact, TypeScript, JavaScript.</p><a href="projects.html?tech=TypeScript">Supporting projects</a></article>
-      <article class="skill"><h3>API and integration testing</h3><p>REST Assured, Postman, contract testing, database checks, Kafka and Testcontainers.</p><a href="projects.html?q=API">Supporting projects</a></article>
-      <article class="skill"><h3>Performance · Professional</h3><p>rfswarm, multi-user browser testing and release to release response-time baselines.</p><a href="projects.html?category=Performance">Related projects</a></article>
+      <article class="skill"><h3>Automation · Professional</h3><p>Selenium WebDriver, Robot Framework, Java, Python, API testing, CI/CD integration.</p>{skill_link("Selenium", "Explore supporting projects")}</article>
+      <article class="skill"><h3>Automation · Portfolio experience</h3><p>Playwright, Cypress, Appium, TestNG, JUnit, Cucumber, Pact, TypeScript, JavaScript.</p>{skill_link("Playwright", "Explore supporting projects")}</article>
+      <article class="skill"><h3>API and integration testing</h3><p>REST Assured, Postman, contract testing, database checks, Kafka and Testcontainers.</p>{skill_link("API", "Explore supporting projects")}</article>
+      <article class="skill"><h3>Performance · Professional</h3><p>rfswarm, multi-user browser testing and release to release response-time baselines.</p>{skill_link("performance", "Explore related projects")}</article>
       <article class="skill"><h3>Performance · Portfolio experience</h3><p>k6 scenarios, SLO thresholds, load, stress, spike and soak testing.</p><a href="projects/k6-performance.html">k6 case study</a></article>
-      <article class="skill"><h3>Framework design</h3><p>Page Object Model, data-driven testing, keyword-driven testing, BDD, parallel execution, test data isolation.</p><a href="projects.html?q=framework">Supporting projects</a></article>
-      <article class="skill"><h3>CI/CD and tools</h3><p>Jenkins, Azure DevOps, Git, GitHub, Jira, TestRail. Portfolio: GitHub Actions, CircleCI, Docker, Selenium Grid, Allure, Maven.</p><a href="projects.html?category=CI%2FCD">Supporting projects</a></article>
+      <article class="skill"><h3>Framework design</h3><p>Page Object Model, data-driven testing, keyword-driven testing, BDD, parallel execution, test data isolation.</p>{skill_link("framework", "Explore supporting projects")}</article>
+      <article class="skill"><h3>CI/CD and tools</h3><p>Jenkins, Azure DevOps, Git, GitHub, Jira, TestRail. Portfolio: GitHub Actions, CircleCI, Docker, Selenium Grid, Allure, Maven.</p>{skill_link("GitHub Actions", "Explore supporting projects")}</article>
       <article class="skill"><h3>Regulated environments</h3><p>GxP, ICH-GCP clinical software quality assurance.</p></article>
-      <article class="skill"><h3>AI-assisted testing</h3><p>Test design and test data suggestions with human review; portfolio projects document sample and replay runs separately from live model outputs.</p><a href="projects.html?category=AI+%26+LLM">Supporting projects</a></article>
+      <article class="skill"><h3>AI-assisted testing</h3><p>Test design and test data suggestions with human review; portfolio projects document sample and replay runs separately from live model outputs.</p>{skill_link("Claude", "Explore supporting projects")}</article>
     </div>
     <div class="two credentials"><article class="box"><h3>Education</h3><p><b>M.Tech, Computer Science and Engineering</b><br><span class="org">Galgotias University · 2012–2014</span></p><p><b>B.Tech, Information Technology</b><br><span class="org">Graphic Era University, Dehradun · 2008–2012</span></p></article>
       <article class="box"><h3>Languages and work authorization</h3><p>Hindi (native) · English (professional working proficiency)</p><p>Based in India. My earlier work in Germany does not give me a current right to work there or elsewhere in Europe. I would need a work permit for the destination country and am open to relocating.</p></article></div>
