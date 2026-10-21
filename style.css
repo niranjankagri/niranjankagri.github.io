@@ -723,7 +723,7 @@ footer{margin-top:0;padding:34px 0 44px;background:var(--surface-2);text-align:l
 .card:hover,.card:focus-within{box-shadow:0 8px 22px -18px rgba(22,48,41,.45)}
 .actions .go,.compare-tray .btn.primary{border-radius:6px}
 .focus-filter{display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-weight:650}
-.focus-filter select{min-height:42px;padding:8px 11px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);font:inherit}
+.focus-filter select{min-width:0;max-width:100%;min-height:42px;padding:8px 11px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);font:inherit}
 @media (max-width:1050px){
   .hero-grid{gap:34px}
   .focus-options{grid-template-columns:repeat(2,minmax(0,1fr))}
