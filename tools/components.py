@@ -77,22 +77,51 @@ def ci_status(p: dict) -> str:
 
 
 def project_card(p: dict, prefix: str = '', heading: str = 'h3', filters: dict[str, str] | None = None) -> str:
-    """One project as a card. ``filters`` adds the data-* attributes the Projects page search reads."""
+    # One canonical project card, with optional explorer controls and filter metadata.
     page = f'{prefix}projects/{e(p["page"], quote=True)}.html'
-    data = ''.join(f' data-{k}="{e(v, quote=True)}"' for k, v in (filters or {}).items())
-    tags = ''.join(f'<li class="tag">{e(t)}</li>' for t in p['technologies'])
-    live = external(p['live_demo'], 'Live demo') if p['live_demo'] else ''
+    fields = dict(filters or {})
+    fields.update({
+        'featured': str(p['featured']).lower(),
+        'date': p['evidence_date'],
+        'roles': ' '.join(p['roles']),
+        'purpose': p['short_purpose'],
+        'result': p['result'],
+        'result-kind': p['result_kind'],
+        'languages': ', '.join(language for language, aliases in (('Java', ('Java', 'Java 17', 'Java 21')), ('Python', ('Python',)), ('TypeScript', ('TypeScript',)), ('JavaScript', ('JavaScript',))) if any(tag in aliases for tag in p['technologies'])) or 'See technology tags',
+        'layers': p['comparison_layers'],
+        'targets': p['comparison_targets'],
+        'approach': p['comparison_approach'],
+        'report': p['report'],
+        'limitations': 'See the case study for documented limitations.',
+        'comparison-limits': p['comparison_limits'],
+        'case': page,
+        'report-url': p['report_url'],
+        'architecture-image': p['architecture_preview'],
+        'architecture-alt': p['architecture_preview_alt'],
+        'image': f'{prefix}img/{p["image"]}.jpg',
+        'alt': p['alt'],
+        'source': p['source_url'],
+        'live': p['live_demo'],
+        'evidence-url': p['evidence_url'],
+        'evidence-label': p['evidence_label'],
+        'workflow': p['workflow_url'],
+    })
+    data = ''.join(f' data-{key}="{e(value, quote=True)}"' for key, value in fields.items())
+    tags = ''.join(f'<li><a class="tag tag-link" href="projects.html?skill={e(tag, quote=True)}">{e(tag)}</a></li>' for tag in p['technologies'])
+    live = external(p['live_demo'], 'Live demo', 'live-action') if p['live_demo'] else ''
+    explorer_actions = ('<button class="text-action preview-action" type="button" data-preview-project data-js-only aria-haspopup="dialog">Preview</button>'
+                        '<button class="text-action compare-action" type="button" data-compare-project data-js-only aria-pressed="false">Compare</button>') if filters else ''
     return f'''<article class="card project-card" data-project-id="{e(p['id'], quote=True)}"{data}>
-      <a class="card-image" href="{page}" tabindex="-1"><img src="{prefix}img/{e(p['image'], quote=True)}.jpg" alt="{e(p['alt'], quote=True)}" width="640" height="400" loading="lazy"></a>
+      <a class="card-image" href="{page}" tabindex="-1"><img src="{prefix}img/{e(p["image"], quote=True)}.jpg" alt="{e(p['alt'], quote=True)}" width="640" height="400" loading="lazy"></a>
       <div class="body">
-        <p class="kind">{e(p['project_kind'])} · {e(', '.join(p['category']))}</p>
+        <p class="kind">{e(p['project_kind'])} | {e(', '.join(p['category']))}</p>
         <{heading} class="card-title"><a href="{page}">{e(p['title'])}</a></{heading}>
-        <p class="desc">{e(p['description'])}</p>
-        <p class="fact">{e(p['result'])}</p>
+        <p class="desc">{e(p['short_purpose'])}</p>
+        <div class="card-result"><p class="fact">{e(p['result'])}</p><p class="evidence-kind">{e(p['result_kind'])}</p></div>
         <ul class="tags" aria-label="Technologies">{tags}</ul>
         <div class="card-foot">
-          <div class="actions"><a class="go" href="{page}">Case study {icon('arrow')}</a>{external(p['source_url'], 'Source')}{live}</div>
-          <div class="card-meta">{ci_status(p)}<p class="evidence" title="{e(p['evidence_label'], quote=True)}">Evidence {readable_date(p['evidence_date'])} · {external(p['evidence_url'], p['evidence_label'])}</p></div>
+          <div class="actions"><a class="go" href="{page}">Case study {icon('arrow')}</a>{external(p['source_url'], 'Source', 'source-action')}{live}{explorer_actions}</div>
+          <div class="card-meta"><div class="workflow-meta">{ci_status(p)}<span class="workflow-label">{e(p['workflow_name']) if p['workflow_url'] else 'No automated workflow'}</span></div><p class="evidence" title="{e(p['evidence_label'], quote=True)}">Evidence checked {readable_date(p['evidence_date'])} | {external(p['evidence_url'], p['evidence_label'])}</p></div>
         </div>
       </div>
     </article>'''
