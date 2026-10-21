@@ -122,7 +122,7 @@ main>section{padding:56px 0}
 .featured-preview figcaption{min-height:47px;padding:7px 12px;color:var(--muted);font-size:11px;line-height:1.4}
 .featured-preview .preview-type{font-weight:750;color:var(--ink)}
 .featured-grid .card-title{min-height:2.4em;overflow-wrap:anywhere}
-.featured-grid .kind{min-height:2.8em;align-content:flex-start}
+.featured-grid .kind{min-height:3.75em;align-content:flex-start;line-height:1.25}
 .featured-grid .desc{min-height:4.2em;overflow:visible;-webkit-line-clamp:unset;display:block}
 .featured-grid .fact{min-height:4.1em}
 .featured-grid .evidence-kind{min-height:2.8em}
