@@ -15,7 +15,11 @@ The site is static and hosted by GitHub Pages. It does not call GitHub APIs or t
 | `tools/project_data.py` | Shared project records, category and technology tags, evidence links and featured selection |
 | `tools/make_*.py` | Static page and hosting metadata generators |
 | `tools/validate_site.py` | Data, page, link, image, metadata and semantic structure checks |
-| `tools/browser_smoke.py` | Optional Playwright checks for role views, filters, dialogs, case-study controls and responsive layouts |
+| `tools/browser_smoke.py` | Playwright checks for routes, role cards, filters, dialogs, comparison, architecture and responsive layouts |
+| `tools/stage_site.py` | Creates a clean `_site` deploy directory with the commit id and asset version |
+| `tools/run_browser_smoke.py` | Serves the staged build locally, runs the browser matrix and captures review screenshots |
+| `tools/wait_for_deployment.py` | Confirms Pages serves the expected commit and versioned assets |
+| `.github/workflows/portfolio-validation.yml` | PR validation, gated Pages deployment and post-deploy smoke |
 | `style.css`, `theme.js`, `projects.js` | Shared responsive theme, navigation, project filters and interactions |
 | `img/` | Portrait, avatar and local project-card report images |
 | `Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf` | Downloadable CV |
@@ -32,6 +36,8 @@ Explorer links can include `q`, repeated `category` and `tech` parameters, `skil
 
 Case studies share a generated layout with a contents list, evidence summary, limitations, related projects, and supporting links. Featured case studies add component details for the architecture maps, evidence tabs, and engineering stories. These interactions present existing project data and artifacts; they do not calculate project ratings or make unsupported performance claims. A static image is identified as a screenshot, and sample, replayed, synthetic, or historical evidence is labeled where it appears.
 
+The architecture maps use a keyboard-operable component selector and detail panel on desktop, with a native single-column accordion on narrow screens. Featured report thumbnails retain their proportions, show a scope/date caption, and open in the existing image viewer. Enterprise's thumbnail is identified as a historical local report separate from the linked nightly run.
+
 For implementation details and review screenshots, see [the portfolio UX upgrade notes](docs/ux-upgrade.md).
 
 ## Build and validate
@@ -43,15 +49,19 @@ python tools/build_site.py
 python tools/validate_site.py
 ```
 
-For interactive browser checks, install Playwright for Python and its browser binaries, then serve the generated site and run the smoke script:
+For the full local browser check, install the pinned dependencies and run the staged-site smoke command. The script starts and stops its own static server, tests Chromium, Firefox and WebKit, checks the 28 routes and CV, and captures screenshots and traces on failure. axe-core runs WCAG 2.0, 2.1 and 2.2 A/AA checks.
 
 ```bash
-python -m pip install playwright
+python -m pip install playwright==1.63.0 ruff==0.17.1
 python -m playwright install chromium firefox webkit
-# Terminal 1
-python -m http.server 8765
-# Terminal 2
-python tools/browser_smoke.py --base-url http://127.0.0.1:8765
+npm install --prefix artifacts/a11y --no-save --no-package-lock axe-core@4.10.3
+python tools/build_site.py
+python tools/validate_site.py
+python tools/stage_site.py --build-id local-review
+ASSET_VERSION=$(python -c 'import json; print(json.load(open("_site/release.json", encoding="utf-8"))["asset_version"])')
+python tools/run_browser_smoke.py --directory _site --build-id local-review --asset-version "$ASSET_VERSION" --axe-script artifacts/a11y/node_modules/axe-core/axe.min.js --browser all --capture-review artifacts/visual-review
 ```
 
-The build uses Python's standard library and keeps the site usable without external services. Update an existing project's evidence URL, date and description in the shared record after checking its source repository and workflow. Keep sample, replayed and historical results labelled. New projects need a unique identifier and page slug, a category, technology tags, a local image with meaningful alternative text, and an evidence date and link.
+Pull requests validate but do not deploy. Pushes to `main` and manual workflow runs on `main` deploy the validated artifact; a separate job waits for the deployed build id and runs browser smoke against the public site. `Portfolio validation and local browser smoke` is configured as a required check on `main`.
+
+The site build uses Python's standard library and remains usable without external services; browser validation installs Playwright and axe-core in CI. Update an existing project's evidence URL, date and description in the shared record after checking its source repository and workflow. Keep sample, replayed and historical results labelled. New projects need a unique identifier and page slug, a category, technology tags, a local image with meaningful alternative text, and an evidence date and link.

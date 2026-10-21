@@ -12,7 +12,7 @@ OUT = os.path.join(ROOT, 'projects')
 GH = 'https://github.com/niranjankagri/'
 e = html.escape
 sys.path.insert(0, os.path.dirname(__file__))
-from components import ci_status, footer, header, readable_date  # noqa: E402
+from components import ci_status, footer, header, readable_date, stylesheet, script_asset  # noqa: E402
 from project_data import PROJECTS  # noqa: E402
 
 
@@ -53,7 +53,7 @@ def page(p):
 <title>{e(p['title'])} · Niranjan Kumar Agri</title>
 <meta name="description" content="{e(p['summary'])}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f43d6'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="../style.css">
+{stylesheet('../')}
 <script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 </head>
 <body>
@@ -80,7 +80,7 @@ def page(p):
   {body}
 </main>
 <footer>© 2026 Niranjan Kumar Agri · <a href="../">Portfolio home</a></footer>
-<script src="../theme.js"></script>
+{script_asset('theme.js', '../')}
 </body>
 </html>
 '''
@@ -181,7 +181,7 @@ PAGES = {
              'Every failure explains itself: steps, request/response, rows, screenshot, log, environment and build in the report',
              'Same tests everywhere: laptop, Docker, Grid and CI are configured, never edited',
              'Cloud device farms deferred on purpose; Grid covers remote browsers'],
-  features=['169 TestNG test executions from 124 test methods (data-driven tests run once per data row), all passing in the scheduled nightly run of 12 Oct 2026; by package, without overlap: API 57, UI 48, database 13, integration 9, end-to-end 2, framework unit tests 40. Evidence: <a href="https://github.com/niranjankagri/enterprise-test-automation-framework/actions/runs/38226623404" target="_blank" rel="noopener">nightly run 38226623404</a>',
+  features=['Earlier inventory (12 Oct 2026): 169 TestNG test executions from 124 test methods (data-driven tests run once per data row), all passing in that scheduled nightly run; by package, without overlap: API 57, UI 48, database 13, integration 9, end-to-end 2, framework unit tests 40. Evidence: <a href="https://github.com/niranjankagri/enterprise-test-automation-framework/actions/runs/38226623404" target="_blank" rel="noopener">nightly run 38226623404</a>',
             'Named suites (TestNG groups, which overlap): smoke 20, sanity 11, regression 121',
             'Parallel execution: one browser per thread; full suite about 242 s serial, 171 s with 2 threads, 148 s with 4 (clean clone)',
             'Allure report with every UI action, API call and SQL query as a step, failure categories and an environment panel',
@@ -228,8 +228,6 @@ PAGES = {
   results=fig('https://raw.githubusercontent.com/niranjankagri/playwright-typescript-framework/main/docs/images/report-overview.png',
               'Playwright HTML report overview', 'Merged Playwright HTML report of a full run.'),
   ci='<p>One workflow: static checks first, then four parallel jobs (API, Chromium, Firefox, WebKit), then a single merged HTML report kept as an artifact.</p>',
-  limits=['The suite depends on a public demo site; its availability and data affect runs',
-          'Two form-login UI tests are skipped in CI, where the site\'s bot check blocks automated form logins; login itself is covered through the API'],
   next=['Publish the merged HTML report to GitHub Pages', 'Visual comparison of key pages'],
  ),
  'appium': dict(
@@ -798,6 +796,13 @@ ARCHITECTURE_COMPONENTS = {
         {'name': 'Release gates', 'purpose': 'Evaluate configured release criteria and keep failed and incomplete outcomes distinct.', 'technology': 'Python gate evaluator and TOML configuration.', 'inputs': 'Computed metrics, results and configured thresholds.', 'outputs': 'Passed, failed or incomplete decisions with reports.', 'path': 'src/qualityintel/gates'},
         {'name': 'CLI and dashboard', 'purpose': 'Present the core calculations without owning their business rules.', 'technology': 'Python CLI, FastAPI and a static HTML/CSS/JavaScript dashboard.', 'inputs': 'Catalogs, stored history and core service outputs.', 'outputs': 'Command results, dashboard pages and read-only API responses.', 'path': 'src/qualityintel/dashboard'},
     ],
+    'playwright-typescript-framework': [
+        {'name': 'Test specifications', 'purpose': 'Separate browser journeys from direct API checks, with explicit network scenarios for empty and failed responses.', 'technology': 'Playwright Test, strict TypeScript, API and UI projects.', 'inputs': 'The public Toolshop UI and REST API, plus typed test data.', 'outputs': 'UI, API and network assertions with test-level reporting.', 'path': 'tests', 'source_url': 'https://github.com/niranjankagri/playwright-typescript-framework/tree/main/tests'},
+        {'name': 'Fixtures and owned test data', 'purpose': 'Compose only the requested page objects or API clients; create one customer per worker and inject a fresh API-issued token before a logged-in page loads.', 'technology': 'Lazy Playwright fixtures, API authentication and TypeScript data builders.', 'inputs': 'Environment configuration, worker identity and the requested logged-in option.', 'outputs': 'Isolated API clients, page objects and worker-owned test user.', 'path': 'src/fixtures/test.ts · src/data', 'source_url': 'https://github.com/niranjankagri/playwright-typescript-framework/blob/main/src/fixtures/test.ts'},
+        {'name': 'UI page objects and steps', 'purpose': 'Keep selectors and user actions inside page objects, share header behavior as a component, and label actions in reports with the step decorator.', 'technology': 'Playwright locators, page objects, HeaderComponent and @step.', 'inputs': 'A browser page and user-level actions such as searching or checking out.', 'outputs': 'Reusable page actions, state checks and readable trace/report steps.', 'path': 'src/pages · src/components · src/utils/step.ts', 'source_url': 'https://github.com/niranjankagri/playwright-typescript-framework/tree/main/src'},
+        {'name': 'Typed API clients and contracts', 'purpose': 'Keep authentication, product and cart requests behind service objects, then validate responses with zod schemas that also define TypeScript types.', 'technology': 'Playwright APIRequestContext, service objects and zod 4.', 'inputs': 'HTTP requests and JSON responses from the Toolshop API.', 'outputs': 'Validated response data and typed API operations for setup and assertions.', 'path': 'src/api', 'source_url': 'https://github.com/niranjankagri/playwright-typescript-framework/tree/main/src/api'},
+        {'name': 'Browser matrix and report pipeline', 'purpose': 'Run static checks before independent API, Chromium, Firefox and WebKit jobs, then merge their blob reports into one HTML artifact.', 'technology': 'playwright.config.ts and GitHub Actions.', 'inputs': 'The test suite, selected project and CI run context.', 'outputs': 'Per-project test results and one merged Playwright HTML report.', 'path': 'playwright.config.ts · .github/workflows/ci.yml', 'source_url': 'https://github.com/niranjankagri/playwright-typescript-framework/blob/main/.github/workflows/ci.yml'},
+    ],
 }
 
 STORIES = {
@@ -805,6 +810,11 @@ STORIES = {
         'problem': 'The demo shop exposes the same business data through UI, API and database paths; tests need to verify those paths without putting Selenium, HTTP or SQL details in every test.',
         'decision': 'Keep business assertions in TestNG suites, move selectors and technical access into lower layers, give each test its own data, and retry transient infrastructure failures only.',
         'limitation': 'The measured run is against the repository demo application. It does not establish production customer impact.',
+    },
+    'playwright-typescript-framework': {
+        'problem': 'The public demo shop is shared and mutable: other users changed published account and catalogue data, and suite-created orders consumed product stock.',
+        'decision': 'Give each worker its own API-registered customer, read catalogue counts and in-stock products at runtime, create carts per API test, and use a fresh API login for each authenticated UI test.',
+        'limitation': 'These practices reduce assumptions about shared data; they cannot control demo-site availability or eliminate changes by other users. This evidence is from a public demo, not a production deployment.',
     },
     'k6-performance-testing': {
         'problem': 'The stress test found checkout queuing beyond about 90 orders per second, with p95 response time above 3 seconds.',
@@ -817,23 +827,47 @@ STORIES = {
 
 
 def architecture_explorer(project):
-    """Render selectable, source-linked architecture components for two documented systems."""
+    """Render a selectable desktop architecture map and a native mobile accordion."""
     components = ARCHITECTURE_COMPONENTS.get(project['id'])
     if not components:
         return ''
     items = []
+    tabs = []
     for index, component in enumerate(components):
         component_id = f"architecture-{project['page']}-{index + 1}"
-        source = f"https://github.com/niranjankagri/{project['repo']}/tree/main/{component['path']}"
-        items.append(f'<details class="architecture-component" data-architecture-item open id="{component_id}">'
-                     f'<summary>{e(component["name"])}</summary><div><p>{e(component["purpose"])}</p>'
-                     f'<dl><dt>Technology</dt><dd>{e(component["technology"])}</dd>'
-                     f'<dt>Inputs</dt><dd>{e(component["inputs"])}</dd><dt>Outputs</dt><dd>{e(component["outputs"])}</dd></dl>'
-                     f'<a href="{e(source, quote=True)}" target="_blank" rel="noopener">Open related source: {e(component["path"])}</a></div></details>')
+        tab_id = component_id + '-tab'
+        panel_id = f'architecture-{project["page"]}-1-panel'
+        source = component.get('source_url') or f"https://github.com/niranjankagri/{project['repo']}/tree/main/{component['path']}"
+        panel = (f'<p class="architecture-purpose">{e(component["purpose"])}</p>'
+                 f'<dl><dt>Technology</dt><dd>{e(component["technology"])}</dd>'
+                 f'<dt>Inputs</dt><dd>{e(component["inputs"])}</dd>'
+                 f'<dt>Outputs</dt><dd>{e(component["outputs"])}</dd></dl>'
+                 f'<div class="architecture-source"><a href="{e(source, quote=True)}" target="_blank" rel="noopener">View source</a>'
+                 f'<code>{e(component["path"])}</code></div>')
+        tabs.append(f'<button id="{tab_id}" type="button" role="tab" aria-selected="{"true" if index == 0 else "false"}" '
+                    f'aria-controls="{panel_id}" tabindex="{0 if index == 0 else -1}" data-architecture-tab="{index}">'
+                    f'{e(component["name"])}</button>')
+        items.append(f'<details class="architecture-component" data-architecture-item name="architecture-{project["page"]}" id="{component_id}">'
+                     f'<summary>{e(component["name"])}</summary><div>{panel}</div></details>')
     return ('<section class="architecture-explorer" aria-labelledby="architecture-explorer-title">'
-            '<h3 id="architecture-explorer-title">Explore the architecture components</h3>'
-            '<p>Open a component to inspect its purpose, technology, inputs, outputs and source path. Every component remains available by keyboard.</p>'
-            '<div class="architecture-components">' + ''.join(items) + '</div></section>')
+            '<h3 id="architecture-explorer-title">Explore the architecture</h3>'
+            '<p>Select a component to see its purpose, technology, inputs, outputs and implementation path.</p>'
+            '<div class="architecture-interactive" data-architecture-explorer>'
+            '<div class="architecture-component-tabs" role="tablist" aria-label="Architecture components">' + ''.join(tabs) + '</div>'
+            f'<section class="architecture-detail" id="architecture-{project["page"]}-1-panel" role="tabpanel" '
+            f'aria-labelledby="architecture-{project["page"]}-1-tab" tabindex="0" data-architecture-panel>{self_panel(components[0], project)}</section>'
+            '</div><div class="architecture-fallback"><h4>Architecture components</h4><div class="architecture-components">'
+            + ''.join(items) + '</div></div></section>')
+
+
+def self_panel(component, project):
+    """Render the initial static panel; JavaScript updates it from the same records."""
+    source = component.get('source_url') or f"https://github.com/niranjankagri/{project['repo']}/tree/main/{component['path']}"
+    return (f'<p class="architecture-purpose">{e(component["purpose"])}</p>'
+            f'<dl><dt>Technology</dt><dd>{e(component["technology"])}</dd>'
+            f'<dt>Inputs</dt><dd>{e(component["inputs"])}</dd><dt>Outputs</dt><dd>{e(component["outputs"])}</dd></dl>'
+            f'<div class="architecture-source"><a href="{e(source, quote=True)}" target="_blank" rel="noopener">View source</a>'
+            f'<code>{e(component["path"])}</code></div>')
 
 
 def engineering_story(project):
@@ -920,7 +954,7 @@ def render_case_study(project, legacy=None):
     limitations_list = list(legacy.get('limits', []))
     if project['comparison_limits'] not in limitations_list:
         limitations_list.append(project['comparison_limits'])
-    limitations = '<h3>Known limitations and evidence scope</h3>' + ul([e(item) for item in limitations_list])
+    limitations = ul([e(item) for item in limitations_list])
     extra = legacy.get('extra', [])
     case_specific = ''
     result_notes = ''
@@ -940,7 +974,6 @@ def render_case_study(project, legacy=None):
         result_notes = ('<p>The report image shows one API and UI execution with 64 passing checks. The repository has 81 Cypress tests '
             '(31 API, 33 UI and 17 component), plus a separate Node unit suite of 15 tests. The screenshot is not the full suite total.</p>')
 
-    workflow = f'<div class="workflow-row">{ci_status(project)}</div>'
     live = (f'<a class="btn primary" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open live dashboard</a>'
             if project['live_demo'] else '')
     workflow_section = ''
@@ -976,7 +1009,7 @@ def render_case_study(project, legacy=None):
         sections.append(('story', 'Problem, decision and result', story))
     sections.extend([
         ('scope', 'Test scope and execution approach', scope_content),
-        ('results', 'Results with dated evidence', f'<div class="evidence-box"><p><b>{e(project["result_kind"])}</b></p><p>{e(project["evidence_label"])}</p><p>{e(project["result"])}</p><p>Evidence checked: <time datetime="{e(project["evidence_date"], quote=True)}">{readable_date(project["evidence_date"])}</time> | <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open dated evidence</a></p>{workflow}</div>{result_notes}'),
+        ('results', 'Results with dated evidence', f'<div class="evidence-box"><p><b>{e(project["result_kind"])}</b></p><p>{e(project["evidence_label"])}</p><p>{e(project["result"])}</p><p>Evidence checked: <time datetime="{e(project["evidence_date"], quote=True)}">{readable_date(project["evidence_date"])}</time> | <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open dated evidence</a></p></div>{result_notes}'),
         ('evidence', 'Evidence explorer', evidence_explorer(project, legacy)),
     ])
     if case_specific:
@@ -1000,8 +1033,8 @@ def render_case_study(project, legacy=None):
     links += f'<a class="btn" href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">Setup and README</a>'
     if project['workflow_url']:
         links += f'<a class="btn" href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">Workflow history</a>'
-    report_label = 'Static report image' if project.get('report', '').lower().endswith(('.png', '.jpg', '.jpeg', '.svg')) else 'Open report asset'
-    links += f'<a class="btn" href="{e(project["report_url"], quote=True)}" target="_blank" rel="noopener">{report_label}</a>'
+    report_label = 'View ' + project['report_label']
+    links += f'<a class="btn" href="{e(project["report_url"], quote=True)}" target="_blank" rel="noopener">{e(report_label)}</a>'
 
     index = PROJECTS.index(project)
     neighbors = []
@@ -1030,7 +1063,7 @@ def render_case_study(project, legacy=None):
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)} | Project case study | Niranjan Kumar Agri</title><meta name="description" content="{e(summary)}">
 <link rel="canonical" href="{canonical}"><meta property="og:title" content="{e(title)} | Niranjan Kumar Agri"><meta property="og:description" content="{e(summary)}"><meta property="og:type" content="article"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{image_url}"><meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="../style.css"><script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script></head>
+{stylesheet('../')}<script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script></head>
 <body>
 {header('../', 'case')}
 <main id="main" class="wrap page case">
@@ -1042,7 +1075,10 @@ def render_case_study(project, legacy=None):
 <div class="case-body">{body}{related_section}{adjacent}<p class="crumbs back"><a data-project-return href="../projects.html">Back to Projects</a></p></div></div>
 </main>
 {footer('../')}
-<script src="../theme.js" defer></script></body></html>'''
+{script_asset('theme.js', '../')}</body></html>'''
+    # Code diagrams can overflow their visible box on narrow screens. Make the
+    # scrollable region keyboard reachable for users who navigate without a mouse.
+    document = re.sub(r'<pre(?![^>]*\btabindex=)', '<pre tabindex="0"', document)
     seen_legacy_images = set()
 
     def preserve_image_anchor(match):

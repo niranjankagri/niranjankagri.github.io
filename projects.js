@@ -8,6 +8,7 @@
   var search = document.getElementById('project-search');
   var skill = document.getElementById('skill-search');
   var role = document.getElementById('role-focus');
+  var focus = document.getElementById('project-focus');
   var sort = document.getElementById('project-sort');
   var counter = document.getElementById('result-count');
   var empty = document.getElementById('empty-results');
@@ -38,6 +39,8 @@
     var params = new URLSearchParams(window.location.search);
     search.value = params.get('q') || '';
     skill.value = params.get('skill') || '';
+    focus.value = params.get('focus') || '';
+    if (focus.value && !Array.prototype.some.call(focus.options, function (option) { return option.value === focus.value; })) focus.value = '';
     ['category', 'tech'].forEach(function (name) {
       var wanted = params.getAll(name);
       form.querySelectorAll('input[name="' + name + '"]').forEach(function (input) {
@@ -57,6 +60,7 @@
     var query = search.value.trim();
     var skillQuery = skill.value.trim();
     if (query) params.set('q', query);
+    if (focus.value) params.set('focus', focus.value);
     checked('category').forEach(function (value) { params.append('category', value); });
     checked('tech').forEach(function (value) { params.append('tech', value); });
     if (skillQuery) params.set('skill', skillQuery);
@@ -80,6 +84,7 @@
     var query = search.value.trim().toLocaleLowerCase();
     var skillQuery = skill.value.trim().toLocaleLowerCase();
     var roleId = role.value;
+    var focusId = focus.value;
     var order = cards.slice();
     order.sort(function (a, b) {
       var roleOrder = roleId ? Number((b.dataset.roles || '').split(' ').indexOf(roleId) !== -1) - Number((a.dataset.roles || '').split(' ').indexOf(roleId) !== -1) : 0;
@@ -100,8 +105,10 @@
       var text = searchText(card);
       var cardCategories = (card.dataset.category || '').split('|');
       var cardTech = (card.dataset.tech || '').split(' ');
+      var cardFocuses = (card.dataset.focus || '').split(' ');
       var matches = (!query || text.indexOf(query) !== -1) &&
         (!skillQuery || text.indexOf(skillQuery) !== -1) &&
+        (!focusId || cardFocuses.indexOf(focusId) !== -1) &&
         (!cats.length || cats.some(function (value) { return cardCategories.indexOf(value) !== -1; })) &&
         (!techs.length || techs.some(function (value) { return cardTech.indexOf(value) !== -1; }));
       card.hidden = !matches;
@@ -129,7 +136,9 @@
         compareButton.setAttribute('aria-label', (isSelected ? 'Remove ' : 'Add ') + card.querySelector('.card-title').textContent + (isSelected ? ' from comparison' : ' to comparison'));
       }
     });
-    counter.textContent = 'Showing ' + count + ' of ' + cards.length + ' projects' + (roleId ? '; ' + roleMatches + ' matching this role are highlighted' : '');
+    counter.textContent = 'Showing ' + count + ' of ' + cards.length + ' projects' +
+      (focusId ? '; filtered for ' + focus.options[focus.selectedIndex].text : '') +
+      (roleId ? '; ' + roleMatches + ' matching this role are highlighted' : '');
     empty.hidden = count !== 0;
     renderActive();
     renderRoleContext(roleMatches);
@@ -148,7 +157,7 @@
       return;
     }
     roleContext.hidden = false;
-    roleContext.textContent = roleMatches + ' projects are highlighted for ' + roleNames[role.value] + '. Other projects stay in the collection and remain searchable.';
+    roleContext.textContent = roleMatches + (roleMatches === 1 ? ' project is highlighted for ' : ' projects are highlighted for ') + roleNames[role.value] + '. Other projects stay in the collection and remain searchable.';
   }
 
   function addChip(label, onRemove, accessibleName) {
@@ -183,6 +192,7 @@
       }, 'Remove language filter ' + value);
     });
     if (skill.value.trim()) addChip('Skill: ' + skill.value.trim(), function () { skill.value = ''; }, 'Remove skill filter');
+    if (focus.value) addChip('Focus: ' + focus.options[focus.selectedIndex].text, function () { focus.value = ''; }, 'Remove problem focus');
     if (role.value) addChip('Role: ' + roleNames[role.value], function () { role.value = ''; }, 'Remove role focus');
     if (sort.value !== 'featured') addChip('Sort: ' + sort.options[sort.selectedIndex].text, function () { sort.value = 'featured'; }, 'Reset project sorting');
     clear.disabled = active.children.length === 0;
@@ -252,7 +262,7 @@
     appendLink(actions, card.dataset.source, 'Source', 'btn', true);
     appendLink(actions, card.dataset.live, 'Live demo', 'btn live-action', true);
     appendLink(actions, card.dataset.evidenceUrl, card.dataset.evidenceLabel, 'btn', true);
-    appendLink(actions, card.dataset.reportUrl, 'Report asset', 'btn', true);
+    appendLink(actions, card.dataset.reportUrl, 'Open ' + card.dataset.report, 'btn', true);
     previewContent.append(figure, purpose, result, resultKind, architecture, evidence, actions);
     preview.showModal();
     var close = preview.querySelector('[data-dialog-close]');
@@ -276,12 +286,23 @@
       ['Known limitations and evidence scope', 'comparisonLimits']
     ];
     function valueFor(card, key) {
-      if (key === 'workflowName') return card.dataset.workflow ? 'GitHub Actions / ' + card.dataset.workflowName : 'No automated workflow is configured.';
-      if (key === 'comparisonLimits') return card.dataset.comparisonLimits;
-      return card.dataset[key];
+      if (key === 'workflowName') return card.dataset.workflow ? 'GitHub Actions · ' + (card.dataset.workflowName || 'configured workflow') : 'No automated workflow is configured.';
+      var value = key === 'comparisonLimits' ? card.dataset.comparisonLimits : card.dataset[key];
+      if (!value || /^(undefined|null)$/i.test(value.trim())) {
+        var fallbacks = {
+          languages: 'Technology details are in the case study.',
+          layers: 'Test layers are documented in the case study.',
+          targets: 'Execution targets are documented in the case study.',
+          report: 'Reporting evidence is documented in the case study.',
+          approach: 'Engineering decisions are documented in the case study.',
+          comparisonLimits: 'Evidence limitations are documented in the case study.'
+        };
+        return fallbacks[key] || 'See the case study for details.';
+      }
+      return value;
     }
     function addDimensionLinks(parent, card, key) {
-      if (key === 'report') appendLink(parent, card.dataset.reportUrl, 'Open report asset', 'inline-link', true);
+      if (key === 'report') appendLink(parent, card.dataset.reportUrl, 'Open ' + card.dataset.report, 'inline-link', true);
       if (key === 'workflowName' && card.dataset.workflow) appendLink(parent, card.dataset.workflow, 'Open workflow history', 'inline-link', true);
       if (key === 'comparisonLimits') appendLink(parent, card.dataset.case, 'Read case-study limitations', 'inline-link', false);
     }
@@ -353,11 +374,13 @@
   search.addEventListener('input', function () { writeUrl('replace'); applyFilters(); });
   skill.addEventListener('input', function () { writeUrl('replace'); applyFilters(); });
   role.addEventListener('change', function () { writeUrl('push'); applyFilters(); });
+  focus.addEventListener('change', function () { writeUrl('push'); applyFilters(); });
   sort.addEventListener('change', function () { writeUrl('push'); applyFilters(); });
   clear.addEventListener('click', function () {
     search.value = '';
     skill.value = '';
     role.value = '';
+    focus.value = '';
     sort.value = 'featured';
     form.querySelectorAll('input[type="checkbox"]').forEach(function (input) { input.checked = false; });
     selectedIds = [];

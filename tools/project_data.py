@@ -403,6 +403,80 @@ ROLE_VIEWS = {
     },
 }
 
+# Problem-led paths reuse the same project records as cards, comparison and case studies.
+EXPLORATION_FOCUSES = {
+    'maintainable-automation': {
+        'label': 'Build maintainable automation',
+        'summary': 'Compare layered frameworks, reusable page objects, typed API clients and test-owned data.',
+        'experience': 'Built a hybrid Selenium WebDriver framework and progressed through software engineering and architecture roles at bebo Technologies.',
+        'projects': ['enterprise-test-automation-framework', 'playwright-typescript-framework',
+                     'playwright-framework', 'python-pytest-framework', 'cypress-typescript-framework'],
+    },
+    'release-quality': {
+        'label': 'Investigate release quality',
+        'summary': 'Trace requirements to tests, inspect execution evidence and see how incomplete or failed gates are reported.',
+        'experience': 'Lead a four-person QA team and own test strategy, requirements traceability, defect triage and release sign-off.',
+        'projects': ['automation-coverage-quality-intelligence', 'enterprise-test-automation-framework',
+                     'robot-framework-automation', 'integration-testing-testcontainers'],
+    },
+    'browser-device-testing': {
+        'label': 'Test across browsers and devices',
+        'summary': 'Explore cross-engine web checks, responsive behavior, Android automation and real-device coverage.',
+        'experience': 'Built browser automation across Selenium and Playwright; mobile and device projects in this portfolio are identified as demonstrations.',
+        'projects': ['playwright-typescript-framework', 'playwright-framework', 'python-pytest-framework',
+                     'appium-framework', 'mobile-real-device-testing', 'mobile-test-automation-framework'],
+    },
+    'performance-bottlenecks': {
+        'label': 'Find performance bottlenecks',
+        'summary': 'Inspect workload models, latency thresholds, load evidence and the limits of a demo-shop measurement.',
+        'experience': 'Designed rfswarm benchmarks with real browser sessions, up to 135 concurrent users and 1,400+ seeded accounts; used them to flag response-time drift of 10% or more.',
+        'projects': ['k6-performance-testing', 'enterprise-test-automation-framework'],
+    },
+    'ai-testing': {
+        'label': 'Evaluate AI-assisted testing',
+        'summary': 'Review test-generation and evaluation harnesses, including sample and replay evidence without live-model claims.',
+        'experience': 'Use Claude for test design and test-data suggestions with human review; portfolio CI examples label hand-written samples and replay runs.',
+        'projects': ['ai-assisted-test-automation', 'llm-feature-testing'],
+    },
+    'qa-strategy': {
+        'label': 'Lead QA strategy',
+        'summary': 'See how team leadership, traceability, risk-based coverage and evidence support release decisions.',
+        'experience': 'Led and mentored four QA engineers and owned test strategy, requirements traceability, defect triage and release sign-off.',
+        'projects': ['automation-coverage-quality-intelligence', 'enterprise-test-automation-framework',
+                     'robot-framework-automation', 'k6-performance-testing', 'mobile-real-device-testing'],
+    },
+}
+
+# Project-card reporting links are static examples; labels identify their format without
+# implying that the screenshot is a live report or a current run.
+REPORT_LABELS = {
+    'enterprise-test-automation-framework': 'Allure report overview screenshot',
+    'playwright-typescript-framework': 'Playwright HTML report overview screenshot',
+    'playwright-framework': 'Playwright test report screenshot',
+    'appium-framework': 'Custom HTML test report screenshot',
+    'robot-framework-automation': 'Robot Framework execution report screenshot',
+    'python-pytest-framework': 'pytest and Playwright report screenshot',
+    'k6-performance-testing': 'k6 performance dashboard screenshot',
+    'cypress-typescript-framework': 'Mochawesome HTML report screenshot',
+    'pact-contract-testing': 'Pact verification evidence screenshot',
+    'jenkins-kubernetes-pipeline': 'Jenkins pipeline evidence screenshot',
+    'ai-assisted-test-automation': 'Test-generation pipeline diagram',
+    'llm-feature-testing': 'LLM evaluation report screenshot',
+    'accessibility-visual-testing': 'Accessibility and visual-diff report screenshot',
+    'security-testing-zap': 'OWASP ZAP scan report screenshot',
+    'integration-testing-testcontainers': 'Integration test report screenshot',
+    'mobile-real-device-testing': 'Real-device execution evidence screenshot',
+    'automation-coverage-quality-intelligence': 'Quality gate report screenshot',
+    'mobile-test-automation-framework': 'Android test report screenshot',
+    'java-selenium-testng-pom-framework': 'Selenium and TestNG report screenshot',
+    'cucumber-bdd-demo': 'Cucumber execution report screenshot',
+    'selenium-java-framework': 'Selenium interview-lab report screenshot',
+    'cucumber-java-framework': 'Cucumber HTML report screenshot',
+    'api-automation': 'Custom API test report screenshot',
+    'api-automation-framework': 'API report-format comparison screenshot',
+    'jsonplaceholder-auto': 'Extent API report screenshot',
+}
+
 # Concise, evidence-backed comparison facts used by the explorer. Rows deliberately
 # say when a browser matrix is not part of the project (for example, API-only work).
 COMPARISON_DETAILS = {
@@ -435,7 +509,7 @@ COMPARISON_DETAILS = {
 
 COMPARISON_LIMITATIONS = {
     'enterprise-test-automation-framework': 'Tests a demo application with an in-memory H2 database; it is not a production deployment.',
-    'playwright-typescript-framework': 'The suite depends on a public demo shop; two form-login UI checks are skipped in CI because its bot check blocks them.',
+    'playwright-typescript-framework': 'The shared public demo shop can change or be unavailable; two form-login UI checks are skipped in CI when its bot check blocks them.',
     'playwright-framework': 'Evidence describes the public portfolio repository and its linked CI runs, not customer production impact.',
     'appium-framework': 'The verified run uses an Android emulator and a demo application; no real-device result is claimed.',
     'k6-performance-testing': 'The measured limit and load-shedding result apply to the repository demo shop and the linked stress-test profile.',
@@ -451,12 +525,32 @@ ARCHITECTURE_PREVIEWS = {
 }
 
 CARD_PURPOSE = {
-    'enterprise-test-automation-framework': 'A layered test platform for one demo shop across browser, API, database and integration checks.',
-    'playwright-typescript-framework': 'A typed UI and API suite for a public demo shop, exercised across three browser engines.',
-    'automation-coverage-quality-intelligence': 'A quality platform that links collected CI results to a clearly labelled synthetic requirements catalog.',
-    'appium-framework': 'An Android test framework with device-aware waits and failure evidence for each run.',
-    'k6-performance-testing': 'A performance suite that tests a shop API against endpoint service-level thresholds.',
-    'ai-assisted-test-automation': 'A human-reviewed pipeline for generating and triaging Playwright tests with Claude.',
+    'enterprise-test-automation-framework': 'One demo shop tested through browser, API, database and integration layers.',
+    'playwright-typescript-framework': 'Typed UI and API checks for a shared demo shop across three browser engines.',
+    'automation-coverage-quality-intelligence': 'A quality platform linking collected CI results to synthetic requirements.',
+    'appium-framework': 'Android checks with device-aware waits and preserved failure evidence.',
+    'k6-performance-testing': 'Shop API load tests with endpoint service-level thresholds.',
+    'ai-assisted-test-automation': 'A human-reviewed pipeline for drafting and triaging Playwright tests.',
+}
+
+# Captions describe the thumbnail itself, not the separately linked verification
+# record. Unknown screenshot dates are stated explicitly rather than inferred.
+FEATURED_PREVIEW_CAPTIONS = {
+    'enterprise-test-automation-framework': ('Historical report', '7 Oct 2026 · separate local run; not the nightly evidence linked below.'),
+    'playwright-typescript-framework': ('Playwright HTML report', 'Static screenshot from 10 Oct 2026; CI evidence checked 20 Oct 2026.'),
+    'automation-coverage-quality-intelligence': ('Dashboard screenshot', 'Static view with a synthetic catalog; capture date unknown, CI evidence checked 21 Oct 2026.'),
+    'appium-framework': ('Android test report', 'Historical emulator run from 12 Oct 2026; workflow checked 20 Oct 2026.'),
+    'k6-performance-testing': ('k6 dashboard screenshot', 'Demo-shop stress run from 13 Oct 2026; scope is the linked workload profile.'),
+    'ai-assisted-test-automation': ('Pipeline architecture diagram', 'Hand-written CI samples only; no live model output. Capture date unknown.'),
+}
+
+CARD_RESULTS = {
+    'enterprise-test-automation-framework': 'Nightly run, 21 Oct 2026: 755/755 passed across Chrome, Firefox, Edge and Selenium Grid.',
+    'playwright-typescript-framework': '47 tests, 95 executions per full run across Chromium, Firefox and WebKit.',
+    'automation-coverage-quality-intelligence': 'Dashboard smoke passed 21 Oct 2026; collected CI history covers 23 public repositories.',
+    'appium-framework': 'Run #7 passed on Android 15; three demo-app defects remain as known-bug checks.',
+    'k6-performance-testing': 'Above ~90 orders/s checkout exceeded 3 s p95; after load shedding it stayed below 650 ms in the same profile.',
+    'ai-assisted-test-automation': 'CI passed with labelled, hand-written samples; no live model result or model-quality score is claimed.',
 }
 
 
@@ -495,8 +589,10 @@ def normalise_project(source):
         'description': description,
         'short_purpose': short_purpose,
         'result': result,
+        'card_result': CARD_RESULTS.get(repo, result),
         'result_kind': result_kind,
         'image': image,
+        'preview_caption': FEATURED_PREVIEW_CAPTIONS.get(repo, ''),
         'alt': evidence.get('alt') or project.get('alt') or f'{project["title"]} project evidence',
         'evidence_date': evidence_date,
         'evidence_url': evidence.get('url') or f'https://github.com/niranjankagri/{repo}#readme',
@@ -506,10 +602,12 @@ def normalise_project(source):
         'source_url': f'https://github.com/niranjankagri/{repo}',
         'readme_url': f'https://github.com/niranjankagri/{repo}#readme',
         'report_url': f'https://github.com/niranjankagri/{repo}/blob/main/{project.get("report", "README.md")}',
+        'report_label': REPORT_LABELS.get(repo, 'Static project evidence image'),
         'live_demo': LIVE_DASHBOARD if repo == 'automation-coverage-quality-intelligence' else '',
         'featured': repo in FEATURED_IDS,
         'project_kind': 'Featured project' if repo in FEATURED_IDS else ('Learning lab' if 'Learning Labs' in CATEGORY_BY_REPO[repo] else 'Project'),
         'roles': roles,
+        'focuses': [focus_id for focus_id, focus in EXPLORATION_FOCUSES.items() if repo in focus['projects']],
         'comparison_layers': comparison[0],
         'comparison_targets': comparison[1],
         'comparison_approach': comparison[2],

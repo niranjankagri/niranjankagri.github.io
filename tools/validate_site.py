@@ -4,12 +4,14 @@ from __future__ import annotations
 from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
+import re
 import sys
 from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
-from project_data import COMPARISON_DETAILS, FEATURED_PROJECTS, PROJECTS, ROLE_VIEWS  # noqa: E402
+from project_data import CARD_RESULTS, COMPARISON_DETAILS, EXPLORATION_FOCUSES, FEATURED_PREVIEW_CAPTIONS, FEATURED_PROJECTS, PROJECTS, ROLE_VIEWS  # noqa: E402
+from components import ASSET_VERSION  # noqa: E402
 
 ALLOWED = {'Web & API', 'Mobile', 'Performance', 'Security', 'Accessibility', 'AI & LLM', 'CI/CD', 'Quality Intelligence', 'Learning Labs'}
 ERRORS: list[str] = []
@@ -29,9 +31,19 @@ if len(PROJECTS) != 25:
     fail(f'Expected all 25 existing projects, found {len(PROJECTS)}.')
 if len(FEATURED_PROJECTS) != 6:
     fail(f'Expected six featured projects, found {len(FEATURED_PROJECTS)}.')
+featured_ids = {p['id'] for p in FEATURED_PROJECTS}
+if set(CARD_RESULTS) != featured_ids:
+    fail('Concise card results must cover exactly the six featured projects.')
+if set(FEATURED_PREVIEW_CAPTIONS) != featured_ids:
+    fail('Every featured preview needs a visible scope and capture-date caption.')
+if len(EXPLORATION_FOCUSES) != 6 or any(
+    project_id not in ids for focus in EXPLORATION_FOCUSES.values() for project_id in focus.get('projects', [])
+):
+    fail('Problem-led focus metadata is incomplete or references an unknown project.')
 required = {'id', 'page', 'title', 'category', 'technologies', 'description', 'result', 'image', 'alt',
             'short_purpose', 'comparison_layers', 'comparison_targets', 'comparison_approach',
-            'comparison_limits', 'evidence_date', 'evidence_url', 'evidence_label', 'source_url', 'readme_url'}
+            'comparison_limits', 'evidence_date', 'evidence_url', 'evidence_label', 'source_url', 'readme_url',
+            'workflow_name', 'report_label'}
 for p in PROJECTS:
     missing = sorted(field for field in required if not p.get(field))
     if missing:
@@ -54,6 +66,14 @@ for p in PROJECTS:
         fail(f'{p["id"]}: card purpose is missing or too long.')
     if 'roles' not in p or not isinstance(p['roles'], list):
         fail(f'{p["id"]}: role metadata must be a list, even when no role is highlighted.')
+    if 'focuses' not in p or not isinstance(p['focuses'], list):
+        fail(f'{p["id"]}: problem focus metadata must be a list, even when no focus applies.')
+    comparison_fields = ('comparison_layers', 'comparison_targets', 'comparison_approach',
+                         'comparison_limits', 'workflow_name', 'report_label')
+    for field in comparison_fields:
+        value = str(p.get(field, '')).strip()
+        if not value or value.casefold() in {'undefined', 'null'}:
+            fail(f'{p["id"]}: comparison field {field} is empty or unsafe.')
 
 if set(COMPARISON_DETAILS) != set(ids):
     fail('Comparison metadata must cover exactly the shared project catalog.')
@@ -142,6 +162,8 @@ class Document(HTMLParser):
 
 
 html_files = [ROOT / 'index.html', ROOT / 'projects.html', ROOT / '404.html', *sorted((ROOT / 'projects').glob('*.html'))]
+if len(html_files) != 28:
+    fail(f'Expected 28 generated HTML pages, found {len(html_files)}.')
 if not (ROOT / 'Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf').is_file():
     fail('CV download is missing.')
 for path in html_files:
@@ -151,6 +173,15 @@ for path in html_files:
     parser = Document(path)
     parser.feed(path.read_text(encoding='utf-8'))
     name = path.relative_to(ROOT).as_posix()
+    asset_values = [value for kind, value in parser.refs if kind in ('href', 'src')]
+    for asset_name in ('style.css', 'theme.js'):
+        if not any(value.split('?', 1)[0].endswith(asset_name) and f'v={ASSET_VERSION}' in value for value in asset_values):
+            fail(f'{name}: missing versioned {asset_name} release asset.')
+    if path.name == 'projects.html' and not any(
+        value.split('?', 1)[0].endswith('projects.js') and f'v={ASSET_VERSION}' in value
+        for value in asset_values
+    ):
+        fail(f'{name}: missing versioned projects.js release asset.')
     if not parser.title or not parser.description or not parser.canonical:
         fail(f'{name}: needs a title, description and canonical URL.')
     if 'main' not in parser.landmarks or not parser.skip_link:
@@ -206,8 +237,19 @@ if explorer.count('class="card project-card"') != len(PROJECTS):
     fail('Projects page card count does not match shared project data.')
 if '84%' not in home or 'release test scope' not in home:
     fail('Homepage is missing the measured automation coverage explanation.')
-if 'Hiring a Technical Lead QA, Senior SDET, or Test Automation Architect? Let’s connect.' not in home:
-    fail('Homepage contact heading does not match the requested wording.')
+if 'Let’s build reliable releases.' not in home or 'Open to Senior SDET, QA Lead and Test Automation Architect opportunities' not in home:
+    fail('Homepage is missing the requested contact heading or hiring context.')
+if f'<strong>{len(PROJECTS)} projects</strong>' not in home:
+    fail('Homepage evidence strip count does not match shared project data.')
+if home.count('class="featured-preview"') != len(FEATURED_PROJECTS):
+    fail('Featured project cards are missing a visible report or diagram caption.')
+for project in FEATURED_PROJECTS:
+    if project['id'] not in home or project['preview_caption'][0] not in home or project['preview_caption'][1] not in home:
+        fail(f'{project["id"]}: preview caption is not present in the generated homepage.')
+    if project['card_result'] != CARD_RESULTS[project['id']]:
+        fail(f'{project["id"]}: concise result summary diverges from shared card metadata.')
+if 'What do you want to explore?' not in home or 'Engineering evidence' not in home:
+    fail('Homepage is missing problem-led exploration or evidence content.')
 if 'quality-intelligence-0ur1.onrender.com' not in (ROOT / 'projects' / 'quality-intelligence.html').read_text(encoding='utf-8'):
     fail('Quality Intelligence case study is missing the live dashboard link.')
 if home.count('data-role-panel=') != len(ROLE_VIEWS):
@@ -216,6 +258,8 @@ if 'aria-label="Project filters"' not in explorer or 'data-preview-project' not 
     fail('Project explorer is missing its filters, preview or comparison controls.')
 if not all(value in explorer for value in ('Featured first', 'Recently verified', 'Alphabetical', 'Clear all')):
     fail('Project explorer is missing a required sorting or reset option.')
+if ' ? <a' in explorer:
+    fail('Project explorer footer contains stray punctuation.')
 for project in PROJECTS:
     case = (ROOT / 'projects' / (project['page'] + '.html')).read_text(encoding='utf-8')
     if 'My contribution' in case or 'I built and maintain this public project' in case:
@@ -224,6 +268,16 @@ for project in PROJECTS:
         fail(f'{project["page"]}: missing back-to-results or contents navigation.')
     if 'Evidence explorer' not in case or 'Known limitations' not in case:
         fail(f'{project["page"]}: missing evidence or limitation context.')
+    if case.count('id="limitations"') != 1 or '<section aria-labelledby="limitations"><h2 id="limitations">Known limitations</h2><h3>Known limitations' in case:
+        fail(f'{project["page"]}: duplicate limitations heading.')
+    if 'undefined' in case.lower():
+        fail(f'{project["page"]}: rendered undefined fallback text.')
+    if re.search(r'>(?:undefined|null)<', case, re.IGNORECASE):
+        fail(f'{project["page"]}: rendered unsafe fallback text.')
+    if project['id'] in {'enterprise-test-automation-framework', 'automation-coverage-quality-intelligence',
+                         'playwright-typescript-framework'}:
+        if 'architecture-component-tabs' not in case or 'View source</a>' not in case:
+            fail(f'{project["page"]}: missing the selectable architecture panel and readable source link.')
     for anchor in ('contribution', 'features', 'defects'):
         if f'id="{anchor}"' not in case:
             fail(f'{project["page"]}: missing compatibility anchor #{anchor}.')
