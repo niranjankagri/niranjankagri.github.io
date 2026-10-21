@@ -428,8 +428,8 @@ html:not(.js) [data-js-only]{display:none!important}
 /* Compact filters, visible matching behavior and individually removable chips. */
 .filter-details{border-radius:var(--radius)}
 .filter-details>summary{padding:8px 2px;font-weight:700;cursor:pointer}
-.filter-controls{display:grid;gap:12px;padding-top:10px}
-.filter-help{font-size:13px;color:var(--muted)}
+.filter-controls{display:grid;gap:12px;padding-top:10px;min-width:0}
+.filter-help{min-width:0;overflow-wrap:anywhere;font-size:13px;color:var(--muted)}
 .check-count{display:inline-grid;place-items:center;min-width:20px;height:20px;margin-left:2px;border-radius:999px;background:var(--surface-2);font-size:11px;font-variant-numeric:tabular-nums;color:var(--muted)}
 .check:has(input:checked) .check-count{background:color-mix(in srgb,var(--accent-ink) 15%,transparent);color:inherit}
 .role-filter,.skill-filter,.sort-control{display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-weight:650}
