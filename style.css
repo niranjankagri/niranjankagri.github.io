@@ -202,7 +202,7 @@ footer a{color:var(--muted)}
 /* ---------- Project collection ---------- */
 .crumbs{font-size:14.5px;color:var(--muted);margin:24px 0 0}
 .projects-intro{padding:20px 0 24px}
-.filters{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:8px;box-shadow:var(--shadow)}
+.filters{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:8px;box-shadow:var(--shadow)}
 .search-row{display:flex;gap:10px}
 .search-row input{flex:1;min-width:0;min-height:46px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
 .search-row input:focus{border-color:var(--accent)}
@@ -426,9 +426,9 @@ html:not(.js) [data-js-only]{display:none!important}
 .skill a:hover .skill-count{color:var(--accent)}
 
 /* Compact filters, visible matching behavior and individually removable chips. */
-.filter-details{border-radius:var(--radius)}
+.filter-details{min-width:0;border-radius:var(--radius)}
 .filter-details>summary{padding:8px 2px;font-weight:700;cursor:pointer}
-.filter-controls{display:grid;gap:12px;padding-top:10px;min-width:0}
+.filter-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding-top:10px;min-width:0}
 .filter-help{min-width:0;overflow-wrap:anywhere;font-size:13px;color:var(--muted)}
 .check-count{display:inline-grid;place-items:center;min-width:20px;height:20px;margin-left:2px;border-radius:999px;background:var(--surface-2);font-size:11px;font-variant-numeric:tabular-nums;color:var(--muted)}
 .check:has(input:checked) .check-count{background:color-mix(in srgb,var(--accent-ink) 15%,transparent);color:inherit}
