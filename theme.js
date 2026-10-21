@@ -117,7 +117,7 @@
     window.setTimeout(function () { syncingRoles = false; }, 0);
     if (roleStatus) {
       var selectedPanel = rolePanels.find(function (panel) { return panel.dataset.rolePanel === roleId; });
-      roleStatus.textContent = selectedPanel ? selectedPanel.querySelector('summary').textContent.trim() + ' focus selected. Its skills, evidence and project links are expanded; all other work remains available.' : 'Choose a role to see a focused set of skills and project links.';
+      roleStatus.textContent = selectedPanel ? selectedPanel.querySelector('summary span').textContent.trim() + ' focus selected. Its skills, evidence and project links are expanded; all other work remains available.' : 'Choose a role to see a focused set of skills and project links.';
     }
   }
   if (rolePanels.length) {
@@ -143,6 +143,65 @@
         event.preventDefault();
         setRoleInUrl('', 'push');
         updateRolePanels('');
+      });
+    });
+  }
+
+  /* Problem-led project paths are native disclosures with a shareable query state. */
+  var focusPanels = Array.prototype.slice.call(document.querySelectorAll('[data-exploration-panel]'));
+  var focusStatus = document.getElementById('focus-selection-status');
+  var syncingFocus = false;
+  function setFocusInUrl(focusId, mode) {
+    var params = new URLSearchParams(window.location.search);
+    if (focusId) params.set('focus', focusId);
+    else params.delete('focus');
+    var next = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + '#focus-explorer';
+    if (mode === 'replace') window.history.replaceState({}, '', next);
+    else window.history.pushState({}, '', next);
+  }
+  function updateFocusPanels(focusId) {
+    syncingFocus = true;
+    focusPanels.forEach(function (panel) {
+      var selected = panel.dataset.explorationPanel === focusId;
+      panel.open = selected;
+      var summary = panel.querySelector('summary');
+      if (summary) {
+        if (selected) summary.setAttribute('aria-current', 'location');
+        else summary.removeAttribute('aria-current');
+      }
+    });
+    window.setTimeout(function () { syncingFocus = false; }, 0);
+    if (focusStatus) {
+      var selectedPanel = focusPanels.find(function (panel) { return panel.dataset.explorationPanel === focusId; });
+      var projectCount = selectedPanel ? selectedPanel.querySelectorAll('.focus-projects a').length : 0;
+      focusStatus.textContent = selectedPanel ? selectedPanel.querySelector('summary span').textContent.trim() +
+        ' selected. ' + projectCount + (projectCount === 1 ? ' project link' : ' project links') + ' and supporting experience are expanded.' :
+        'Choose a question to open a focused project path; all six remain available.';
+    }
+  }
+  if (focusPanels.length) {
+    var initialFocus = new URLSearchParams(window.location.search).get('focus');
+    if (!focusPanels.some(function (panel) { return panel.dataset.explorationPanel === initialFocus; })) initialFocus = '';
+    updateFocusPanels(initialFocus);
+    focusPanels.forEach(function (panel) {
+      panel.addEventListener('toggle', function () {
+        if (syncingFocus) return;
+        var focusId = panel.open ? panel.dataset.explorationPanel : '';
+        if (panel.open) focusPanels.forEach(function (other) { if (other !== panel) other.open = false; });
+        setFocusInUrl(focusId, 'push');
+        updateFocusPanels(focusId);
+      });
+    });
+    window.addEventListener('popstate', function () {
+      var focusId = new URLSearchParams(window.location.search).get('focus');
+      if (!focusPanels.some(function (panel) { return panel.dataset.explorationPanel === focusId; })) focusId = '';
+      updateFocusPanels(focusId);
+    });
+    document.querySelectorAll('[data-focus-reset]').forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        event.preventDefault();
+        setFocusInUrl('', 'push');
+        updateFocusPanels('');
       });
     });
   }
@@ -231,10 +290,42 @@
     activate(selectedIndex < 0 ? 0 : selectedIndex, false);
   });
 
-  document.querySelectorAll('.architecture-components').forEach(function (group) {
-    var components = Array.prototype.slice.call(group.querySelectorAll('[data-architecture-item]'));
-    components.forEach(function (component, index) {
-      component.open = index === 0;
+  document.querySelectorAll('[data-architecture-explorer]').forEach(function (explorer) {
+    var tabs = Array.prototype.slice.call(explorer.querySelectorAll('[data-architecture-tab]'));
+    var panel = explorer.querySelector('[data-architecture-panel]');
+    var fallback = explorer.parentElement.querySelector('.architecture-components');
+    if (!fallback || !panel || tabs.length === 0) return;
+    var components = Array.prototype.slice.call(fallback.querySelectorAll('[data-architecture-item]'));
+
+    function activate(index, moveFocus) {
+      if (!components[index]) return;
+      tabs.forEach(function (tab, tabIndex) {
+        var selected = tabIndex === index;
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      var component = components[index];
+      var tab = tabs[index];
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.innerHTML = component.querySelector('div').innerHTML;
+      if (moveFocus) tab.focus();
+    }
+
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener('click', function () { activate(index, false); });
+      tab.addEventListener('keydown', function (event) {
+        var next = index;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % tabs.length;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index + tabs.length - 1) % tabs.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        activate(next, true);
+      });
+    });
+    activate(0, false);
+    components.forEach(function (component) {
       component.addEventListener('toggle', function () {
         if (!component.open) return;
         components.forEach(function (other) { if (other !== component) other.open = false; });
