@@ -1,0 +1,177 @@
+name: Portfolio validation and Pages release
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: portfolio-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Portfolio validation and local browser smoke
+    runs-on: ubuntu-latest
+    outputs:
+      build_id: ${{ steps.release.outputs.build_id }}
+      asset_version: ${{ steps.release.outputs.asset_version }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned validators and browser automation
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright==1.63.0 ruff==0.17.1
+          python -m playwright install --with-deps chromium firefox webkit
+          npm install --prefix "$RUNNER_TEMP/portfolio-axe" --no-save --no-package-lock axe-core@4.10.3
+
+      - name: Build all generated pages
+        run: python tools/build_site.py
+
+      - name: Validate pages, shared metadata and local links
+        run: python tools/validate_site.py
+
+      - name: Run Python, JavaScript and whitespace checks
+        run: |
+          ruff check tools --select=E4,E7,E9,F
+          ruff format --check tools/browser_smoke.py tools/capture_review_screenshots.py tools/run_browser_smoke.py tools/stage_site.py tools/wait_for_deployment.py
+          python -m compileall -q tools
+          node --check theme.js
+          node --check projects.js
+          git diff --check
+
+      - name: Stage the immutable release directory
+        id: release
+        run: |
+          python tools/stage_site.py --build-id "$GITHUB_SHA"
+          echo "build_id=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "asset_version=$(python -c 'import json; print(json.load(open("_site/release.json", encoding="utf-8"))["asset_version"])')" >> "$GITHUB_OUTPUT"
+
+      - name: Serve locally and test Chromium, Firefox and WebKit
+        id: browser-smoke
+        run: >-
+          python tools/run_browser_smoke.py
+          --directory _site
+          --build-id "${{ steps.release.outputs.build_id }}"
+          --asset-version "${{ steps.release.outputs.asset_version }}"
+          --axe-script "$RUNNER_TEMP/portfolio-axe/node_modules/axe-core/axe.min.js"
+          --browser all
+          --capture-review artifacts/visual-review
+
+      - name: Upload visual review screenshots
+        if: always() && steps.browser-smoke.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-visual-review-${{ github.sha }}
+          path: artifacts/visual-review/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload browser failure screenshots, traces and logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-browser-failure-${{ github.sha }}
+          path: artifacts/browser-smoke/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload the validated Pages artifact
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy validated Pages artifact
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy the validated artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  deployed-smoke:
+    name: Verify the deployed Pages release
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    needs: [validate, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install deployed smoke dependencies
+        run: |
+          python -m pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
+          npm install --prefix "$RUNNER_TEMP/portfolio-axe" --no-save --no-package-lock axe-core@4.10.3
+
+      - name: Wait for the expected deployment and versioned assets
+        run: >-
+          python tools/wait_for_deployment.py
+          --url https://niranjankagri.github.io/
+          --build-id "${{ needs.validate.outputs.build_id }}"
+          --asset-version "${{ needs.validate.outputs.asset_version }}"
+          --timeout-seconds 300
+          --interval-seconds 10
+
+      - name: Smoke the deployed navigation, explorer and case studies
+        id: live-smoke
+        run: >-
+          python tools/browser_smoke.py
+          --base-url https://niranjankagri.github.io/
+          --browser chromium
+          --expected-build-id "${{ needs.validate.outputs.build_id }}"
+          --expected-asset-version "${{ needs.validate.outputs.asset_version }}"
+          --axe-script "$RUNNER_TEMP/portfolio-axe/node_modules/axe-core/axe.min.js"
+
+      - name: Upload deployed smoke failure screenshots, traces and logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-deployed-smoke-failure-${{ github.sha }}
+          path: artifacts/browser-smoke/
+          if-no-files-found: warn
+          retention-days: 30
