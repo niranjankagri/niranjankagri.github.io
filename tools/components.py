@@ -5,8 +5,10 @@ markup works from any folder.
 """
 from __future__ import annotations
 
+import hashlib
 from datetime import date
 import html
+from pathlib import Path
 
 e = html.escape
 CV = 'Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf'
@@ -14,6 +16,16 @@ HOME = 'https://niranjankagri.github.io/'
 GITHUB = 'https://github.com/niranjankagri/'
 LINKEDIN = 'https://www.linkedin.com/in/niranjan-kumar-agri/'
 EMAIL = 'niranjankagri@gmail.com'
+ROOT = Path(__file__).resolve().parent.parent
+ASSET_VERSION = hashlib.sha256(b''.join((ROOT / name).read_bytes() for name in ('style.css', 'theme.js', 'projects.js'))).hexdigest()[:12]
+
+
+def stylesheet(prefix: str = '') -> str:
+    return f'<link rel="stylesheet" href="{prefix}style.css?v={ASSET_VERSION}">'
+
+
+def script_asset(name: str, prefix: str = '') -> str:
+    return f'<script src="{prefix}{e(name, quote=True)}?v={ASSET_VERSION}" defer></script>'
 
 ICONS = {
     'download': 'M11 3h2v9.6l3.3-3.3 1.4 1.4L12 16.4l-5.7-5.7 1.4-1.4 3.3 3.3zM4 18h16v2H4z',
@@ -58,11 +70,14 @@ def header(prefix: str, current: str, project_count: int | None = None) -> str:
 </div></header>'''
 
 
-def footer(prefix: str, extra: str = '') -> str:
+def footer(prefix: str) -> str:
     home_href = './' if prefix == '' else prefix
-    return (f'<footer><div class="wrap">© 2026 Niranjan Kumar Agri · <a href="{home_href}">Portfolio home</a> · '
-            f'<a href="{prefix}projects.html">Projects</a>{extra} · '
-            f'<a href="{GITHUB}niranjankagri.github.io" target="_blank" rel="noopener">Website source</a></div></footer>')
+    return f'''<footer><div class="wrap footer-layout">
+  <div class="footer-brand"><a class="footer-name" href="{home_href}">Niranjan Kumar Agri</a><p>© 2026 · Quality engineering and automation</p></div>
+  <nav aria-label="Explore"><h2>Explore</h2><a href="{home_href}#projects">Featured projects</a><a href="{prefix}projects.html">All projects</a><a href="{home_href}#experience">Experience</a></nav>
+  <nav aria-label="Evidence"><h2>Evidence</h2><a href="{prefix}projects/playwright-typescript.html#results">Cross-browser execution</a><a href="{prefix}projects/k6-performance.html#results">Performance testing</a><a href="{prefix}projects/quality-intelligence.html#results">Quality intelligence</a></nav>
+  <nav aria-label="Connect"><h2>Connect</h2><a href="mailto:{EMAIL}">Email</a><a href="{LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a><a href="{GITHUB}" target="_blank" rel="noopener">GitHub</a><a href="{prefix}{CV}" download>Download CV</a><a href="{GITHUB}niranjankagri.github.io" target="_blank" rel="noopener">Website source</a></nav>
+</div></footer>'''
 
 
 def ci_status(p: dict) -> str:
@@ -91,7 +106,7 @@ def project_card(p: dict, prefix: str = '', heading: str = 'h3', filters: dict[s
         'layers': p['comparison_layers'],
         'targets': p['comparison_targets'],
         'approach': p['comparison_approach'],
-        'report': p['report'],
+        'report': p['report_label'],
         'limitations': 'See the case study for documented limitations.',
         'comparison-limits': p['comparison_limits'],
         'case': page,
@@ -105,19 +120,37 @@ def project_card(p: dict, prefix: str = '', heading: str = 'h3', filters: dict[s
         'evidence-url': p['evidence_url'],
         'evidence-label': p['evidence_label'],
         'workflow': p['workflow_url'],
+        'workflow-name': p['workflow_name'],
+        'focus': ' '.join(p['focuses']),
     })
     data = ''.join(f' data-{key}="{e(value, quote=True)}"' for key, value in fields.items())
     tags = ''.join(f'<li><a class="tag tag-link" href="projects.html?skill={e(tag, quote=True)}">{e(tag)}</a></li>' for tag in p['technologies'])
     live = external(p['live_demo'], 'Live demo', 'live-action') if p['live_demo'] else ''
     explorer_actions = ('<button class="text-action preview-action" type="button" data-preview-project data-js-only aria-haspopup="dialog">Preview</button>'
                         '<button class="text-action compare-action" type="button" data-compare-project data-js-only aria-pressed="false">Compare</button>') if filters else ''
+    if p.get('preview_caption'):
+        dialog_id = 'featured-image-' + hashlib.sha1(p['id'].encode('utf-8')).hexdigest()[:12]
+        preview_type, preview_scope = p['preview_caption']
+        image_path = f'{prefix}img/{e(p["image"], quote=True)}.jpg'
+        preview = (f'<figure class="featured-preview"><button type="button" data-image-dialog="{dialog_id}" aria-haspopup="dialog" '
+                   f'aria-label="Enlarge {e(preview_type.lower(), quote=True)}: {e(p["alt"], quote=True)}">'
+                   f'<img src="{image_path}" alt="{e(p["alt"], quote=True)}" width="640" height="400" loading="lazy">'
+                   '<span class="sr-only">Enlarge preview</span></button>'
+                   f'<figcaption><span class="preview-type">{e(preview_type)}.</span> {e(preview_scope)}</figcaption></figure>'
+                   f'<dialog class="image-viewer" id="{dialog_id}" aria-labelledby="{dialog_id}-caption">'
+                   '<form method="dialog"><button type="button" data-dialog-close aria-label="Close image viewer">Close</button></form>'
+                   f'<img src="{image_path}" alt="{e(p["alt"], quote=True)}" width="640" height="400">'
+                   f'<p class="viewer-caption" id="{dialog_id}-caption"><b>{e(preview_type)}.</b> {e(preview_scope)}</p></dialog>')
+    else:
+        preview = (f'<a class="card-image" href="{page}" tabindex="-1"><img src="{prefix}img/{e(p["image"], quote=True)}.jpg" '
+                   f'alt="{e(p["alt"], quote=True)}" width="640" height="400" loading="lazy"></a>')
     return f'''<article class="card project-card" data-project-id="{e(p['id'], quote=True)}"{data}>
-      <a class="card-image" href="{page}" tabindex="-1"><img src="{prefix}img/{e(p["image"], quote=True)}.jpg" alt="{e(p['alt'], quote=True)}" width="640" height="400" loading="lazy"></a>
+      {preview}
       <div class="body">
         <p class="kind">{e(p['project_kind'])} | {e(', '.join(p['category']))}</p>
         <{heading} class="card-title"><a href="{page}">{e(p['title'])}</a></{heading}>
         <p class="desc">{e(p['short_purpose'])}</p>
-        <div class="card-result"><p class="fact">{e(p['result'])}</p><p class="evidence-kind">{e(p['result_kind'])}</p></div>
+        <div class="card-result"><p class="fact">{e(p.get('card_result', p['result']))}</p><p class="evidence-kind">{e(p['result_kind'])}</p></div>
         <ul class="tags" aria-label="Technologies">{tags}</ul>
         <div class="card-foot">
           <div class="actions"><a class="go" href="{page}">Case study {icon('arrow')}</a>{external(p['source_url'], 'Source', 'source-action')}{live}{explorer_actions}</div>

@@ -7,8 +7,8 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(__file__))
-from components import CV, HOME, footer, header, project_card  # noqa: E402
-from project_data import PROJECTS  # noqa: E402
+from components import HOME, footer, header, project_card, stylesheet, script_asset  # noqa: E402
+from project_data import EXPLORATION_FOCUSES, PROJECTS  # noqa: E402
 
 
 e = html.escape
@@ -33,6 +33,7 @@ def filters_of(project: dict) -> dict[str, str]:
     return {
         'category': '|'.join(value.casefold() for value in project['category']),
         'tech': ' '.join(value.casefold() for value in LANGUAGES if matches_language(project, value)),
+        'focus': ' '.join(project['focuses']),
         'search': ' '.join(search_values).casefold(),
     }
 
@@ -41,7 +42,7 @@ def chips(name: str, values: list[str], counts: dict[str, int]) -> str:
     """Render labeled native checkboxes with category counts from the full catalog."""
     return ''.join(
         f'<label class="check"><input type="checkbox" name="{name}" value="{e(value, quote=True)}">'
-        f'<span>{e(value)}</span><span class="check-count" aria-label="{counts[value]} projects">{counts[value]}</span></label>'
+        f'<span>{e(value)}</span><span class="check-count" aria-label="{counts[value]} {"project" if counts[value] == 1 else "projects"}">{counts[value]}</span></label>'
         for value in values
     )
 
@@ -57,7 +58,7 @@ html_doc = f"""<!doctype html>
 <meta name="description" content="Explore all {len(PROJECTS)} automation and quality engineering projects by purpose, evidence, language and category.">
 <link rel="canonical" href="{HOME}projects.html">
 <meta property="og:title" content="Projects | Niranjan Kumar Agri"><meta property="og:description" content="Search {len(PROJECTS)} automation and quality engineering projects, each with a case study and dated evidence."><meta property="og:type" content="website"><meta property="og:url" content="{HOME}projects.html"><meta property="og:image" content="{HOME}img/profile-2026-10b.jpg"><meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="style.css">
+{stylesheet()}
 <script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 </head><body>
 {header('', 'projects', len(PROJECTS))}
@@ -67,10 +68,11 @@ html_doc = f"""<!doctype html>
   <form id="project-filters" class="filters" role="search" aria-label="Project filters">
     <details class="filter-details" id="filter-details" open><summary>Search and filters</summary><div class="filter-controls">
       <div class="search-row"><label for="project-search" class="sr-only">Search projects</label><input id="project-search" name="q" type="search" autocomplete="off" placeholder="Search title, purpose, decisions or technology"><button class="btn" id="clear-filters" type="button">Clear all</button></div>
-      <p class="filter-help">Within Category and Language, selected values match any selection. Search, skill and category/language groups all apply together. Counts use the full project list; one project can appear in more than one category.</p>
+      <p class="filter-help">Within Category and Language, selected values match any selection. Search, skill, problem focus and category/language groups all apply together; role highlights do not hide other projects. Counts use the full project list, and a project may appear in more than one category.</p>
       <fieldset><legend>Category</legend><div class="check-list">{chips('category', CATEGORIES, category_counts)}</div></fieldset>
       <fieldset><legend>Language</legend><div class="check-list">{chips('tech', LANGUAGES, language_counts)}</div></fieldset>
       <label class="role-filter" for="role-focus">Explore by role <select id="role-focus" name="role"><option value="">All roles</option><option value="senior-sdet">Senior SDET</option><option value="qa-lead">QA Lead</option><option value="automation-architect">Automation Architect</option></select></label>
+      <label class="focus-filter" for="project-focus">Explore by problem <select id="project-focus" name="focus"><option value="">Any focus</option>{''.join(f'<option value="{e(focus_id, quote=True)}">{e(focus["label"])}</option>' for focus_id, focus in EXPLORATION_FOCUSES.items())}</select></label>
       <label class="skill-filter" for="skill-search">Skill or technology <input id="skill-search" name="skill" type="search" placeholder="e.g. Playwright" autocomplete="off"></label>
     </div></details>
   </form>
@@ -86,8 +88,8 @@ html_doc = f"""<!doctype html>
 <div class="compare-tray" id="compare-tray" hidden><p><strong id="compare-count">0 projects selected</strong><span id="compare-announcement" class="sr-only" role="status" aria-live="polite"></span></p><div><button class="btn primary" type="button" id="open-comparison">Compare selected</button><button class="btn" type="button" id="clear-comparison">Clear</button></div></div>
 <dialog class="project-drawer" id="project-preview" aria-labelledby="preview-title"><div class="drawer-head"><p class="eyebrow">Project preview</p><button class="btn" type="button" data-dialog-close aria-label="Close project preview">Close</button></div><h2 id="preview-title">Project preview</h2><div id="preview-content"></div></dialog>
 <dialog class="comparison-dialog" id="comparison-dialog" aria-labelledby="comparison-title"><div class="drawer-head"><div><p class="eyebrow">Side-by-side review</p><h2 id="comparison-title">Project comparison</h2></div><button class="btn" type="button" data-dialog-close aria-label="Close project comparison">Close</button></div><p class="sub">Descriptions below come from shared project records and linked case studies. No project score is calculated.</p><div class="comparison-content" id="comparison-content"></div></dialog>
-{footer('', f' ? <a href="{CV}" download>Download CV</a>')}
-<script src="theme.js" defer></script><script src="projects.js" defer></script></body></html>
+{footer('')}
+{script_asset('theme.js')}{script_asset('projects.js')}</body></html>
 """
 
 with open(os.path.join(ROOT, 'projects.html'), 'w', encoding='utf-8', newline='\n') as stream:
