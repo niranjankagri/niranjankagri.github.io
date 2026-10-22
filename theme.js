@@ -163,7 +163,7 @@
     syncingFocus = true;
     focusPanels.forEach(function (panel) {
       var selected = panel.dataset.explorationPanel === focusId;
-      panel.open = selected;
+      if (!focusId || selected) panel.open = selected;
       var summary = panel.querySelector('summary');
       if (summary) {
         if (selected) summary.setAttribute('aria-current', 'location');
@@ -174,9 +174,12 @@
     if (focusStatus) {
       var selectedPanel = focusPanels.find(function (panel) { return panel.dataset.explorationPanel === focusId; });
       var projectCount = selectedPanel ? selectedPanel.querySelectorAll('.focus-projects a').length : 0;
-      focusStatus.textContent = selectedPanel ? selectedPanel.querySelector('summary span').textContent.trim() +
-        ' selected. ' + projectCount + (projectCount === 1 ? ' project link' : ' project links') + ' and supporting experience are expanded.' :
-        'Choose a question to open a focused project path; all six remain available.';
+      var openCount = focusPanels.filter(function (panel) { return panel.open; }).length;
+      focusStatus.textContent = selectedPanel ? selectedPanel.querySelector('.focus-title').textContent.trim() +
+        ' selected. ' + projectCount + (projectCount === 1 ? ' project link' : ' project links') +
+        ' and supporting experience are expanded; ' + openCount + (openCount === 1 ? ' path is' : ' paths are') + ' open.' :
+        (openCount ? openCount + ' problem paths are open; choose another question to update the shareable project filter.' :
+          'Choose a question to open a focused project path; all six remain available.');
     }
   }
   if (focusPanels.length) {
@@ -187,7 +190,10 @@
       panel.addEventListener('toggle', function () {
         if (syncingFocus) return;
         var focusId = panel.open ? panel.dataset.explorationPanel : '';
-        if (panel.open) focusPanels.forEach(function (other) { if (other !== panel) other.open = false; });
+        if (!focusId && focusPanels.some(function (other) { return other.open; })) {
+          var remaining = focusPanels.filter(function (other) { return other.open; });
+          focusId = remaining[remaining.length - 1].dataset.explorationPanel;
+        }
         setFocusInUrl(focusId, 'push');
         updateFocusPanels(focusId);
       });

@@ -161,6 +161,17 @@ class Document(HTMLParser):
                 attrs['__has_text'] = '1'
 
 
+stylesheet = re.sub(r'\s+', '', (ROOT / 'style.css').read_text(encoding='utf-8'))
+css_rules = re.findall(r'([^{}]+)\{([^{}]*)\}', stylesheet)
+for selector in ('.exploration-band::before', '.engineering-evidence::before'):
+    rule = next(
+        (body for header, body in css_rules if selector in header.split(',')),
+        '',
+    )
+    if 'width:100%' not in rule or '100vw' in rule or '100vmax' not in rule:
+        fail(f'{selector}: full-width backgrounds must use a clipped 100vmax shadow.')
+
+
 html_files = [ROOT / 'index.html', ROOT / 'projects.html', ROOT / '404.html', *sorted((ROOT / 'projects').glob('*.html'))]
 if len(html_files) != 28:
     fail(f'Expected 28 generated HTML pages, found {len(html_files)}.')
@@ -213,7 +224,11 @@ for path in html_files:
         if parsed.scheme or value.startswith('//') or value.startswith('data:') or not value:
             continue
         relative = unquote(parsed.path)
-        target = (path.parent / relative).resolve() if relative else path
+        target = (
+            (ROOT / relative.lstrip('/')).resolve()
+            if relative.startswith('/')
+            else (path.parent / relative).resolve() if relative else path
+        )
         try:
             target.relative_to(ROOT.resolve())
         except ValueError:
@@ -248,8 +263,12 @@ for project in FEATURED_PROJECTS:
         fail(f'{project["id"]}: preview caption is not present in the generated homepage.')
     if project['card_result'] != CARD_RESULTS[project['id']]:
         fail(f'{project["id"]}: concise result summary diverges from shared card metadata.')
-if 'What do you want to explore?' not in home or 'Engineering evidence' not in home:
+if 'Find work by role or problem' not in home or 'By problem' not in home or 'Engineering evidence' not in home:
     fail('Homepage is missing problem-led exploration or evidence content.')
+if not (home.index('class="hero"') < home.index('id="projects"') < home.index('id="exploration"')):
+    fail('Homepage sections must present featured projects before exploration paths.')
+if home.count('data-exploration-panel=') != len(EXPLORATION_FOCUSES) or ' data-exploration-panel="maintainable-automation" open' in home:
+    fail('Problem-led paths must start collapsed and retain every configured question.')
 if 'quality-intelligence-0ur1.onrender.com' not in (ROOT / 'projects' / 'quality-intelligence.html').read_text(encoding='utf-8'):
     fail('Quality Intelligence case study is missing the live dashboard link.')
 if home.count('data-role-panel=') != len(ROLE_VIEWS):
