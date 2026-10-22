@@ -520,7 +520,7 @@ html:not(.js) [data-js-only]{display:none!important}
 .story-grid p{color:var(--muted)}
 .story-grid .story-limitation{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:13px}
 .story-evidence{margin-top:12px;color:var(--muted);font-size:13px}
-.related-projects{margin-top:32px;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.page .related-projects{margin-top:32px;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
 .related-projects>p{margin-top:5px;color:var(--muted)}
 .related-projects ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:16px 0 0}
 .related-projects li{min-width:0;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-wrap:anywhere}
