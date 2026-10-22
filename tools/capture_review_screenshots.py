@@ -134,7 +134,9 @@ def main() -> None:
                 # normally scrolls inside the dialog. This affects captures only.
                 page.locator("#comparison-dialog").evaluate(
                     "element => { element.style.maxHeight = 'none'; "
-                    "element.style.height = 'auto'; element.style.overflow = 'visible'; }"
+                    "element.style.height = 'auto'; element.style.overflow = 'visible'; "
+                    "element.style.position = 'relative'; element.style.inset = 'auto'; "
+                    "element.style.margin = '0'; }"
                 )
                 page.locator("#comparison-dialog").screenshot(
                     path=str(output_path(output, "comparison", width_name, theme)),
