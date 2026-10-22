@@ -161,12 +161,9 @@ def exercise(
         def capture_console_error(message) -> None:
             source = message.location.get("url", "")
             source_path = urlparse(source).path if source.startswith(base_url) else ""
-            missing_document_404 = (
-                "status of 404" in message.text
-                and (
-                    urlparse(page.url).path in EXPECTED_MISSING_PATHS
-                    or source_path in EXPECTED_MISSING_PATHS
-                )
+            missing_document_404 = "status of 404" in message.text and (
+                urlparse(page.url).path in EXPECTED_MISSING_PATHS
+                or source_path in EXPECTED_MISSING_PATHS
             )
             if (
                 source.startswith(base_url) or "uncaught" in message.text.casefold()
