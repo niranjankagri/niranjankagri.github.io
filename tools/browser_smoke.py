@@ -780,7 +780,10 @@ def exercise(
                                     width,
                                     role_heights,
                                 )
-                                for section_selector in (".exploration-band", "#projects"):
+                                for section_selector in (
+                                    ".exploration-band",
+                                    "#projects",
+                                ):
                                     extent = page.locator(section_selector).evaluate(
                                         "element => { const rect = element.getBoundingClientRect(); const style = getComputedStyle(element, '::before'); return {width: parseFloat(style.width), parentWidth: rect.width, left: rect.left, shadow: style.boxShadow, clip: style.clipPath}; }"
                                     )
