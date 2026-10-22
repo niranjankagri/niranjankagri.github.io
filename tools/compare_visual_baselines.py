@@ -24,7 +24,9 @@ def in_root(relative: str) -> Path:
     return path
 
 
-def write_difference(expected_path: Path, actual_path: Path, difference_path: Path) -> None:
+def write_difference(
+    expected_path: Path, actual_path: Path, difference_path: Path
+) -> None:
     if not expected_path.exists():
         actual = Image.open(actual_path).convert("RGB")
         placeholder = Image.new("RGB", actual.size, "#fff2f2")
@@ -80,7 +82,10 @@ def differs(expected_path: Path, actual_path: Path, threshold: int) -> tuple[boo
     max_channel_delta = max(channel[1] for channel in extrema)
     if max_channel_delta > threshold:
         mean_delta = sum(ImageStat.Stat(difference).mean) / 3
-        return True, f"pixel delta {max_channel_delta} > {threshold} (mean {mean_delta:.3f})"
+        return (
+            True,
+            f"pixel delta {max_channel_delta} > {threshold} (mean {mean_delta:.3f})",
+        )
     return False, "matches"
 
 
@@ -120,7 +125,9 @@ def main() -> None:
         record = ROOT / "screenshots" / "portfolio-ux-review" / "baseline-review.md"
         record.parent.mkdir(parents=True, exist_ok=True)
         with record.open("a", encoding="utf-8") as stream:
-            stream.write(f"\n- {date.today().isoformat()}: {arguments.review_note.strip()}\n")
+            stream.write(
+                f"\n- {date.today().isoformat()}: {arguments.review_note.strip()}\n"
+            )
         print(f"Accepted {len(images)} reviewed baselines in {baselines}.")
         return
 
@@ -138,9 +145,7 @@ def main() -> None:
         if expected.exists():
             shutil.copy2(expected, failures / f"{image.stem}-expected.png")
         else:
-            write_missing_baseline(
-                image, failures / f"{image.stem}-expected.png"
-            )
+            write_missing_baseline(image, failures / f"{image.stem}-expected.png")
         write_difference(expected, image, failures / f"{image.stem}-difference.png")
 
     unexpected = sorted(
@@ -149,7 +154,9 @@ def main() -> None:
         if not (actual / baseline.name).exists()
     )
     if unexpected:
-        issues.extend(f"{name}: baseline has no captured screenshot" for name in unexpected)
+        issues.extend(
+            f"{name}: baseline has no captured screenshot" for name in unexpected
+        )
 
     if issues:
         print("Visual regression differences:")
