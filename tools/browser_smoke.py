@@ -169,9 +169,7 @@ def exercise(
                 and response.status >= 400
                 and urlparse(response.url).path not in EXPECTED_MISSING_PATHS
             ):
-                same_origin_response_errors.append(
-                    f"{response.status} {response.url}"
-                )
+                same_origin_response_errors.append(f"{response.status} {response.url}")
 
         page.on(
             "console",
@@ -454,9 +452,10 @@ def exercise(
             assert page.locator(
                 '[data-exploration-panel="performance-bottlenecks"]'
             ).evaluate("item => item.open")
-            assert "2 paths are open" in page.locator(
-                "#focus-selection-status"
-            ).inner_text()
+            assert (
+                "2 paths are open"
+                in page.locator("#focus-selection-status").inner_text()
+            )
             page.locator(
                 '[data-exploration-panel="performance-bottlenecks"] summary'
             ).focus()
@@ -468,9 +467,7 @@ def exercise(
             assert "focus=maintainable-automation" in page.url
             page.locator("[data-focus-reset]").click()
             page.wait_for_function("!location.search.includes('focus=')")
-            assert focus_panels.evaluate_all(
-                "items => items.every(item => !item.open)"
-            )
+            assert focus_panels.evaluate_all("items => items.every(item => !item.open)")
             page.locator('#skills a[href*="skill="]').first.click()
             page.wait_for_url("**/projects.html?skill=*")
             assert page.locator("#skill-search").input_value()
@@ -498,12 +495,13 @@ def exercise(
                 assert ai_card.locator(".evidence-kind").inner_text() == (
                     "Recorded CI replay"
                 )
-                assert "no live model result is claimed" in ai_card.locator(
-                    ".fact"
-                ).inner_text()
-                assert "no live model result" not in ai_card.locator(
-                    ".desc"
-                ).inner_text()
+                assert (
+                    "no live model result is claimed"
+                    in ai_card.locator(".fact").inner_text()
+                )
+                assert (
+                    "no live model result" not in ai_card.locator(".desc").inner_text()
+                )
                 assert ai_card.inner_text().count("no live model result") == 1
             case_routes = page.locator(
                 "#project-grid .project-card .card-title a"
@@ -781,7 +779,8 @@ def exercise(
                                         "element => { const rect = element.getBoundingClientRect(); const style = getComputedStyle(element, '::before'); return {width: parseFloat(style.width), parentWidth: rect.width, left: rect.left, shadow: style.boxShadow, clip: style.clipPath}; }"
                                     )
                                     assert (
-                                        abs(extent["width"] - extent["parentWidth"]) <= 1
+                                        abs(extent["width"] - extent["parentWidth"])
+                                        <= 1
                                         and "100vmax" in extent["shadow"]
                                         and extent["clip"].startswith("inset(")
                                     ), (theme, width, section_id, extent)
@@ -849,7 +848,9 @@ def exercise(
                                     assert item.evaluate(
                                         "element => element.scrollWidth <= element.clientWidth + 1"
                                     ), (route, theme, width, selector)
-                            related_padding = page.locator(".related-projects").evaluate(
+                            related_padding = page.locator(
+                                ".related-projects"
+                            ).evaluate(
                                 "element => ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'].map(property => parseFloat(getComputedStyle(element)[property]))"
                             )
                             assert min(related_padding) >= 16, (
@@ -985,9 +986,7 @@ def exercise(
                 stylesheet_href = page.locator('link[rel="stylesheet"]').get_attribute(
                     "href"
                 )
-                theme_src = page.locator('script[src*="theme.js"]').get_attribute(
-                    "src"
-                )
+                theme_src = page.locator('script[src*="theme.js"]').get_attribute("src")
                 avatar_src = page.locator(".avatar").get_attribute("src")
                 assert stylesheet_href and stylesheet_href.startswith("/style.css?v=")
                 assert theme_src and theme_src.startswith("/theme.js?v=")
