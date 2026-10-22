@@ -10,6 +10,9 @@ from playwright.sync_api import Page, sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 VIEWPORTS = (("desktop", 1440), ("mobile", 390))
 THEMES = ("light", "dark")
+CAPTURE_STYLE = (
+    ".nav{visibility:hidden!important}.drawer-head{position:static!important}"
+)
 QUIET_STYLE = "*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}"
 
 
@@ -36,7 +39,7 @@ def capture_region(page: Page, selector: str, destination: Path, width: int) -> 
     target.wait_for(state="visible")
     # Capture the whole component, independent of the current viewport height.
     # In particular, the architecture heading is not the architecture section.
-    target.screenshot(path=str(destination), animations="disabled")
+    target.screenshot(path=str(destination), animations="disabled", style=CAPTURE_STYLE)
 
 
 def output_path(output: Path, name: str, width_name: str, theme: str) -> Path:
@@ -141,6 +144,7 @@ def main() -> None:
                 page.locator("#comparison-dialog").screenshot(
                     path=str(output_path(output, "comparison", width_name, theme)),
                     animations="disabled",
+                    style=CAPTURE_STYLE,
                 )
                 page.keyboard.press("Escape")
 
