@@ -13,6 +13,9 @@ THEMES = ("light", "dark")
 CAPTURE_STYLE = (
     ".nav{visibility:hidden!important}.drawer-head{position:static!important}"
 )
+HEADER_CAPTURE_STYLE = (
+    ".nav{visibility:visible!important;position:relative!important;top:auto!important}"
+)
 QUIET_STYLE = "*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}"
 
 
@@ -34,12 +37,49 @@ def open_page(page: Page, base_url: str, route: str, width: int, theme: str) -> 
     )
 
 
-def capture_region(page: Page, selector: str, destination: Path, width: int) -> None:
+def capture_region(
+    page: Page,
+    selector: str,
+    destination: Path,
+    width: int,
+    *,
+    style: str = CAPTURE_STYLE,
+) -> None:
     target = page.locator(selector)
     target.wait_for(state="visible")
     # Capture the whole component, independent of the current viewport height.
     # In particular, the architecture heading is not the architecture section.
-    target.screenshot(path=str(destination), animations="disabled", style=CAPTURE_STYLE)
+    target.screenshot(path=str(destination), animations="disabled", style=style)
+
+
+def capture_mobile_menu(page: Page, destination: Path) -> None:
+    page.locator(".menu-toggle").click()
+    menu = page.locator("#primary-nav")
+    menu.wait_for(state="visible")
+    page.evaluate("window.scrollTo(0, 0)")
+
+    header_box = page.locator(".nav").bounding_box()
+    menu_box = menu.bounding_box()
+    if header_box is None or menu_box is None:
+        raise RuntimeError("Could not measure the open mobile navigation.")
+
+    height = max(
+        header_box["y"] + header_box["height"],
+        menu_box["y"] + menu_box["height"],
+    )
+    page.screenshot(
+        path=str(destination),
+        clip={
+            "x": 0,
+            "y": 0,
+            "width": page.viewport_size["width"],
+            "height": height,
+        },
+        animations="disabled",
+        style=HEADER_CAPTURE_STYLE,
+    )
+    page.locator(".menu-toggle").click()
+    menu.wait_for(state="hidden")
 
 
 def output_path(output: Path, name: str, width_name: str, theme: str) -> Path:
@@ -81,6 +121,19 @@ def main() -> None:
         for width_name, width in VIEWPORTS:
             for theme in THEMES:
                 open_page(page, base_url, "/", width, theme)
+                capture_region(
+                    page,
+                    ".nav",
+                    output_path(output, "header", width_name, theme),
+                    width,
+                    style=HEADER_CAPTURE_STYLE,
+                )
+                if width_name == "mobile":
+                    capture_mobile_menu(
+                        page,
+                        output_path(output, "mobile-menu", width_name, theme),
+                    )
+
                 for name, selector in (
                     ("hero", ".hero"),
                     ("role-cards", "#role-explorer"),
