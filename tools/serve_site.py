@@ -11,7 +11,9 @@ from pathlib import Path
 class PagesHandler(SimpleHTTPRequestHandler):
     """Return the site's 404 document with the original missing-route status."""
 
-    def send_error(self, code: int, message: str | None = None, explain: str | None = None) -> None:
+    def send_error(
+        self, code: int, message: str | None = None, explain: str | None = None
+    ) -> None:
         if code == 404:
             not_found = Path(self.directory or ".") / "404.html"
             if not_found.is_file():
