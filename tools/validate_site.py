@@ -161,6 +161,17 @@ class Document(HTMLParser):
                 attrs['__has_text'] = '1'
 
 
+stylesheet = re.sub(r'\\s+', '', (ROOT / 'style.css').read_text(encoding='utf-8'))
+css_rules = re.findall(r'([^{}]+)\\{([^{}]*)\\}', stylesheet)
+for selector in ('.exploration-band::before', '.engineering-evidence::before'):
+    rule = next(
+        (body for header, body in css_rules if selector in header.split(',')),
+        '',
+    )
+    if 'width:100%' not in rule or '100vw' in rule or '100vmax' not in rule:
+        fail(f'{selector}: full-width backgrounds must use a clipped 100vmax shadow.')
+
+
 html_files = [ROOT / 'index.html', ROOT / 'projects.html', ROOT / '404.html', *sorted((ROOT / 'projects').glob('*.html'))]
 if len(html_files) != 28:
     fail(f'Expected 28 generated HTML pages, found {len(html_files)}.')
