@@ -780,8 +780,8 @@ def exercise(
                                     width,
                                     role_heights,
                                 )
-                                for section_id in ("role-explorer", "projects"):
-                                    extent = page.locator("#" + section_id).evaluate(
+                                for section_selector in (".exploration-band", "#projects"):
+                                    extent = page.locator(section_selector).evaluate(
                                         "element => { const rect = element.getBoundingClientRect(); const style = getComputedStyle(element, '::before'); return {width: parseFloat(style.width), parentWidth: rect.width, left: rect.left, shadow: style.boxShadow, clip: style.clipPath}; }"
                                     )
                                     assert (
@@ -789,7 +789,7 @@ def exercise(
                                         <= 1
                                         and "100vmax" in extent["shadow"]
                                         and extent["clip"].startswith("inset(")
-                                    ), (theme, width, section_id, extent)
+                                    ), (theme, width, section_selector, extent)
                                 cards = page.locator(
                                     "#projects .featured-grid .project-card"
                                 )
