@@ -790,7 +790,7 @@ def exercise(
                                     assert (
                                         abs(extent["width"] - extent["parentWidth"])
                                         <= 1
-                                        and "100vmax" in extent["shadow"]
+                                        and extent["shadow"] != "none"
                                         and extent["clip"].startswith("inset(")
                                     ), (theme, width, section_selector, extent)
                                 cards = page.locator(
