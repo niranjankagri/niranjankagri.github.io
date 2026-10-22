@@ -87,7 +87,7 @@ def ci_status(p: dict) -> str:
     badge = p['workflow_url'] + '/badge.svg'
     return (f'<a class="badge-link" href="{e(p["workflow_url"], quote=True)}" target="_blank" rel="noopener" '
             f'aria-label="Open the {e(p["workflow_name"])} workflow history of {e(p["title"])}">'
-            f'<img class="ci" src="{e(badge, quote=True)}" alt="GitHub Actions status of {e(p["workflow_name"])}" '
+            f'<img class="ci" src="{e(badge, quote=True)}" alt="GitHub Actions workflow badge" '
             f'width="150" height="20" loading="lazy"><span class="badge-fallback" hidden>Workflow history</span></a>')
 
 
@@ -107,7 +107,7 @@ def project_card(p: dict, prefix: str = '', heading: str = 'h3', filters: dict[s
         'targets': p['comparison_targets'],
         'approach': p['comparison_approach'],
         'report': p['report_label'],
-        'limitations': 'See the case study for documented limitations.',
+        'limitations': '',
         'comparison-limits': p['comparison_limits'],
         'case': page,
         'report-url': p['report_url'],
@@ -154,7 +154,7 @@ def project_card(p: dict, prefix: str = '', heading: str = 'h3', filters: dict[s
         <ul class="tags" aria-label="Technologies">{tags}</ul>
         <div class="card-foot">
           <div class="actions"><a class="go" href="{page}">Case study {icon('arrow')}</a>{external(p['source_url'], 'Source', 'source-action')}{live}{explorer_actions}</div>
-          <div class="card-meta"><div class="workflow-meta">{ci_status(p)}<span class="workflow-label">{e(p['workflow_name']) if p['workflow_url'] else 'No automated workflow'}</span></div><p class="evidence" title="{e(p['evidence_label'], quote=True)}">Evidence checked {readable_date(p['evidence_date'])} | {external(p['evidence_url'], p['evidence_label'])}</p></div>
+          <div class="card-meta"><div class="workflow-meta">{ci_status(p)}</div><p class="evidence" title="{e(p['evidence_label'], quote=True)}">Evidence checked {readable_date(p['evidence_date'])} | {external(p['evidence_url'], p['evidence_label'])}</p></div>
         </div>
       </div>
     </article>'''

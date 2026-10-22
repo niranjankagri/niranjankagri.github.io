@@ -53,13 +53,11 @@ def main() -> None:
     server = subprocess.Popen(
         [
             sys.executable,
-            "-m",
-            "http.server",
-            str(port),
-            "--bind",
-            "127.0.0.1",
+            str(ROOT / "tools" / "serve_site.py"),
             "--directory",
             str(site),
+            "--port",
+            str(port),
         ],
         cwd=ROOT,
         stdout=server_log,

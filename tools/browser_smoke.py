@@ -8,9 +8,14 @@ import os
 import traceback
 from hashlib import sha1
 from pathlib import Path
+from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
 
 AXE_SCRIPT: Path | None = None
+EXPECTED_MISSING_PATHS = {
+    "/portfolio-smoke-missing-root.html",
+    "/projects/portfolio-smoke-missing-case.html",
+}
 
 
 def audit_accessibility(page) -> None:
@@ -108,6 +113,26 @@ def exercise_architecture(
     page.set_viewport_size({"width": 1440, "height": 1000})
 
 
+def reveal_and_verify_images(page, route: str) -> None:
+    """Reveal lazy content and require every content image to decode successfully."""
+    page.evaluate(
+        """() => {
+          document.querySelectorAll('details').forEach(item => { item.open = true; });
+          document.querySelectorAll('img').forEach(image => { image.loading = 'eager'; });
+          window.scrollTo(0, document.body.scrollHeight);
+        }"""
+    )
+    page.wait_for_function(
+        "Array.from(document.images).every(image => image.complete)", timeout=30000
+    )
+    failures = page.evaluate(
+        """() => Array.from(document.images)
+          .filter(image => !image.classList.contains('ci') && image.naturalWidth === 0)
+          .map(image => ({src: image.currentSrc || image.src, alt: image.alt}))"""
+    )
+    assert not failures, (route, failures)
+
+
 def exercise(
     browser_name: str,
     base_url: str,
@@ -124,11 +149,29 @@ def exercise(
         console_errors: list[str] = []
         request_errors: list[str] = []
         page_errors: list[str] = []
+        same_origin_request_errors: list[str] = []
+        same_origin_response_errors: list[str] = []
 
         def capture_console_error(message) -> None:
             source = message.location.get("url", "")
             if source.startswith(base_url) or "uncaught" in message.text.casefold():
                 console_errors.append(message.text)
+
+        def capture_request_error(request) -> None:
+            message = f"{request.method} {request.url}: {request.failure}"
+            request_errors.append(message)
+            if request.url.startswith(base_url.rstrip("/") + "/"):
+                same_origin_request_errors.append(message)
+
+        def capture_response_error(response) -> None:
+            if (
+                response.url.startswith(base_url.rstrip("/") + "/")
+                and response.status >= 400
+                and urlparse(response.url).path not in EXPECTED_MISSING_PATHS
+            ):
+                same_origin_response_errors.append(
+                    f"{response.status} {response.url}"
+                )
 
         page.on(
             "console",
@@ -136,12 +179,8 @@ def exercise(
                 capture_console_error(message) if message.type == "error" else None
             ),
         )
-        page.on(
-            "requestfailed",
-            lambda request: request_errors.append(
-                f"{request.method} {request.url}: {request.failure}"
-            ),
-        )
+        page.on("requestfailed", capture_request_error)
+        page.on("response", capture_response_error)
         try:
             page.on("pageerror", lambda error: page_errors.append(str(error)))
 
@@ -190,6 +229,8 @@ def exercise(
                 page.goto(base_url + "/")
             role_panels = page.locator("[data-role-panel]")
             assert role_panels.count() == 3
+            focus_panels = page.locator("[data-exploration-panel]")
+            assert focus_panels.count() == 6
             # 720 CSS px approximates a 1440 px desktop at 200% browser zoom.
             for width in (1440, 1280, 1024, 900, 860, 768, 720, 390, 375, 320):
                 page.set_viewport_size({"width": width, "height": 1000})
@@ -202,6 +243,13 @@ def exercise(
                     "items => items.map(item => item.getBoundingClientRect().height)"
                 )
                 assert max(collapsed) - min(collapsed) <= 1, (width, collapsed)
+                collapsed_focus = focus_panels.evaluate_all(
+                    "items => items.map(item => item.getBoundingClientRect().height)"
+                )
+                assert max(collapsed_focus) - min(collapsed_focus) <= 1, (
+                    width,
+                    collapsed_focus,
+                )
                 for panel in role_panels.all():
                     assert not panel.evaluate("item => item.open")
                     summary = panel.locator("summary")
@@ -215,12 +263,39 @@ def exercise(
                         )
                         == "control"
                     )
-                section = page.locator("#role-explorer")
-                if width >= 1024:
-                    background_width = section.evaluate(
-                        "element => getComputedStyle(element, '::before').width"
+                for panel in focus_panels.all():
+                    assert not panel.evaluate("item => item.open")
+                    summary = panel.locator("summary")
+                    assert (
+                        summary.locator("span").nth(1).bounding_box()["y"]
+                        > summary.locator("span").nth(0).bounding_box()["y"]
                     )
-                    assert float(background_width.replace("px", "")) == width
+                    assert (
+                        summary.evaluate(
+                            "element => getComputedStyle(element, '::after').gridArea"
+                        )
+                        == "control"
+                    )
+                if browser_name == "chromium":
+                    page.evaluate(
+                        "document.documentElement.style.scrollbarGutter = 'stable'"
+                    )
+                    assert not page.evaluate(
+                        "document.documentElement.scrollWidth > document.documentElement.clientWidth"
+                    ), ("classic scrollbar gutter", width)
+                    if width == 1440:
+                        assert page.evaluate(
+                            "document.documentElement.clientWidth < innerWidth"
+                        ), "scrollbar-gutter did not reserve a classic scrollbar lane"
+                    section = page.locator("#exploration")
+                    extent = section.evaluate(
+                        "element => { const style = getComputedStyle(element, '::before'); return {width: parseFloat(style.width), sectionWidth: element.getBoundingClientRect().width, shadow: style.boxShadow}; }"
+                    )
+                    assert abs(extent["width"] - extent["sectionWidth"]) <= 1, (
+                        width,
+                        extent,
+                    )
+                    assert extent["shadow"] != "none", (width, extent)
             page.set_viewport_size({"width": 1440, "height": 1000})
             for panel in role_panels.all():
                 role_id = panel.get_attribute("data-role-panel")
@@ -351,7 +426,8 @@ def exercise(
             assert "role=" not in page.url
             page.locator(
                 '[data-exploration-panel="performance-bottlenecks"] summary'
-            ).click()
+            ).focus()
+            page.keyboard.press("Enter")
             page.wait_for_function(
                 "location.search.includes('focus=performance-bottlenecks')"
             )
@@ -366,8 +442,35 @@ def exercise(
                     '[data-exploration-panel="performance-bottlenecks"]'
                 ).inner_text()
             )
+            maintainable = page.locator(
+                '[data-exploration-panel="maintainable-automation"]'
+            )
+            maintainable.locator("summary").focus()
+            page.keyboard.press("Enter")
+            page.wait_for_function(
+                "location.search.includes('focus=maintainable-automation')"
+            )
+            assert maintainable.evaluate("item => item.open")
+            assert page.locator(
+                '[data-exploration-panel="performance-bottlenecks"]'
+            ).evaluate("item => item.open")
+            assert "2 paths are open" in page.locator(
+                "#focus-selection-status"
+            ).inner_text()
+            page.locator(
+                '[data-exploration-panel="performance-bottlenecks"] summary'
+            ).focus()
+            page.keyboard.press("Enter")
+            assert not page.locator(
+                '[data-exploration-panel="performance-bottlenecks"]'
+            ).evaluate("item => item.open")
+            assert maintainable.evaluate("item => item.open")
+            assert "focus=maintainable-automation" in page.url
             page.locator("[data-focus-reset]").click()
             page.wait_for_function("!location.search.includes('focus=')")
+            assert focus_panels.evaluate_all(
+                "items => items.every(item => !item.open)"
+            )
             page.locator('#skills a[href*="skill="]').first.click()
             page.wait_for_url("**/projects.html?skill=*")
             assert page.locator("#skill-search").input_value()
@@ -385,6 +488,23 @@ def exercise(
             )
             assert page.evaluate("document.styleSheets.length > 0")
             assert page.locator("#project-grid .project-card").count() == 25
+            for project_id in (
+                "ai-assisted-test-automation",
+                "llm-feature-testing",
+            ):
+                ai_card = page.locator(
+                    f'#project-grid [data-project-id="{project_id}"]'
+                )
+                assert ai_card.locator(".evidence-kind").inner_text() == (
+                    "Recorded CI replay"
+                )
+                assert "no live model result is claimed" in ai_card.locator(
+                    ".fact"
+                ).inner_text()
+                assert "no live model result" not in ai_card.locator(
+                    ".desc"
+                ).inner_text()
+                assert ai_card.inner_text().count("no live model result") == 1
             case_routes = page.locator(
                 "#project-grid .project-card .card-title a"
             ).evaluate_all("links => links.map(link => new URL(link.href).pathname)")
@@ -536,7 +656,8 @@ def exercise(
             assert page.locator(".engineering-story").count() == 1
             story = page.locator(".engineering-story")
             assert "public demo shop is shared and mutable" in story.inner_text()
-            assert "47 tests, 95 test executions" in story.inner_text()
+            assert "47 unique tests" in story.inner_text()
+            assert "95 test executions" in story.inner_text()
             exercise_architecture(page, base_url, "/projects/enterprise.html", 5)
             exercise_architecture(
                 page, base_url, "/projects/quality-intelligence.html", 6
@@ -657,11 +778,12 @@ def exercise(
                                 )
                                 for section_id in ("role-explorer", "projects"):
                                     extent = page.locator("#" + section_id).evaluate(
-                                        "element => { const rect = element.getBoundingClientRect(); const width = parseFloat(getComputedStyle(element, '::before').width); return {width, left: rect.left + rect.width / 2 - width / 2}; }"
+                                        "element => { const rect = element.getBoundingClientRect(); const style = getComputedStyle(element, '::before'); return {width: parseFloat(style.width), parentWidth: rect.width, left: rect.left, shadow: style.boxShadow, clip: style.clipPath}; }"
                                     )
                                     assert (
-                                        abs(extent["width"] - width) <= 1
-                                        and abs(extent["left"]) <= 1
+                                        abs(extent["width"] - extent["parentWidth"]) <= 1
+                                        and "100vmax" in extent["shadow"]
+                                        and extent["clip"].startswith("inset(")
                                     ), (theme, width, section_id, extent)
                                 cards = page.locator(
                                     "#projects .featured-grid .project-card"
@@ -727,6 +849,15 @@ def exercise(
                                     assert item.evaluate(
                                         "element => element.scrollWidth <= element.clientWidth + 1"
                                     ), (route, theme, width, selector)
+                            related_padding = page.locator(".related-projects").evaluate(
+                                "element => ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'].map(property => parseFloat(getComputedStyle(element)[property]))"
+                            )
+                            assert min(related_padding) >= 16, (
+                                route,
+                                theme,
+                                width,
+                                related_padding,
+                            )
                             if width <= 375:
                                 for block in page.locator(".case-body pre").all():
                                     assert block.evaluate(
@@ -824,6 +955,10 @@ def exercise(
                     )
                 if route.startswith("/projects/"):
                     assert page.locator(".related-projects").count() == 1
+                    related_padding = page.locator(".related-projects").evaluate(
+                        "element => ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'].map(property => parseFloat(getComputedStyle(element)[property]))"
+                    )
+                    assert min(related_padding) >= 16, (route, related_padding)
                     assert (
                         page.locator("[data-project-return]").inner_text()
                         == "Back to Projects"
@@ -837,8 +972,41 @@ def exercise(
                         assert next_link.locator("b").inner_text().strip()
                     assert "undefined" not in page.locator("main").inner_text().lower()
                 if browser_name == "chromium":
+                    reveal_and_verify_images(page, route)
                     audit_accessibility(page)
             assert page.locator(".not-found").count() == 1
+            for missing_route in sorted(EXPECTED_MISSING_PATHS):
+                missing = page.goto(base_url.rstrip("/") + missing_route)
+                assert missing and missing.status == 404, (
+                    missing_route,
+                    missing.status if missing else None,
+                )
+                assert page.locator(".not-found").is_visible()
+                stylesheet_href = page.locator('link[rel="stylesheet"]').get_attribute(
+                    "href"
+                )
+                theme_src = page.locator('script[src*="theme.js"]').get_attribute(
+                    "src"
+                )
+                avatar_src = page.locator(".avatar").get_attribute("src")
+                assert stylesheet_href and stylesheet_href.startswith("/style.css?v=")
+                assert theme_src and theme_src.startswith("/theme.js?v=")
+                assert avatar_src and avatar_src.startswith("/img/")
+                recovery_paths = ("/projects.html", "/")
+                for recovery_path in recovery_paths:
+                    recovery = context.request.get(base_url.rstrip("/") + recovery_path)
+                    assert recovery.status == 200, (
+                        missing_route,
+                        recovery_path,
+                        recovery.status,
+                    )
+                page.locator('.not-found a[href="/projects.html"]').click()
+                page.wait_for_url("**/projects.html")
+                assert page.locator("#project-grid .project-card").count() == 25
+                page.goto(base_url.rstrip("/") + missing_route)
+                page.locator('.not-found a[href="/"]').click()
+                page.wait_for_url(base_url.rstrip("/") + "/")
+                assert page.locator("#hero-title").is_visible()
             cv_response = context.request.get(
                 base_url + "/Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf"
             )
@@ -867,6 +1035,8 @@ def exercise(
 
             assert not page_errors, page_errors
             assert not console_errors, console_errors
+            assert not same_origin_request_errors, same_origin_request_errors
+            assert not same_origin_response_errors, same_origin_response_errors
             context.tracing.stop()
         except Exception:
             artifact_dir = Path(

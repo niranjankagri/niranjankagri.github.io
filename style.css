@@ -640,8 +640,11 @@ main>section{padding-block:clamp(46px,5.5vw,70px)}
 .impact-proof h2{font-size:clamp(26px,3.5vw,42px)}
 .impact-proof h2 strong{color:var(--accent);font-size:1.35em}
 .impact-proof .stat-note{grid-column:2;grid-row:2;max-width:70ch;margin:0;font-size:14px}
-.role-explorer,#projects,#skills,.problem-explorer,.engineering-approach,#experience{position:relative;z-index:0;isolation:isolate;background:transparent}
-.role-explorer::before,#projects::before,.problem-explorer::before,#skills::before,#experience::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:var(--section-tint);pointer-events:none}
+.exploration-band,#projects,#skills,.engineering-approach,#experience{position:relative;z-index:0;isolation:isolate;background:transparent}
+.exploration-band::before,#projects::before,#skills::before,#experience::before{content:"";position:absolute;z-index:-1;inset:0 auto 0 0;width:100%;box-shadow:0 0 0 100vmax var(--section-tint);clip-path:inset(0 -100vmax);background:var(--section-tint);pointer-events:none}
+.exploration-band{padding-block:clamp(34px,4.5vw,56px)}
+.role-explorer,.problem-explorer{position:relative;margin-top:28px}
+.role-explorer h3,.problem-explorer h3{font-size:clamp(22px,2.4vw,28px)}
 .role-explorer{margin-top:0}
 #projects{margin-top:0}
 .role-selection-status,.focus-selection-status{min-height:1.5em;margin:0 0 14px;color:var(--muted);font-size:14px}
@@ -655,12 +658,13 @@ main>section{padding-block:clamp(46px,5.5vw,70px)}
 .role-panel>summary::after{grid-area:control;align-self:center;justify-self:center}
 .role-panel[open],.focus-panel[open]{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 12%,transparent)}
 .focus-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}
-.focus-panel{align-self:start;min-width:0;border:1px solid var(--line);background:var(--surface)}
-.focus-panel>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:14px 16px;cursor:pointer;font-weight:700;list-style:none}
+.focus-panel{align-self:start;min-width:0;min-height:100px;border:1px solid var(--line);background:var(--surface)}
+.focus-panel>summary{display:grid;grid-template-columns:minmax(0,1fr) 24px;grid-template-areas:"title control" "helper control";grid-template-rows:3em 1.4em;align-content:center;align-items:center;column-gap:12px;row-gap:4px;min-height:104px;padding:14px 16px;cursor:pointer;font-weight:700;list-style:none}
+.focus-panel>summary>span:first-child{grid-area:title;min-width:0;overflow-wrap:anywhere}
 .focus-panel>summary::-webkit-details-marker{display:none}
-.focus-panel>summary::after{content:"+";flex:none;font-size:22px;color:var(--accent)}
+.focus-panel>summary::after{content:"+";grid-area:control;align-self:center;justify-self:center;font-size:22px;color:var(--accent)}
 .focus-panel[open]>summary::after{content:"−"}
-.focus-prompt{color:var(--muted);font-size:11px;font-weight:500}
+.focus-prompt{grid-area:helper;min-width:0;color:var(--muted);font-size:11px;font-weight:500;line-height:1.35;overflow-wrap:anywhere}
 .focus-panel-body{padding:0 16px 16px;border-top:1px solid var(--line)}
 .focus-panel-body>p{margin-top:12px;color:var(--muted)}
 .focus-panel-body h3{margin:15px 0 7px;font-size:14px}
@@ -690,7 +694,7 @@ main>section{padding-block:clamp(46px,5.5vw,70px)}
 .approach-step>div p+p{margin-top:8px}
 .approach-step .scope-note{font-size:12px;color:var(--muted)}
 .engineering-evidence{position:relative;z-index:0;isolation:isolate;background:transparent;color:#f0f8f4;padding-block:clamp(46px,5.5vw,70px)}
-.engineering-evidence::before{content:"";position:absolute;z-index:-1;inset-block:0;left:50%;width:100vw;transform:translateX(-50%);background:#173530;pointer-events:none}
+.engineering-evidence::before{content:"";position:absolute;z-index:-1;inset:0 auto 0 0;width:100%;box-shadow:0 0 0 100vmax #173530;clip-path:inset(0 -100vmax);background:#173530;pointer-events:none}
 .engineering-evidence .eyebrow,.engineering-evidence .sub{color:#c3ded4}
 .engineering-evidence .section-heading{margin-bottom:22px}
 .evidence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}

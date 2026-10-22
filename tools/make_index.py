@@ -29,14 +29,14 @@ def role_explorer() -> str:
                          for skill in role['skills'])
         projects = ''.join(f'<li><a href="projects/{html.escape(PROJECT_BY_ID[project_id]["page"])}.html">{html.escape(PROJECT_BY_ID[project_id]["title"])}</a></li>'
                            for project_id in role['projects'])
-        panels.append(f'<details class="role-panel" data-role-panel="{role_id}"><summary><span>{html.escape(role["label"])}</span><span class="role-prompt">Show matching skills and projects</span></summary>'
+        panels.append(f'<details class="role-panel" data-role-panel="{role_id}"><summary><span class="role-title">{html.escape(role["label"])}</span><span class="role-prompt">Show matching skills and projects</span></summary>'
                       f'<div class="role-panel-body"><p>{html.escape(role["summary"])}</p><h3>Relevant skills</h3><ul class="tags role-skills">{skills}</ul>'
                       f'<h3>Related project work</h3><ul class="role-projects">{projects}</ul><p class="role-impact">{html.escape(role["impact"])}</p>'
                       f'<a class="btn" href="projects.html?role={role_id}">View these projects in the explorer</a></div></details>')
     return ('<section class="role-explorer" id="role-explorer" aria-labelledby="role-explorer-title">'
-            '<div class="section-heading"><div><p class="eyebrow">Role-based tour</p><h2 id="role-explorer-title">Explore my work as...</h2>'
-            '<p class="sub">Open a role to see how the project collection, skills and documented outcomes map to that focus. No project is hidden by a role view.</p></div>'
-            '<div class="role-actions"><a class="text-action" href="#role-explorer" data-role-reset>Reset role focus</a><a class="text-action" href="projects.html">View everything</a></div></div>'
+            '<div class="section-heading"><div><p class="eyebrow">By role</p><h3 id="role-explorer-title">Choose a role</h3>'
+            '<p class="sub">Each path connects relevant skills, experience and project evidence.</p></div>'
+            '<div class="role-actions"><a class="text-action" href="#role-explorer" data-role-reset>Reset role focus</a></div></div>'
             '<p id="role-selection-status" class="role-selection-status" role="status" aria-live="polite">Choose a role to see a focused set of skills and project links.</p>'
             '<div class="role-options">' + ''.join(panels) + '</div></section>')
 
@@ -51,8 +51,8 @@ def problem_explorer() -> str:
             for project_id in focus['projects']
         )
         panels.append(
-            f'<details class="focus-panel" data-exploration-panel="{html.escape(focus_id)}" open>'
-            f'<summary><span>{html.escape(focus["label"])}</span><span class="focus-prompt">Open project path</span></summary>'
+            f'<details class="focus-panel" data-exploration-panel="{html.escape(focus_id)}">'
+            f'<summary><span class="focus-title">{html.escape(focus["label"])}</span><span class="focus-prompt">Open project path</span></summary>'
             f'<div class="focus-panel-body"><p>{html.escape(focus["summary"])}</p>'
             f'<p class="focus-experience"><b>Supporting experience:</b> {html.escape(focus["experience"])}</p>'
             f'<h3>Relevant projects</h3><ul class="focus-projects">{projects}</ul>'
@@ -60,11 +60,10 @@ def problem_explorer() -> str:
         )
     return (
         '<section class="problem-explorer" id="focus-explorer" aria-labelledby="focus-explorer-title">'
-        '<div class="section-heading"><div><p class="eyebrow">Problem-led paths</p>'
-        '<h2 id="focus-explorer-title">What do you want to explore?</h2>'
-        '<p class="sub">Choose a focus to reveal relevant work and supporting experience. The project links open a shareable filtered collection.</p>'
-        '</div><div class="role-actions"><a class="text-action" href="#focus-explorer" data-focus-reset>Reset focus</a>'
-        '<a class="text-action" href="projects.html">View everything</a></div></div>'
+        '<div class="section-heading"><div><p class="eyebrow">By problem</p>'
+        '<h3 id="focus-explorer-title">Choose a question</h3>'
+        '<p class="sub">Project links open a shareable filtered collection.</p>'
+        '</div><div class="role-actions"><a class="text-action" href="#focus-explorer" data-focus-reset>Reset focus</a></div></div>'
         '<p id="focus-selection-status" class="focus-selection-status" role="status" aria-live="polite">'
         'Choose a question to open a focused project path; all six remain available.</p>'
         '<div class="focus-options">' + ''.join(panels) + '</div></section>'
@@ -212,11 +211,14 @@ HTML = f'''<!doctype html>
   </div>
   </section>
 
-  {role_explorer()}
-  {problem_explorer()}
-
   <section id="projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="projects-title">Featured projects</h2><p class="sub">Six projects selected for engineering depth, range and evidence. Every card links to its case study and source.</p></div><a class="btn" href="projects.html">View all {len(PROJECTS)} projects</a></div>
     <div class="grid featured-grid">{''.join(project_card(p) for p in FEATURED_PROJECTS)}</div>
+  </section>
+
+  <section class="exploration-band" id="exploration" aria-labelledby="exploration-title">
+    <div class="section-heading"><div><p class="eyebrow">Explore</p><h2 id="exploration-title">Find work by role or problem</h2><p class="sub">Open any path to see related project evidence and professional experience.</p></div></div>
+    {role_explorer()}
+    {problem_explorer()}
   </section>
 
   {capability_showcase()}

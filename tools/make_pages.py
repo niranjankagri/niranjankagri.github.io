@@ -70,11 +70,10 @@ def page(p):
   <p class="eyebrow">{e(p['eyebrow'])}</p>
   <h1>{e(p['title'])}</h1>
   <p class="lead">{e(p['summary'])}</p>
-  <p><a href="{repo}/actions/workflows/{p['workflow']}" aria-label="Live CI status on GitHub Actions"><img class="ci" width="150" height="20" src="{repo}/actions/workflows/{p['workflow']}/badge.svg" alt="Live CI status of {e(p['title'])}"></a></p>
+  <p><a href="{repo}/actions/workflows/{p['workflow']}" aria-label="Open workflow history for {e(p['title'])}"><img class="ci" width="150" height="20" src="{repo}/actions/workflows/{p['workflow']}/badge.svg" alt="GitHub Actions workflow badge"></a></p>
   <div class="btns" style="margin:18px 0 26px">
     <a class="btn primary" href="{repo}" target="_blank" rel="noopener">View source code</a>
     <a class="btn" href="{repo}#readme" target="_blank" rel="noopener">View documentation</a>
-    <a class="btn" href="{repo}/actions/workflows/{p['workflow']}" target="_blank" rel="noopener">View latest CI runs</a>
     <a class="btn" href="{repo}/blob/main/{p['report']}" target="_blank" rel="noopener">View test report</a>
   </div>
   {body}
@@ -209,7 +208,7 @@ PAGES = {
   repo='playwright-typescript-framework', workflow='ci.yml', report='docs/images/report-overview.png',
   eyebrow='Featured project 2 · TypeScript · Web + API',
   title='Playwright + TypeScript Framework',
-  summary='UI and API test automation for a demo web shop (Angular front end + REST API) with Playwright Test and strict TypeScript: 47 tests, 95 runs per full run on Chromium, Firefox and WebKit.',
+  summary='UI and API test automation for a demo web shop (Angular front end + REST API) with Playwright Test and strict TypeScript: 47 unique tests and 95 test executions per full run on Chromium, Firefox and WebKit.',
   purpose='<p>Tests the <a href="https://practicesoftwaretesting.com" target="_blank" rel="noopener">Practice Software Testing Toolshop</a>, '
           'a public demo shop built for testers, through its UI and its REST API, to show modern TypeScript test design: page objects, fixtures, typed API contracts and network control.</p>',
   stack=[['Test runner', 'Playwright Test 1.64'], ['Language', 'TypeScript 6, strict mode'], ['API contracts', 'zod 4 schemas (also the TypeScript types)'],
@@ -234,7 +233,7 @@ PAGES = {
   repo='appium-framework', workflow='tests.yml', report='docs/images/report-overview.png',
   eyebrow='Featured project 4 · Java · Android',
   title='Appium Android Framework',
-  summary='Android test automation with Appium 3, Java 17 and TestNG for the Sauce Labs My Demo App: 40 tests on an Android 15 emulator, locally and in GitHub Actions, with three real app bugs found.',
+  summary='Android test automation with Appium 3, Java 17 and TestNG for the Sauce Labs My Demo App: 40 TestNG methods, with three demo-app defects retained as regression checks.',
   purpose='<p>Shows mobile test automation end to end: setup on Windows without Android Studio, screen objects, device behaviour, evidence for every failure, and an Android emulator in CI.</p>',
   stack=[['Mobile automation', 'Appium 3.8 server, UiAutomator2 driver 8.7, Appium Java client 11'], ['Test runner', 'TestNG 7.12 (groups, suites, retry analyzer)'],
          ['Device', 'Android 15 emulator (API 35), or a real phone over USB'], ['Reporting', 'Custom HTML report with steps, screenshots and screen recordings'],
@@ -251,17 +250,17 @@ PAGES = {
             'Device tests: back button, background and resume, cold start, rotation lock, keyboard',
             '17 interview scenario tests: locator strategies, W3C gestures, permission dialogs, mocked GPS, files, logcat, WebView context',
             'Every failure keeps a screenshot and a screen recording in the report'],
-  run='<pre><code>scripts/get-app.sh                           # downloads the pinned APK\nemulator -avd Pixel_API_35 -no-snapshot-save\nappium --use-plugins=inspector --allow-cors\nmvn test                                     # 40 tests, about 16 min locally\nmvn test -DsuiteXmlFile=known-bugs.xml       # the 3 known app bugs</code></pre>'
+  run='<pre><code>scripts/get-app.sh                           # downloads the pinned APK\nemulator -avd Pixel_API_35 -no-snapshot-save\nappium --use-plugins=inspector --allow-cors\nmvn test                                     # 40 TestNG methods, about 16 min locally\nmvn test -DsuiteXmlFile=known-bugs.xml       # the 3 known app bugs</code></pre>'
       '<p>Full setup guide: <a href="https://github.com/niranjankagri/appium-framework/blob/main/docs/setup.md" target="_blank" rel="noopener">docs/setup.md</a>.</p>',
   results=fig('https://raw.githubusercontent.com/niranjankagri/appium-framework/main/docs/images/report-overview.png',
-              'Appium report: 40 of 40 passed', '40 of 40 passed on the Android 15 emulator.')
+              'Appium report: 40 of 40 test executions passed', '40 of 40 Android 15 emulator test executions passed.')
           + '<h3 id="bugs">Bugs found in the demo app (My Demo App 2.3.0)</h3>'
           + ul(['Opening the 7th or a later catalog product crashes the app (<code>ArrayIndexOutOfBoundsException</code>, from logcat)',
                 'The product quantity can be lowered to 0', 'The missing-country message is cut off ("Please provide your")'])
           + fig('https://raw.githubusercontent.com/niranjankagri/appium-framework/main/docs/images/report-failure.png',
               'Report of the crash test with steps, error, screenshot and recording', 'The crash in the report: steps, error, the home screen at failure and the recording.'),
   ci='<p>On every push: Java 17, Node 24, Appium and the driver at the same versions as the setup guide, KVM, an API 35 Pixel 7 emulator with animations off, '
-     'totals in the run summary and the report, failure videos and Appium log as an artifact. 40 of 40 pass in about 9.5 minutes.</p>',
+     'totals in the run summary and the report, failure videos and Appium log as an artifact. All 40 test executions pass in about 9.5 minutes.</p>',
   limits=['Android only: iOS needs a Mac with Xcode', 'One device, so the suite runs on one thread (the design supports one device per thread)',
           'WebView screens are checked for their context but not automated inside (needs a matching Chromedriver)'],
   next=['Parallel runs on several emulators (one udid and systemPort per thread)', 'Real-device or device-cloud run', 'iOS screens with shared accessibility ids'],
@@ -398,7 +397,7 @@ PAGES = {
   repo='cypress-typescript-framework', workflow='ci.yml', report='docs/images/report-all-passed.png',
   eyebrow='Featured project 8 · TypeScript · E2E + API + Component',
   title='Cypress + TypeScript Framework',
-  summary='End-to-end, API and component tests with Cypress 16 and TypeScript for a React + Node task app kept in the repository: 81 Cypress tests, green in GitHub Actions on Chrome, Firefox and Edge.',
+  summary='End-to-end, API and component tests with Cypress 16 and TypeScript for a React + Node task app kept in the repository: 81 unique Cypress test cases, green in GitHub Actions on Chrome, Firefox and Edge.',
   purpose='<p>Shows what Cypress does best: tests that control the browser&#39;s network, clock and login, and component tests next to '
           'end-to-end tests. The app under test, TaskBoard, is part of the repository, so no public demo site can break a run, '
           'every test can reset the data, and the React components can be mounted on their own.</p>',
@@ -421,7 +420,7 @@ PAGES = {
             'Framework design notes and 86 interview questions with answers linked to the code (Markdown + PDF)'],
   run='<pre><code>npm ci\nnpm test                  # build the app, start it, run all API + UI tests\nnpm run cy:component      # component tests\nnpm run cy:open           # interactive runner\nnpm run cy:demo           # report demo: 1 pass, 2 fail, 1 skip on purpose</code></pre>',
   results=fig('https://raw.githubusercontent.com/niranjankagri/cypress-typescript-framework/main/docs/images/report-all-passed.png',
-              'Static Cypress report screenshot of one API and UI run: 64 tests passed; component tests are separate', 'One API and UI run shown in the report; the repository total of 81 Cypress tests includes 17 component tests.')
+              'Static Cypress report screenshot of one API and UI run: 64 test executions passed; component tests are separate', 'One API and UI run shown in the report; the repository has 81 unique Cypress test cases, including 17 component cases.')
           + fig('https://raw.githubusercontent.com/niranjankagri/cypress-typescript-framework/main/docs/images/failure-screenshot.png',
                 'Cypress screenshot of a failed demo test with the command log and the task board',
                 'Failure screenshot from the report demo: the restored login session, the failed assertion and the board at that moment.'),
@@ -883,7 +882,6 @@ def engineering_story(project):
         cards.append('<h3>Comparable run - after</h3>' + f'<p>{e(story["after"])}</p>')
     else:
         cards.append('<h3>Observed result</h3>' + f'<p>{e(project["result"])}</p>')
-    cards.append('<p class="story-limitation"><b>Evidence boundary:</b> ' + e(story['limitation']) + '</p>')
     return '<div class="engineering-story"><div class="story-grid">' + ''.join('<article>' + card + '</article>' for card in cards) + '</div>' + evidence + '</div>'
 
 
@@ -912,14 +910,13 @@ def evidence_explorer(project, legacy):
         failure = fig(url, 'Historical dashboard test record showing a Selenium timeout on Firefox', 'A historical failure example recorded on 13 Oct 2026; it is not the current live dashboard state.', 'Dashboard screenshot')
         panels.append(('failure', 'Failure example', failure))
     if project['workflow_url']:
-        ci_content = (f'<div class="evidence-box"><p><b>Workflow evidence</b></p><p>{e(project["result_kind"])}</p>'
-                      f'<p>{e(project["result"])}</p><p>Evidence checked {e(project["evidence_date"])}. '
-                      f'<a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open dated evidence: {e(project["evidence_label"])}</a></p>'
-                      f'<p><a href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">Open workflow history</a></p></div>')
+        ci_content = (f'<div class="evidence-box"><p><b>Dated workflow record</b></p>'
+                      f'<p>Evidence checked {e(project["evidence_date"])}. '
+                      f'<a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open {e(project["evidence_label"])}</a></p></div>')
     else:
-        ci_content = (f'<div class="evidence-box"><p><b>Manual or repository evidence</b></p><p>{e(project["result"])}</p>'
+        ci_content = (f'<div class="evidence-box"><p><b>Manual or repository evidence</b></p>'
                       f'<p>Evidence checked {e(project["evidence_date"])}. <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">Open {e(project["evidence_label"])}</a></p>'
-                      '<p>No automated workflow is configured for this project.</p></div>')
+                      '</div>')
     panels.append(('ci', 'CI evidence' if project['workflow_url'] else 'Execution evidence', ci_content))
     buttons = ''.join(f'<button type="button" role="tab" id="evidence-tab-{project["page"]}-{key}" aria-controls="evidence-panel-{project["page"]}-{key}" aria-selected="{"true" if index == 0 else "false"}" tabindex="{"0" if index == 0 else "-1"}" hidden>{e(label)}</button>' for index, (key, label, _) in enumerate(panels))
     bodies = ''.join(f'<div class="evidence-panel" role="tabpanel" id="evidence-panel-{project["page"]}-{key}" aria-labelledby="evidence-tab-{project["page"]}-{key}" tabindex="0">{content}</div>' for key, _, content in panels)
@@ -954,6 +951,14 @@ def render_case_study(project, legacy=None):
     limitations_list = list(legacy.get('limits', []))
     if project['comparison_limits'] not in limitations_list:
         limitations_list.append(project['comparison_limits'])
+    unique_limitations = []
+    seen_limitations = set()
+    for limitation in limitations_list:
+        normalized = ' '.join(limitation.split()).casefold().rstrip('.;:')
+        if normalized and normalized not in seen_limitations:
+            unique_limitations.append(limitation)
+            seen_limitations.add(normalized)
+    limitations_list = unique_limitations
     limitations = ul([e(item) for item in limitations_list])
     extra = legacy.get('extra', [])
     case_specific = ''
@@ -966,23 +971,21 @@ def render_case_study(project, legacy=None):
             'The requirement catalog is synthetic, while the collected CI result files are real. Static dashboard images are identified in the Evidence explorer.</p>'
             f'<p><a href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open the live Quality Intelligence dashboard</a>.</p>')
     elif project['id'] in ('ai-assisted-test-automation', 'llm-feature-testing'):
-        case_specific = '<p>Representative harness failures use hand-written examples with planted rule violations, leaks or wrong facts. CI replays these samples; no live model result is claimed.</p>'
-        result_notes = ('<p>Current CI uses hand-written sample answers and documented replay fixtures. These runs test the harness, '
-            'including planted failure examples; they are not live model outputs and do not establish model quality or accuracy.</p>')
+        case_specific = '<p>CI replay cases include planted rule violations, data leaks and incorrect facts to exercise failure detection.</p>'
     elif project['id'] == 'cypress-typescript-framework':
         case_specific = '<p>The static API and UI report is a passing demo-app run; it is not a production defect count. Other failure examples and component checks are documented in the source repository.</p>'
-        result_notes = ('<p>The report image shows one API and UI execution with 64 passing checks. The repository has 81 Cypress tests '
-            '(31 API, 33 UI and 17 component), plus a separate Node unit suite of 15 tests. The screenshot is not the full suite total.</p>')
+        result_notes = ('<p>The report image shows one API and UI run with 64 passing test executions. The repository has 81 Cypress test cases '
+            '(31 API, 33 UI and 17 component), plus 15 Node unit tests. Component and Node results are separate.</p>')
 
     live = (f'<a class="btn primary" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open live dashboard</a>'
             if project['live_demo'] else '')
     workflow_section = ''
     if project['workflow_url']:
-        workflow_section = (f'<p>{e(project["workflow_name"])}: '
-            f'<a href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">open workflow history</a>. '
-            'The dated evidence above describes the verified execution.</p>')
+        workflow_definition = f'https://github.com/niranjankagri/{project["repo"]}/blob/main/.github/workflows/{project["workflow_file"]}'
+        workflow_section = (f'<p><a href="{e(workflow_definition, quote=True)}" target="_blank" rel="noopener">'
+            'View workflow definition</a>.</p>')
     else:
-        workflow_section = '<p>No automated workflow is configured. Repository and manual execution notes are linked above.</p>'
+        workflow_section = '<p>Manual execution instructions are linked in the setup section.</p>'
     if project['id'] == 'automation-coverage-quality-intelligence':
         workflow_section = ('<p>Scheduled collection reads existing workflow artifacts. The visitor page does not poll repository APIs; '
             'the Render dashboard is periodically refreshed and retains its last collected snapshot.</p>')
@@ -1031,8 +1034,6 @@ def render_case_study(project, legacy=None):
     source_link = f'<a class="btn" href="{e(repo, quote=True)}" target="_blank" rel="noopener">Source code</a>'
     links = live + source_link
     links += f'<a class="btn" href="{e(project["readme_url"], quote=True)}" target="_blank" rel="noopener">Setup and README</a>'
-    if project['workflow_url']:
-        links += f'<a class="btn" href="{e(project["workflow_url"], quote=True)}" target="_blank" rel="noopener">Workflow history</a>'
     report_label = 'View ' + project['report_label']
     links += f'<a class="btn" href="{e(project["report_url"], quote=True)}" target="_blank" rel="noopener">{e(report_label)}</a>'
 
