@@ -18,6 +18,8 @@ The site is static and hosted by GitHub Pages. It does not call GitHub APIs or t
 | `tools/browser_smoke.py` | Playwright checks for routes, role cards, filters, dialogs, comparison, architecture and responsive layouts |
 | `tools/stage_site.py` | Creates a clean `_site` deploy directory with the commit id and asset version |
 | `tools/run_browser_smoke.py` | Serves the staged build locally, runs the browser matrix and captures review screenshots |
+| `tools/serve_site.py` | Local static server with GitHub Pages-style 404 handling, used by the browser smoke |
+| `tools/compare_visual_baselines.py` | Compares the review screenshots with reviewed baselines and writes expected, actual and difference images |
 | `tools/wait_for_deployment.py` | Confirms Pages serves the expected commit and versioned assets |
 | `.github/workflows/portfolio-validation.yml` | PR validation, gated Pages deployment and post-deploy smoke |
 | `style.css`, `theme.js`, `projects.js` | Shared responsive theme, navigation, project filters and interactions |
@@ -52,15 +54,18 @@ python tools/validate_site.py
 For the full local browser check, install the pinned dependencies and run the staged-site smoke command. The script starts and stops its own static server, tests Chromium, Firefox and WebKit, checks the 28 routes and CV, and captures screenshots and traces on failure. axe-core runs WCAG 2.0, 2.1 and 2.2 A/AA checks.
 
 ```bash
-python -m pip install playwright==1.63.0 ruff==0.17.1
+python -m pip install playwright==1.63.0 ruff==0.17.1 Pillow==11.3.0
 python -m playwright install chromium firefox webkit
 npm install --prefix artifacts/a11y --no-save --no-package-lock axe-core@4.10.3
 python tools/build_site.py
 python tools/validate_site.py
 python tools/stage_site.py --build-id local-review
 ASSET_VERSION=$(python -c 'import json; print(json.load(open("_site/release.json", encoding="utf-8"))["asset_version"])')
-python tools/run_browser_smoke.py --directory _site --build-id local-review --asset-version "$ASSET_VERSION" --axe-script artifacts/a11y/node_modules/axe-core/axe.min.js --browser all --capture-review artifacts/visual-review
+python tools/run_browser_smoke.py --directory _site --build-id local-review --asset-version "$ASSET_VERSION" --axe-script artifacts/a11y/node_modules/axe-core/axe.min.js --browser all --capture-review artifacts/visual-review/actual
+python tools/compare_visual_baselines.py --baselines screenshots/portfolio-ux-review/baselines --actual artifacts/visual-review/actual --failures artifacts/visual-review/failures
 ```
+
+CI runs the same comparison and fails on any visual difference; how to review and accept an intended change is in [the visual regression workflow](docs/visual-regression.md).
 
 Pull requests validate but do not deploy. Pushes to `main` and manual workflow runs on `main` deploy the validated artifact; a separate job waits for the deployed build id and runs browser smoke against the public site. `Portfolio validation and local browser smoke` is configured as a required check on `main`.
 
