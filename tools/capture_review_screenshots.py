@@ -121,19 +121,6 @@ def main() -> None:
         for width_name, width in VIEWPORTS:
             for theme in THEMES:
                 open_page(page, base_url, "/", width, theme)
-                capture_region(
-                    page,
-                    ".nav",
-                    output_path(output, "header", width_name, theme),
-                    width,
-                    style=HEADER_CAPTURE_STYLE,
-                )
-                if width_name == "mobile":
-                    capture_mobile_menu(
-                        page,
-                        output_path(output, "mobile-menu", width_name, theme),
-                    )
-
                 for name, selector in (
                     ("hero", ".hero"),
                     ("role-cards", "#role-explorer"),
@@ -164,6 +151,26 @@ def main() -> None:
                     output_path(output, "problem-card-expanded", width_name, theme),
                     width,
                 )
+
+        # Capture site chrome on its own page so opening the mobile menu cannot
+        # affect the established component captures.
+        header_page = browser.new_page(reduced_motion="reduce")
+        for width_name, width in VIEWPORTS:
+            for theme in THEMES:
+                open_page(header_page, base_url, "/", width, theme)
+                capture_region(
+                    header_page,
+                    ".nav",
+                    output_path(output, "header", width_name, theme),
+                    width,
+                    style=HEADER_CAPTURE_STYLE,
+                )
+                if width_name == "mobile":
+                    capture_mobile_menu(
+                        header_page,
+                        output_path(output, "mobile-menu", width_name, theme),
+                    )
+        header_page.close()
 
         # Architecture, Related Projects and footer from a generated case study.
         for width_name, width in VIEWPORTS:
