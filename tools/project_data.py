@@ -279,7 +279,7 @@ EVIDENCE_BY_REPO = {
         'date': '2026-10-20',
         'url': 'https://github.com/niranjankagri/llm-feature-testing/actions/runs/39489149450',
         'label': 'CI run #12 (hand-written sample answers)',
-        'result': 'CI passed on hand-written sample answers with planted flaws; no live model result is claimed.',
+        'result': 'CI replayed hand-written samples with planted flaws; no live model result is claimed.',
         'result_kind': 'Recorded CI replay',
     },
     'accessibility-visual-testing': {
@@ -551,7 +551,6 @@ CARD_RESULTS = {
     'appium-framework': 'Run #7 passed 40 Android 15 emulator test executions; the repository has 40 TestNG methods and three known-bug checks.',
     'k6-performance-testing': 'Above ~90 orders/s checkout exceeded 3 s p95; after load shedding it stayed below 650 ms in the same profile.',
     'ai-assisted-test-automation': 'CI replayed hand-written samples; no live model result is claimed.',
-    'llm-feature-testing': 'CI replayed hand-written samples; no live model result is claimed.',
 }
 
 
