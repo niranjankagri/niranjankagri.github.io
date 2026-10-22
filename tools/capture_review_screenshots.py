@@ -64,6 +64,18 @@ def main() -> None:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True)
         page = browser.new_page(reduced_motion="reduce")
+        # Workflow outcomes change independently of this site. Keep badge geometry
+        # deterministic in visual captures; browser smoke still tests real images.
+        page.route(
+            "**/badge.svg",
+            lambda route: route.fulfill(
+                content_type="image/svg+xml",
+                body='<svg xmlns="http://www.w3.org/2000/svg" width="150" height="20">'
+                '<rect width="150" height="20" rx="3" fill="#425956"/>'
+                '<text x="75" y="14" text-anchor="middle" fill="white" '
+                'font-family="sans-serif" font-size="11">Workflow history</text></svg>',
+            ),
+        )
 
         # Primary homepage components, including the collapsed role and problem paths.
         for width_name, width in VIEWPORTS:
