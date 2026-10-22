@@ -140,7 +140,12 @@ def exercise(
     expected_asset_version: str = "",
 ) -> None:
     with sync_playwright() as playwright:
-        browser = getattr(playwright, browser_name).launch(headless=True)
+        launch_options = {"headless": True}
+        if browser_name == "chromium":
+            launch_options["args"] = [
+                "--disable-features=OverlayScrollbar,FluentOverlayScrollbar"
+            ]
+        browser = getattr(playwright, browser_name).launch(**launch_options)
         context = browser.new_context(
             viewport={"width": 1440, "height": 1000}, reduced_motion="reduce"
         )
