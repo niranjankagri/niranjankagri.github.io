@@ -1042,9 +1042,9 @@ def exercise(
                         audit_accessibility(page)
 
             assert not page_errors, page_errors
-            assert not console_errors, console_errors
             assert not same_origin_request_errors, same_origin_request_errors
             assert not same_origin_response_errors, same_origin_response_errors
+            assert not console_errors, console_errors
             context.tracing.stop()
         except Exception:
             artifact_dir = Path(
