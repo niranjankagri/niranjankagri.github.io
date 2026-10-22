@@ -4,10 +4,10 @@
   <rect x="20" y="188" width="150" height="62" rx="10"/><text x="95" y="214" text-anchor="middle">Components · ApiClient</text><text x="95" y="234" text-anchor="middle">· QueryExecutor · Waits</text>
   <rect x="20" y="268" width="150" height="46" rx="10"/><text x="95" y="296" text-anchor="middle">Driver · Config</text>
   <line x1="95" y1="66" x2="95" y2="96"/><line x1="95" y1="158" x2="95" y2="188"/><line x1="95" y1="250" x2="95" y2="268"/>
-  <rect class="ext" x="280" y="268" width="170" height="46" rx="10"/><text x="365" y="290" text-anchor="middle">Browsers</text><text class="lbl" x="365" y="306" text-anchor="middle">local or Selenium Grid (Docker)</text>
-  <path d="M170 291 H280"/><text class="lbl" x="225" y="284" text-anchor="middle">WebDriver</text>
+  <rect class="ext" x="260" y="268" width="210" height="46" rx="10"/><text x="365" y="290" text-anchor="middle">Browsers</text><text class="lbl" x="365" y="306" text-anchor="middle">local or Selenium Grid (Docker)</text>
+  <path d="M170 291 H260"/><text class="lbl" x="215" y="284" text-anchor="middle">WebDriver</text>
   <rect class="ext" x="560" y="268" width="180" height="46" rx="10"/><text x="650" y="296" text-anchor="middle">ShopEase UI</text>
-  <path d="M450 291 H560"/>
+  <path d="M470 291 H560"/>
   <rect class="ext" x="560" y="188" width="180" height="46" rx="10"/><text x="650" y="216" text-anchor="middle">ShopEase REST API</text>
   <rect class="ext" x="560" y="108" width="180" height="46" rx="10"/><text x="650" y="136" text-anchor="middle">Database (H2)</text>
   <path d="M170 219 H480"/><path d="M480 131 V219"/><path d="M480 131 H560"/><path d="M480 211 H560"/>
