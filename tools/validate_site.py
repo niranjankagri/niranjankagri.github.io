@@ -161,8 +161,8 @@ class Document(HTMLParser):
                 attrs['__has_text'] = '1'
 
 
-stylesheet = re.sub(r'\\s+', '', (ROOT / 'style.css').read_text(encoding='utf-8'))
-css_rules = re.findall(r'([^{}]+)\\{([^{}]*)\\}', stylesheet)
+stylesheet = re.sub(r'\s+', '', (ROOT / 'style.css').read_text(encoding='utf-8'))
+css_rules = re.findall(r'([^{}]+)\{([^{}]*)\}', stylesheet)
 for selector in ('.exploration-band::before', '.engineering-evidence::before'):
     rule = next(
         (body for header, body in css_rules if selector in header.split(',')),
