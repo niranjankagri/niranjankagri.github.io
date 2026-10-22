@@ -142,6 +142,7 @@ def exercise(
     with sync_playwright() as playwright:
         launch_options = {"headless": True}
         if browser_name == "chromium":
+            launch_options["ignore_default_args"] = ["--hide-scrollbars"]
             launch_options["args"] = [
                 "--disable-features=OverlayScrollbar,FluentOverlayScrollbar"
             ]
