@@ -508,7 +508,7 @@ COMPARISON_DETAILS = {
 }
 
 COMPARISON_LIMITATIONS = {
-    'enterprise-test-automation-framework': 'Tests a demo application with an in-memory H2 database; it is not a production deployment.',
+    'enterprise-test-automation-framework': 'The demo application uses an in-memory H2 database and demo-grade security; it is not a production deployment.',
     'playwright-typescript-framework': 'The shared public demo shop can change or be unavailable; two form-login UI checks are skipped in CI when its bot check blocks them.',
     'playwright-framework': 'Evidence describes the public portfolio repository and its linked CI runs, not customer production impact.',
     'appium-framework': 'The verified run uses an Android emulator and a demo application; no real-device result is claimed.',

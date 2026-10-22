@@ -199,7 +199,7 @@ PAGES = {
      + fig('https://raw.githubusercontent.com/niranjankagri/enterprise-test-automation-framework/main/docs/images/ci-nightly.png',
            'Nightly workflow with every job green', 'A nightly run: every job green, including Docker + Selenium Grid.'),
   limits=['Cloud device farms are not integrated (deliberate, see the decision records)',
-          'The application under test uses an in-memory H2 database and demo-grade security; it exists to be tested',
+          'The demo application uses an in-memory H2 database and demo-grade security; it is not a production deployment.',
           'Allure steps are at user-action level; no business-level step names yet'],
   next=['BrowserStack or LambdaTest as another remote target', 'Allure report with history on GitHub Pages',
         'Contract tests (OpenAPI) and performance smoke tests in the nightly run', 'Accessibility checks (axe) on key pages', 'PostgreSQL in Docker'],
