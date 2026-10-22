@@ -2,6 +2,12 @@
 
 The Chromium visual review captures hero, role cards, problem-led cards, featured
 projects, architecture, comparison, Related Projects and the case-study footer.
+Captures include the full architecture section and all comparison cards, even when
+the live dialog scrolls. Sticky site headers are hidden and dialog headers are
+static during capture so they cannot obscure the component. Live workflow badges
+use a neutral, fixed-size SVG during capture because their results can change
+without a site change; functional browser smoke still loads the real badges.
+
 Every region includes desktop and mobile layouts in light and dark themes; role
 and problem cards also include collapsed and expanded states.
 

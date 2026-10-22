@@ -1,0 +1,2 @@
+
+- 2026-10-22: Reviewed all 40 desktop/mobile light/dark component captures from pinned Playwright 1.63.0 Chromium workflow run 39757631346 at source commit 38f75aa5b90baa47ce8ce95a180862dd48d76416 (artifact 12417580316). Confirmed hero, collapsed/expanded role and problem paths, all six featured cards, full architecture section, all three comparison cards, Related Projects padding and footer. Sticky headers no longer obscure captures; workflow badges use a neutral fixed-size capture fixture. Initial baselines; no prior expected images exist.
