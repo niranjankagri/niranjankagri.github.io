@@ -34,18 +34,9 @@ def open_page(page: Page, base_url: str, route: str, width: int, theme: str) -> 
 def capture_region(page: Page, selector: str, destination: Path, width: int) -> None:
     target = page.locator(selector)
     target.wait_for(state="visible")
-    geometry = target.evaluate(
-        "element => { const rect = element.getBoundingClientRect(); "
-        "return { y: rect.top + scrollY, height: rect.height }; }"
-    )
-    nav_height = page.locator(".nav").evaluate(
-        "element => element.getBoundingClientRect().height"
-    )
-    page.set_viewport_size(
-        {"width": width, "height": max(500, round(geometry["height"] + nav_height))}
-    )
-    page.evaluate("y => window.scrollTo(0, Math.max(0, y))", geometry["y"] - nav_height)
-    page.screenshot(path=str(destination), animations="disabled")
+    # Capture the whole component, independent of the current viewport height.
+    # In particular, the architecture heading is not the architecture section.
+    target.screenshot(path=str(destination), animations="disabled")
 
 
 def output_path(output: Path, name: str, width_name: str, theme: str) -> Path:
@@ -112,7 +103,7 @@ def main() -> None:
                 open_page(page, base_url, "/projects/enterprise.html", width, theme)
                 capture_region(
                     page,
-                    "#architecture",
+                    'section[aria-labelledby="architecture"]',
                     output_path(output, "architecture", width_name, theme),
                     width,
                 )
@@ -139,6 +130,12 @@ def main() -> None:
                     ).click()
                 page.locator("#open-comparison").click()
                 page.locator("#comparison-dialog").wait_for(state="visible")
+                # Include every comparison card on mobile, including content that
+                # normally scrolls inside the dialog. This affects captures only.
+                page.locator("#comparison-dialog").evaluate(
+                    "element => { element.style.maxHeight = 'none'; "
+                    "element.style.height = 'auto'; element.style.overflow = 'visible'; }"
+                )
                 page.locator("#comparison-dialog").screenshot(
                     path=str(output_path(output, "comparison", width_name, theme)),
                     animations="disabled",
