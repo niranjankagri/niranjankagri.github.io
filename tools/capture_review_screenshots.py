@@ -61,7 +61,9 @@ def main() -> None:
     try:
         output.relative_to(ROOT.resolve())
     except ValueError as error:
-        raise SystemExit("Screenshot output must stay inside the repository.") from error
+        raise SystemExit(
+            "Screenshot output must stay inside the repository."
+        ) from error
     output.mkdir(parents=True, exist_ok=True)
     base_url = arguments.base_url.rstrip("/")
 
@@ -80,7 +82,10 @@ def main() -> None:
                     ("featured-projects", "#projects"),
                 ):
                     capture_region(
-                        page, selector, output_path(output, name, width_name, theme), width
+                        page,
+                        selector,
+                        output_path(output, name, width_name, theme),
+                        width,
                     )
 
                 # Capture one expanded example of each disclosure set at every size/theme.
