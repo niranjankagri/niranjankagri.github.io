@@ -709,15 +709,15 @@ PAGES = {
   repo='automation-coverage-quality-intelligence', workflow='ci.yml', report='docs/images/gate-report-release.png',
   eyebrow='Featured project 17 · Quality engineering · Python',
   title='Automation Coverage & Quality Intelligence',
-  summary='A quality engineering platform on top of existing test automation: it imports the results that pytest, Robot Framework, Selenium/TestNG, Playwright and Cypress suites already produce (JUnit XML, mochawesome, Allure), links them to requirements, measures coverage, analyses execution history and decides release quality gates in CI.',
+  summary='A quality engineering platform on top of existing test automation: it collects the results that pytest, Robot Framework, Selenium/TestNG, Playwright and Cypress suites already produce (JUnit XML, mochawesome, Allure) from 23 repositories, links them to requirements, analyses execution history, decides release quality gates in CI and presents everything in a live report.',
   purpose='<p>Each automation framework reports on its own run, but a release decision needs answers across all of them: which requirements are tested, which critical ones have no automated test, what failed and what it puts at risk, which tests are flaky, and whether this build meets the agreed criteria. '
           'This platform answers those questions from the results the frameworks already write. Execution history comes from collected CI result files, while the requirement catalog used by the demonstration is synthetic; the two data sources are kept distinct.</p>',
   stack=[['Language', 'Python 3.12+, one package (qualityintel) with the command qi; pydantic 2 models, mypy --strict'],
          ['Input', 'JUnit XML from pytest, Robot Framework (--xunit), Maven Surefire/TestNG and Playwright Test; Cypress mochawesome reports; Allure results folders; requirements from CSV or TOML; gates in TOML'],
          ['Storage', 'SQLite (standard library) for execution history; all SQL in one module'],
-         ['Dashboard', 'FastAPI JSON API with OpenAPI docs and a static HTML/JS front end with a strict Content-Security-Policy'],
-         ['Quality', 'pytest (branch coverage 98 %), Playwright browser tests, ruff with docstring rules, an architecture test for the layering rule'],
-         ['CI', 'GitHub Actions: 11 jobs on pinned Ubuntu 26.04 and Windows 2025 images, including a dependency audit, a canary on the latest image, sample quality gates, a self gate and a demonstration from a clean checkout']],
+         ['Front end', 'FastAPI JSON API with OpenAPI docs; a report-style front end (overview, test results, failures and stability, trends, coverage) as the home page and the original dashboard at /classic/; plain JavaScript modules, no build step, a strict Content-Security-Policy'],
+         ['Quality', '1,143 unit, integration and performance tests and 229 browser tests in Chromium, Firefox and WebKit, axe-core WCAG checks, ruff with docstring rules, mypy --strict, an architecture test for the layering rule'],
+         ['CI', 'GitHub Actions on pinned Ubuntu 26.04 and Windows 2025 images: checks, a wheel asset check, tests, the browser suites, sample quality gates, a self gate and a demonstration from a clean checkout; after every deployment an HTTP and browser smoke test of the live report']],
   architecture=fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/data-flow.svg', 'Data flow of the platform',
                    'Result files and the requirement catalog are read into a typed model; traceability, history and gates compute everything; the command line and the dashboard only present it.'),
   decisions=['Coverage and pass rate are separate numbers, never one blended score; a zero denominator is shown as n/a, not 0 % or 100 %',
@@ -735,24 +735,35 @@ PAGES = {
             'Collects real CI results every day from four public automation repositories (enterprise TestNG, pytest, Cypress, Robot Framework) out of their workflow artifacts: on 20 Oct 2026, 22 pipeline runs and 3,792 test results, each job count matching the producer\'s own CI log, and a cancelled run recorded as incomplete',
             'CI pipeline executions: the jobs of one run are grouped (re-run attempts, branch, commit); a gate never decides on a pipeline with a missing job. Shown on a real TaskBoard run whose Firefox job was cancelled: 114 of 114 existing results passed, the gate says incomplete',
             'Requirements imported from a CSV export (preview, row-level errors, no duplicates on re-import); test-case links are never touched',
-            'Dashboard with overview, requirements, tests, runs, stability and trends pages; trend values checked against the stored records with plain SQL; filters kept in the address',
+            'A live report: overview with four separate headline figures (pass rate, automation coverage, critical gaps, release readiness), test results by repository, job and class, failures grouped by cause, trends, and coverage by product and feature; filters offer only combinations that were recorded, and every figure opens its evidence',
+            'Test details open the exact execution that was clicked (repository, job, browser, run) with its history in that context, a browser comparison and the evidence; missing data is said to be missing: no results is never 100 %, a missing duration is never zero',
+            'Release readiness as a scorecard: every criterion with its measured value, threshold, result and effect, each linked to its evidence; the release gate per day and the days its reasons changed',
+            'Recurring failures ranked by how often they failed in the last 7 days, latest regressions per suite and branch, coverage gaps by criticality and owner, a daily digest, and issue drafts that a person submits through GitHub\'s own form (nothing is created automatically)',
+            'A historical test execution dashboard: all recorded executions, daily outcomes and the slowest, most failing and most erroring tests per execution context',
+            'The original dashboard with requirements, tests, runs, pipelines, stability and trends pages remains available; trend values checked against the stored records with plain SQL; filters kept in the address',
             'Quality gate reports in JSON, HTML and Markdown (GitHub job summary)',
             'Gates its own release on the project plan\'s ten acceptance criteria, using its own test results'],
   run='<pre><code>python -m venv .venv\n.venv\\Scripts\\activate\npip install -e .\npython tools/demo.py                       :: eleven documented steps, each checks its exit code\nqi dashboard --catalog samples/catalog.toml --database demo-output/quality.db</code></pre>',
-  results=fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-stability.png', 'Stability page of the dashboard',
-              'Static dashboard screenshot using repository result records: four flaky candidates, each with a pass and fail on the same build.')
+  results=fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/report-overview-light.png', 'Overview of the Quality Intelligence report',
+              'Static screenshot from the repository: the latest result of every suite, four headline figures, the daily trend, a browser comparison and what needs attention.')
+          + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/report-failures-light.png', 'Failures and Stability section of the report',
+                'Static screenshot from the repository: failures grouped by cause, unstable tests by kind, recovered tests listed apart, recurring causes.')
+          + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/report-overview-phone.png', 'The report on a phone',
+                'Static screenshot from the repository at 390 px width.')
+          + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-stability.png', 'Stability page of the original dashboard',
+                'Static dashboard screenshot using repository result records: four flaky candidates, each with a pass and fail on the same build.')
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-test-history.png', 'History of one test',
                 'Static historical screenshot of a Selenium test timeout on Firefox, recorded on 13 Oct 2026.')
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/gate-report-release.png', 'HTML report of the release gate',
                 'Static sample gate report based on the synthetic requirement catalog: two critical requirements have no automated test.')
           + fig('https://raw.githubusercontent.com/niranjankagri/automation-coverage-quality-intelligence/main/docs/images/dashboard-pipelines.png', 'Pipelines page',
                 'Static historical dashboard screenshot of two actual TaskBoard CI runs; the cancelled run is marked incomplete because Firefox did not report.'),
-  ci='<p>On every push: lint, format and strict type checks; unit and integration tests on Python 3.12 and 3.13; the dashboard in Chromium (including a 390 px phone width); the sample gates, each asserting its exit code; a self gate on the plan\'s acceptance criteria; and the documented demonstration from a clean checkout.</p>',
+  ci='<p>On every push: lint, format and strict type checks and a check that the built package contains every front-end file; unit and integration tests on Python 3.12 and 3.13; the browser suites in Chromium, Firefox and WebKit (including a 390 px phone width and axe-core accessibility checks); the sample gates, each asserting its exit code; a self gate on the plan\'s acceptance criteria; and the documented demonstration from a clean checkout. After every deployment, a smoke test waits for the new commit on the live site and checks the report over HTTP and in Chromium.</p>',
   limits=['Three input formats (JUnit XML, mochawesome, Allure results); mochawesome records no browser, build or retries, so those are given on the command line',
           'Tests are identified by name: renaming a test starts a new history',
           'The dashboard login is one shared account (basic authentication): for a team, put TLS or the organisation\'s login proxy in front',
           'The requirement catalog in the demonstration is synthetic; the test results are real'],
-  next=['Direct requirement sync with a test-management tool', 'Live reload of the dashboard when the history changes'],
+  next=['A versioned release of the report UI', 'Direct requirement sync with a test-management tool', 'Failure clustering across repositories'],
  ),
  'rest-api': dict(
   repo='api-automation', workflow='tests.yml', report='docs/images/html-report.png',
@@ -793,7 +804,7 @@ ARCHITECTURE_COMPONENTS = {
         {'name': 'Traceability', 'purpose': 'Match test results to test cases and requirements, then compute coverage and gaps.', 'technology': 'Python matching and coverage services.', 'inputs': 'Typed result records, mappings and the requirement catalog.', 'outputs': 'Coverage measures, gaps, execution status and pipeline summaries.', 'path': 'src/qualityintel/traceability'},
         {'name': 'History and analysis', 'purpose': 'Store run history and calculate trends, stability classes and duration changes.', 'technology': 'SQLite and Python history services.', 'inputs': 'Validated result and collection records.', 'outputs': 'Persisted history and evidence-backed analyses.', 'path': 'src/qualityintel/history'},
         {'name': 'Release gates', 'purpose': 'Evaluate configured release criteria and keep failed and incomplete outcomes distinct.', 'technology': 'Python gate evaluator and TOML configuration.', 'inputs': 'Computed metrics, results and configured thresholds.', 'outputs': 'Passed, failed or incomplete decisions with reports.', 'path': 'src/qualityintel/gates'},
-        {'name': 'CLI and dashboard', 'purpose': 'Present the core calculations without owning their business rules.', 'technology': 'Python CLI, FastAPI and a static HTML/CSS/JavaScript dashboard.', 'inputs': 'Catalogs, stored history and core service outputs.', 'outputs': 'Command results, dashboard pages and read-only API responses.', 'path': 'src/qualityintel/dashboard'},
+        {'name': 'CLI, API and report', 'purpose': 'Present the core calculations without owning their business rules.', 'technology': 'Python CLI, FastAPI, a report-style front end (home page) and the original dashboard (/classic/) in plain HTML, CSS and JavaScript.', 'inputs': 'Catalogs, stored history and core service outputs.', 'outputs': 'Command results, report and dashboard pages and read-only API responses.', 'path': 'src/qualityintel/dashboard'},
     ],
     'playwright-typescript-framework': [
         {'name': 'Test specifications', 'purpose': 'Separate browser journeys from direct API checks, with explicit network scenarios for empty and failed responses.', 'technology': 'Playwright Test, strict TypeScript, API and UI projects.', 'inputs': 'The public Toolshop UI and REST API, plus typed test data.', 'outputs': 'UI, API and network assertions with test-level reporting.', 'path': 'tests', 'source_url': 'https://github.com/niranjankagri/playwright-typescript-framework/tree/main/tests'},
@@ -969,7 +980,8 @@ def render_case_study(project, legacy=None):
         case_specific = '<p>Two critical requirements without automation are shown in the synthetic demonstration catalog. This is a sample gate outcome, not a finding about a live product.</p>'
         result_notes = ('<p>Execution data is collected periodically from CI artifacts; the portfolio makes no streaming claim. '
             'The requirement catalog is synthetic, while the collected CI result files are real. Static dashboard images are identified in the Evidence explorer.</p>'
-            f'<p><a href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open the live Quality Intelligence dashboard</a>.</p>')
+            f'<p><a href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open the live Quality Intelligence report</a> '
+            f'or <a href="{e(project["live_demo"] + "/classic/", quote=True)}" target="_blank" rel="noopener">the original dashboard</a>.</p>')
     elif project['id'] in ('ai-assisted-test-automation', 'llm-feature-testing'):
         case_specific = '<p>CI replay cases include planted rule violations, data leaks and incorrect facts to exercise failure detection.</p>'
     elif project['id'] == 'cypress-typescript-framework':
@@ -977,7 +989,8 @@ def render_case_study(project, legacy=None):
         result_notes = ('<p>The report image shows one API and UI run with 64 passing test executions. The repository has 81 Cypress test cases '
             '(31 API, 33 UI and 17 component), plus 15 Node unit tests. Component and Node results are separate.</p>')
 
-    live = (f'<a class="btn primary" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open live dashboard</a>'
+    live = (f'<a class="btn primary" href="{e(project["live_demo"], quote=True)}" target="_blank" rel="noopener">Open live report</a>'
+            f'<a class="btn" href="{e(project["live_demo"] + "/classic/", quote=True)}" target="_blank" rel="noopener">Classic dashboard</a>'
             if project['live_demo'] else '')
     workflow_section = ''
     if project['workflow_url']:
@@ -988,7 +1001,7 @@ def render_case_study(project, legacy=None):
         workflow_section = '<p>Manual execution instructions are linked in the setup section.</p>'
     if project['id'] == 'automation-coverage-quality-intelligence':
         workflow_section = ('<p>Scheduled collection reads existing workflow artifacts. The visitor page does not poll repository APIs; '
-            'the Render dashboard is periodically refreshed and retains its last collected snapshot.</p>')
+            'the Render service is periodically refreshed and retains its last collected snapshot. Each deployment is smoke-tested over HTTP and in a browser.</p>')
 
     scope_items = legacy.get('features')
     if scope_items:
