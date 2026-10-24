@@ -1017,10 +1017,12 @@ def exercise(
                     "href"
                 )
                 theme_src = page.locator('script[src*="theme.js"]').get_attribute("src")
-                avatar_src = page.locator(".avatar").get_attribute("src")
+                brand_mark = page.locator(".nav .brand-mark")
+                assert brand_mark.inner_text() == "NA"
+                assert brand_mark.get_attribute("aria-hidden") == "true"
+                assert page.locator(".nav .home").get_attribute("href") == "/"
                 assert stylesheet_href and stylesheet_href.startswith("/style.css?v=")
                 assert theme_src and theme_src.startswith("/theme.js?v=")
-                assert avatar_src and avatar_src.startswith("/img/")
                 recovery_paths = ("/projects.html", "/")
                 for recovery_path in recovery_paths:
                     recovery = context.request.get(base_url.rstrip("/") + recovery_path)
