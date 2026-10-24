@@ -373,6 +373,19 @@ FEATURED_ORDER = (
 FEATURED_IDS = set(FEATURED_ORDER)
 
 LIVE_DASHBOARD = 'https://quality-intelligence-0ur1.onrender.com'
+# Headline figures of the live report, read from its API (/api/report/overview, /api/summary,
+# /api/readiness) on 24 Oct 2026. A dated snapshot: the live report changes every day.
+QI_REPORT_SNAPSHOT = {
+    'date': '2026-10-24',
+    'repositories': 23,
+    'results': 3778,
+    'tiles': [
+        ('passed', 'Execution pass rate', '100%', '3,768 of 3,768 verdicts passed; 10 skipped not counted', '#/results'),
+        ('accent', 'Automation coverage', '86%', '37 of 43 test cases in the synthetic sample catalog automated', '#/coverage'),
+        ('failed', 'Critical gaps', '2', 'critical requirements without an automated test', '#/coverage?show=gaps'),
+        ('warning', 'Release readiness', 'At risk', 'gate passed; 3 flaky candidates and 3 incomplete collections in 7 days', '#/overview?panel=readiness'),
+    ],
+}
 PROJECTS_URL = 'https://niranjankagri.github.io/projects.html'
 
 # Role views highlight work without removing any item from the project collection.
