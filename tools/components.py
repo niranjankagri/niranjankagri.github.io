@@ -61,7 +61,7 @@ def header(prefix: str, current: str, project_count: int | None = None) -> str:
     home_current = ' aria-current="page"' if on_home else ''
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="nav"><div class="wrap">
-  <a class="home" href="{home_href}"{home_current}><picture><source srcset="{prefix}img/avatar-2026-10c.webp" type="image/webp"><img class="avatar" src="{prefix}img/avatar-2026-10c.jpg" alt="" width="40" height="40"></picture><span>Niranjan Kumar Agri</span></a>
+  <a class="home" href="{home_href}"{home_current}><span class="brand-mark" aria-hidden="true">NA</span><span>Niranjan Kumar Agri</span></a>
   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"><span class="menu-icon" aria-hidden="true">☰</span><span class="sr-only">Open navigation</span></button>
   <nav id="primary-nav" aria-label="Primary navigation">
     <a href="{prefix}projects.html"{projects_current}>Projects{count}</a><a href="{section}experience">Experience</a><a href="{section}skills">Skills</a><a href="{section}contact">Contact</a><a class="nav-cv" href="{prefix}{CV}" download>{icon('download')}CV</a>

@@ -126,6 +126,7 @@ def main() -> None:
                     ("role-cards", "#role-explorer"),
                     ("problem-cards", "#focus-explorer"),
                     ("featured-projects", "#projects"),
+                    ("dashboard-showcase", "#quality-intelligence"),
                 ):
                     capture_region(
                         page,

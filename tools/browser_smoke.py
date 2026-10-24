@@ -376,6 +376,20 @@ def exercise(
                     ), (browser_name, width, role_id)
                     page.locator("[data-role-reset]").click()
             page.set_viewport_size({"width": 1440, "height": 1000})
+            showcase = page.locator("#quality-intelligence")
+            showcase.scroll_into_view_if_needed()
+            live_dashboard = showcase.get_by_role("link", name="Open live dashboard")
+            assert (
+                live_dashboard.get_attribute("href")
+                == "https://quality-intelligence-0ur1.onrender.com"
+            )
+            assert "synthetic" in showcase.locator(".showcase-note").inner_text()
+            assert showcase.locator("img").get_attribute("alt")
+            showcase.get_by_role("link", name="Read the case study").click()
+            page.wait_for_url("**/projects/quality-intelligence.html")
+            assert page.locator("main h1").is_visible()
+            page.go_back()
+            page.locator("#quality-intelligence").wait_for(state="visible")
             page.locator("#projects").scroll_into_view_if_needed()
             featured = page.locator("#projects .featured-grid .project-card")
             assert featured.count() == 6
