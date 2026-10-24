@@ -774,3 +774,28 @@ footer{margin-top:0;padding:34px 0 44px;background:var(--surface-2);text-align:l
 @media (prefers-reduced-motion:reduce){
   .capability:hover,.capability:focus-within{transform:none}
 }
+/* Quality Intelligence case study in the style of its live report: headline tiles, a section tab bar, cards */
+:root{--kpi-passed:#1d6b4a;--kpi-failed:#a62a2a;--kpi-warning:#7a5200;--kpi-accent:var(--accent)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--kpi-passed:#79dfb2;--kpi-failed:#ff9a91;--kpi-warning:#f2c35b}}
+:root[data-theme="dark"]{--kpi-passed:#79dfb2;--kpi-failed:#ff9a91;--kpi-warning:#f2c35b}
+.report-kpis{margin:26px 0 8px}
+.report-kpis-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;margin-bottom:12px}
+.report-kpis-head h2{margin:0;font-size:18px}
+.report-kpis-head p{margin:0;color:var(--muted);font-size:13.5px;max-width:70ch}
+.report-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0;padding:0;list-style:none}
+.page ul.report-kpi-grid{padding-left:0;margin:0}
+.page ul.report-kpi-grid>li{margin:0}
+.report-kpi{display:flex;flex-direction:column;gap:4px;height:100%;padding:16px 16px 14px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--kpi-tone,var(--accent));border-radius:var(--radius-lg);box-shadow:var(--shadow);color:var(--ink);text-decoration:none}
+.report-kpi:hover,.report-kpi:focus-visible{border-color:var(--kpi-tone,var(--accent))}
+.report-kpi-passed{--kpi-tone:var(--kpi-passed)}.report-kpi-failed{--kpi-tone:var(--kpi-failed)}
+.report-kpi-warning{--kpi-tone:var(--kpi-warning)}.report-kpi-accent{--kpi-tone:var(--kpi-accent)}
+.report-kpi-label{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--muted)}
+.report-kpi-value{font-size:30px;line-height:1.1;font-weight:800;color:var(--kpi-tone,var(--accent))}
+.report-kpi-note{font-size:13px;color:var(--muted)}
+.report-tabs{display:flex;gap:4px;overflow-x:auto;margin:18px 0 0;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);scrollbar-width:thin}
+.report-tabs a{flex:0 0 auto;padding:8px 14px;border-radius:var(--radius);color:var(--muted);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.report-tabs a:hover,.report-tabs a:focus-visible{background:var(--accent-soft);color:var(--accent)}
+.case-report .case-body>section:not(.related-projects){padding:20px 22px;margin-bottom:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.case-report .case-body>section>h2{margin-top:0}
+@media (max-width:900px){.report-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.report-kpi-grid{grid-template-columns:1fr}.case-report .case-body>section:not(.related-projects){padding:16px}}

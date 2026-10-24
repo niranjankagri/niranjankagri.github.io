@@ -13,7 +13,7 @@ GH = 'https://github.com/niranjankagri/'
 e = html.escape
 sys.path.insert(0, os.path.dirname(__file__))
 from components import ci_status, footer, header, readable_date, stylesheet, script_asset  # noqa: E402
-from project_data import PROJECTS  # noqa: E402
+from project_data import PROJECTS, QI_REPORT_SNAPSHOT  # noqa: E402
 
 
 def ul(items):
@@ -1073,6 +1073,29 @@ def render_case_study(project, legacy=None):
     related_section = ('<section class="related-projects" aria-labelledby="related-title"><h2 id="related-title">Related projects</h2>'
                        '<p>Related by shared categories or technology tags.</p><ul>' + related_markup + '</ul></section>')
 
+    report_kpis = ''
+    report_tabs = ''
+    main_class = 'wrap page case'
+    if project['id'] == 'automation-coverage-quality-intelligence':
+        # The live report's headline figures as a dated snapshot, in the report's own tile layout
+        snap = QI_REPORT_SNAPSHOT
+        tiles = ''.join(
+            f'<li><a class="report-kpi report-kpi-{tone}" href="{e(project["live_demo"] + "/" + route, quote=True)}" target="_blank" rel="noopener">'
+            f'<span class="report-kpi-label">{e(label)}</span><strong class="report-kpi-value">{e(value)}</strong>'
+            f'<span class="report-kpi-note">{e(note)}</span></a></li>'
+            for tone, label, value, note, route in snap['tiles'])
+        report_kpis = (f'<section class="report-kpis" aria-labelledby="report-kpis-title">'
+                       f'<div class="report-kpis-head"><h2 id="report-kpis-title">Live report at a glance</h2>'
+                       f'<p>Snapshot of {snap["results"]:,} latest results from {snap["repositories"]} repositories, read from the live report on '
+                       f'<time datetime="{snap["date"]}">{readable_date(snap["date"])}</time>; each figure opens its evidence there.</p></div>'
+                       f'<ul class="report-kpi-grid">{tiles}</ul></section>')
+        report_tabs = ('<nav class="report-tabs" aria-label="Sections of this case study">'
+                       + ''.join(f'<a href="#{section_id}">{e(short)}</a>' for section_id, short in (
+                           ('purpose', 'Purpose'), ('architecture', 'Architecture'), ('decisions', 'Decisions'),
+                           ('scope', 'Scope'), ('results', 'Results'), ('evidence', 'Evidence'),
+                           ('run', 'Setup'), ('limitations', 'Limitations')) if f'id="{section_id}"' in body)
+                       + '</nav>')
+        main_class += ' case-report'
     document = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)} | Project case study | Niranjan Kumar Agri</title><meta name="description" content="{e(summary)}">
@@ -1080,11 +1103,11 @@ def render_case_study(project, legacy=None):
 {stylesheet('../')}<script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script></head>
 <body>
 {header('../', 'case')}
-<main id="main" class="wrap page case">
+<main id="main" class="{main_class}">
 <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Home</a> / <a href="../projects.html">Projects</a> / <span aria-current="page">{e(title)}</span></nav>
 <header class="case-hero"><p class="eyebrow">{e(project['project_kind'])} | {e(category)}</p><h1>{e(title)}</h1><p class="lead">{e(summary)}</p>
 <ul class="tags" aria-label="Technologies">{tags}</ul><div class="case-links">{links}</div></header>
-<div class="case-summary"><p class="fact">{e(project['result'])}</p><div class="case-summary-foot"><p class="evidence">Evidence checked {readable_date(project['evidence_date'])} | <a href="{e(project['evidence_url'], quote=True)}" target="_blank" rel="noopener">{e(project['evidence_label'])}</a></p>{ci_status(project)}</div></div>
+{report_kpis}{report_tabs}<div class="case-summary"><p class="fact">{e(project['result'])}</p><div class="case-summary-foot"><p class="evidence">Evidence checked {readable_date(project['evidence_date'])} | <a href="{e(project['evidence_url'], quote=True)}" target="_blank" rel="noopener">{e(project['evidence_label'])}</a></p>{ci_status(project)}</div></div>
 <div class="case-layout"><details class="toc" id="case-toc" open><summary class="toc-title">On this page</summary><ol>{toc}</ol></details>
 <div class="case-body">{body}{related_section}{adjacent}<p class="crumbs back"><a data-project-return href="../projects.html">Back to Projects</a></p></div></div>
 </main>
