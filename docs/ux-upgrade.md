@@ -61,3 +61,21 @@ Footer and comparison captures: [Playwright + TypeScript case-study footer](../s
 Contact section captures: [desktop light](../screenshots/portfolio-ux-review/contact-desktop-light.png), [desktop dark](../screenshots/portfolio-ux-review/contact-desktop-dark.png), [mobile light](../screenshots/portfolio-ux-review/contact-mobile-light.png), and [mobile dark](../screenshots/portfolio-ux-review/contact-mobile-dark.png).
 
 Expanded role states: [Senior SDET desktop](../screenshots/portfolio-ux-review/role-expanded-senior-sdet-desktop-light.png) and [mobile](../screenshots/portfolio-ux-review/role-expanded-senior-sdet-mobile-dark.png), [QA Lead desktop](../screenshots/portfolio-ux-review/role-expanded-qa-lead-desktop-light.png) and [mobile](../screenshots/portfolio-ux-review/role-expanded-qa-lead-mobile-dark.png), [Automation Architect desktop](../screenshots/portfolio-ux-review/role-expanded-automation-architect-desktop-light.png) and [mobile](../screenshots/portfolio-ux-review/role-expanded-automation-architect-mobile-dark.png).
+
+## Portfolio and dashboard visual alignment — 24 October 2026
+
+The shared theme uses black headings, white/slate surfaces and blue interaction accents, with
+teal reserved for the NA monogram. Dark mode uses the same structure with light text. The hero
+keeps the existing portrait and professional copy, with a calmer text/portrait balance and a
+light frame. Experience disclosures, project filters, image viewers and reduced-motion handling
+remain available.
+
+A homepage Quality Intelligence showcase reuses its canonical project record and dated local
+screenshot. Its direct live-dashboard action and case-study path are distinct. The screenshot's
+capture date and synthetic-catalog limitation remain beside it; it is not a live status widget.
+The six featured cards keep their source links, dated evidence and report captions, with cleaner
+spacing and aligned descriptions. Career facts, project results and the CV are unchanged.
+
+Browser smoke exercises the showcase's case-study return path and preserves the existing
+navigation/filter/preview/comparison checks. Visual captures include the showcase at desktop and
+phone widths in both themes, alongside the existing component baselines.

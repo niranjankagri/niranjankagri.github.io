@@ -9,7 +9,7 @@ The site is static and hosted by GitHub Pages. It does not call GitHub APIs or t
 
 | File | Purpose |
 |---|---|
-| `index.html` | Concise home page, professional impact, six featured projects, experience, skills and contact |
+| `index.html` | Home page, professional impact, live dashboard showcase, six featured projects, experience, skills and contact |
 | `projects.html` | Searchable collection of all 25 projects; cards remain available without JavaScript |
 | `projects/*.html` | One case study per project, with setup, architecture, dated evidence and limitations |
 | `tools/project_data.py` | Shared project records, category and technology tags, evidence links and featured selection |

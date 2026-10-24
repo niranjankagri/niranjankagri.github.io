@@ -171,6 +171,24 @@ def evidence_showcase() -> str:
     )
 
 
+def dashboard_showcase() -> str:
+    """Present the existing dated dashboard preview as a direct path to the live product."""
+    project = PROJECT_BY_ID['automation-coverage-quality-intelligence']
+    preview_type, preview_scope = project['preview_caption']
+    image = 'img/' + project['image'] + '.jpg'
+    return f'''<section class="dashboard-showcase" id="quality-intelligence" aria-labelledby="dashboard-showcase-title">
+      <div class="showcase-copy"><p class="eyebrow">Built to bring the evidence together</p>
+      <h2 id="dashboard-showcase-title">Quality Intelligence.<br>One place to explore.</h2>
+      <p class="sub">{html.escape(project['short_purpose'])}</p>
+      <ul class="showcase-features" aria-label="Dashboard capabilities"><li>Repository filters</li><li>Execution trends</li><li>Release gates</li></ul>
+      <div class="btns"><a class="btn primary" href="{html.escape(project['live_demo'], quote=True)}" target="_blank" rel="noopener">Open live dashboard {icon('arrow')}</a>
+      <a class="text-action" href="projects/{html.escape(project['page'])}.html">Read the case study {icon('arrow')}</a></div>
+      <p class="showcase-note">{html.escape(preview_type)}. {html.escape(preview_scope)}</p></div>
+      <div class="showcase-preview"><span class="preview-window" aria-hidden="true"><i></i><i></i><i></i><span>Quality Intelligence / Overview</span></span>
+      <a href="projects/{html.escape(project['page'])}.html" aria-label="Explore the Quality Intelligence case study"><img src="{image}" alt="{html.escape(project['alt'], quote=True)}" width="640" height="400" loading="lazy"></a></div>
+    </section>'''
+
+
 HTML = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -194,6 +212,7 @@ HTML = f'''<!doctype html>
 <main id="main" class="wrap">
   <section class="hero" aria-labelledby="hero-title"><div class="hero-grid">
     <div class="hero-text">
+      <p class="hero-intro">Niranjan Kumar Agri / Quality Engineering</p>
       <p class="eyebrow">Technical Lead QA · Senior SDET · Test Automation Architect</p>
       <h1 id="hero-title">I build automation and quality strategies for reliable releases.</h1>
       <p class="lead">I design test platforms, lead QA strategy and make release evidence easier to inspect—from requirements traceability to browser, API and performance checks.</p>
@@ -210,6 +229,8 @@ HTML = f'''<!doctype html>
     <p class="stat-note">Measured as the share of test cases in that release scope that were automated and ready to run, including all multi-user performance and upgrade suites. This describes automation coverage, not product quality.</p>
   </div>
   </section>
+
+  {dashboard_showcase()}
 
   <section id="projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="projects-title">Featured projects</h2><p class="sub">Six projects selected for engineering depth, range and evidence. Every card links to its case study and source.</p></div><a class="btn" href="projects.html">View all {len(PROJECTS)} projects</a></div>
     <div class="grid featured-grid">{''.join(project_card(p) for p in FEATURED_PROJECTS)}</div>
