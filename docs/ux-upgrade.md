@@ -79,3 +79,15 @@ spacing and aligned descriptions. Career facts, project results and the CV are u
 Browser smoke exercises the showcase's case-study return path and preserves the existing
 navigation/filter/preview/comparison checks. Visual captures include the showcase at desktop and
 phone widths in both themes, alongside the existing component baselines.
+
+## Recruiter-first follow-up (26 October 2026)
+
+The home page now leads with three flagship projects (Enterprise, Quality Intelligence and AI-assisted testing). The full 25-project catalogue, six featured records, role/problem paths, architecture explorers and comparison controls remain available. Career history precedes the exploration paths. Capabilities, working method, evidence and skills use native disclosures to reduce the initial page length; `#skills` opens its disclosure, including on initial navigation.
+
+Flagship briefs and case-study stories share `tools/portfolio_content.py`. Results, dates, preview captions and evidence URLs still come from the existing catalogue. The AI story explicitly distinguishes hand-written samples/replays from live model performance; no customer impact, new measurements or availability claims were introduced.
+
+The dashboard walkthrough is a local scope builder, not an embedded dashboard or a data feed. Changing repository resets the browser; API selections disable it. A reset restores the default repository and removes any browser scope. The outgoing link opens the live report's results route with repository/kind/browser query parameters. Choices are curated navigation examples, not a promise that a matching execution exists. Without JavaScript, the link opens the dashboard home page and explains how to select scope there.
+
+Home, catalogue and all 25 case studies have dedicated 1200×630 JPEG sharing cards. Regenerate with `python tools/make_social_previews.py` after installing Pillow 11.3 and DejaVu Sans. These are text-and-shape graphics, not result screenshots. They are checked in; normal site builds do not require graphics regeneration. No CV, career fact or relocation/permit claim was changed.
+
+Browser smoke covers dependent scope resets, API/browser exclusion, keyboard reset, deep-linked skills disclosure and three flagship cards. The existing three-browser, accessibility, strict visual comparison and post-deployment checks remain enabled. Four walkthrough screenshots extend the existing visual matrix to 54 comparisons.

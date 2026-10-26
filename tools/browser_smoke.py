@@ -238,6 +238,45 @@ def exercise(
                 page.keyboard.press("Enter")
                 page.wait_for_function("location.hash === '#main'")
                 page.goto(base_url + "/")
+            # Exercise the guide as a visitor; selection changes must reset dependent scope.
+            tour = page.get_by_role("form", name="Dashboard walkthrough", exact=True)
+            tour.locator('[name="repository"]').select_option(
+                "playwright-typescript-framework"
+            )
+            tour.locator('[name="browser"]').select_option("webkit")
+            tour_url = tour.locator("[data-tour-link]").get_attribute("href")
+            assert (
+                "repository=niranjankagri%2Fplaywright-typescript-framework" in tour_url
+            )
+            assert "kind=ui" in tour_url and "browser=webkit" in tour_url
+            tour.locator('[name="kind"]').select_option("api")
+            assert tour.locator('[name="browser"]').is_disabled()
+            assert "browser=" not in tour.locator("[data-tour-link]").get_attribute(
+                "href"
+            )
+            tour.locator('[name="kind"]').select_option("ui")
+            assert tour.locator('[name="browser"]').input_value() == ""
+            tour.locator('[name="repository"]').select_option(
+                "cypress-typescript-framework"
+            )
+            assert "webkit" not in tour.locator('[name="browser"]').inner_text().lower()
+            reset = tour.get_by_role("button", name="Reset selection", exact=True)
+            reset.focus()
+            page.keyboard.press("Enter")
+            page.wait_for_function(
+                "document.querySelector('[data-tour-link]').href.includes('enterprise-test-automation-framework')"
+            )
+            assert tour.locator('[name="browser"]').input_value() == ""
+            assert "no results" in tour.locator("[data-tour-status]").inner_text()
+            page.goto(base_url + "/#skills")
+            assert page.locator("[data-skills-disclosure]").evaluate(
+                "element => element.open"
+            )
+            assert page.locator("#skills h2").is_visible()
+            page.goto(base_url + "/")
+            assert not page.locator("[data-skills-disclosure]").evaluate(
+                "element => element.open"
+            )
             role_panels = page.locator("[data-role-panel]")
             assert role_panels.count() == 3
             focus_panels = page.locator("[data-exploration-panel]")
@@ -392,7 +431,7 @@ def exercise(
             page.locator("#quality-intelligence").wait_for(state="visible")
             page.locator("#projects").scroll_into_view_if_needed()
             featured = page.locator("#projects .featured-grid .project-card")
-            assert featured.count() == 6
+            assert featured.count() == 3
             assert (
                 page.locator('#projects a[href="projects.html"]')
                 .inner_text()
@@ -495,6 +534,7 @@ def exercise(
             page.locator("[data-focus-reset]").click()
             page.wait_for_function("!location.search.includes('focus=')")
             assert focus_panels.evaluate_all("items => items.every(item => !item.open)")
+            page.locator("[data-skills-disclosure] > summary").click()
             page.locator('#skills a[href*="skill="]').first.click()
             page.wait_for_url("**/projects.html?skill=*")
             assert page.locator("#skill-search").input_value()
@@ -817,7 +857,7 @@ def exercise(
                                 cards = page.locator(
                                     "#projects .featured-grid .project-card"
                                 )
-                                assert cards.count() == 6
+                                assert cards.count() == 3
                                 grouped: dict[int, list] = {}
                                 for card in cards.all():
                                     top = round(card.bounding_box()["y"])

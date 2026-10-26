@@ -127,6 +127,7 @@ def main() -> None:
                     ("problem-cards", "#focus-explorer"),
                     ("featured-projects", "#projects"),
                     ("dashboard-showcase", "#quality-intelligence"),
+                    ("dashboard-tour", "#dashboard-tour"),
                 ):
                     capture_region(
                         page,
