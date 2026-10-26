@@ -246,6 +246,15 @@ for path in html_files:
                 fail(f'{name}: missing destination anchor {value}.')
 
 home = (ROOT / 'index.html').read_text(encoding='utf-8')
+version = (ROOT / 'VERSION').read_text(encoding='utf-8').strip()
+if not re.fullmatch(r'\d+\.\d+\.\d+', version):
+    fail('VERSION must contain a semantic release version.')
+if f'Portfolio v{version}' not in home or 'id="coming-next"' not in home:
+    fail('Homepage must show the current release and planned-work section.')
+for repo in ('mobile-test-automation-framework', 'java-selenium-testng-pom-framework', 'cucumber-bdd-demo'):
+    if not next(project for project in PROJECTS if project['id'] == repo)['workflow_url']:
+        fail(f'{repo}: configured workflow must be linked.')
+
 explorer = (ROOT / 'projects.html').read_text(encoding='utf-8')
 if home.count('class="card project-card"') != len(HOME_PROJECT_IDS):
     fail('Homepage does not contain exactly three flagship project cards.')

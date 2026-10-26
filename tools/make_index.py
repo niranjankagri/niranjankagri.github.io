@@ -8,7 +8,7 @@ from urllib.parse import quote
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(__file__))
-from components import CV, EMAIL, GITHUB, HOME, LINKEDIN, footer, header, icon, project_card, readable_date, stylesheet, script_asset  # noqa: E402
+from components import PORTFOLIO_VERSION, CV, EMAIL, GITHUB, HOME, LINKEDIN, footer, header, icon, project_card, readable_date, stylesheet, script_asset  # noqa: E402
 from portfolio_content import HOME_PROJECT_IDS, FLAGSHIP_STORIES  # noqa: E402
 from project_data import EXPLORATION_FOCUSES, FEATURED_PROJECTS, PROJECTS, PROJECT_BY_ID, ROLE_VIEWS  # noqa: E402
 
@@ -328,6 +328,9 @@ HTML = f'''<!doctype html>
 
   </details>
 
+  <section id="coming-next" aria-labelledby="coming-next-title"><p class="eyebrow">Portfolio v{PORTFOLIO_VERSION} · UI phase complete</p><h2 id="coming-next-title">Coming next</h2><p>Planned work, not completed projects. The next portfolio feature update will follow verified implementation and execution evidence.</p>
+    <div class="grid"><article class="box"><h3>Next: WebdriverIO + TypeScript</h3><p>A local demo application, isolated test data, Chrome and Firefox CI, network and log assertions, failure evidence, and Quality Intelligence integration.</p></article><article class="box"><h3>Enhancement: mutation testing</h3><p>Extend an existing project with repeatable mutation reports and a CI gate that checks whether assertions detect introduced defects.</p></article><article class="box"><h3>Optional: Karate API testing</h3><p>Authentication, schema validation, data-driven and negative scenarios, mocks, and parallel CI. This is a candidate after WebdriverIO, not a delivery commitment.</p></article></div>
+  </section>
   <section id="contact" aria-labelledby="contact-title"><div class="contact"><p class="eyebrow">Open to Senior SDET, QA Lead and Test Automation Architect opportunities</p><h2 id="contact-title">Let’s build reliable releases.</h2><p class="contact-context">Based in Haldwani, India · Open to European relocation</p>
     <div class="btns"><a class="btn primary" href="mailto:{EMAIL}">{icon('mail')}Email me</a><a class="btn" href="{CV}" download>{icon('download')}Download CV</a><button class="btn" type="button" data-copy-email="{EMAIL}">Copy email</button><a class="btn" href="{LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a><a class="btn" href="{GITHUB}" target="_blank" rel="noopener">GitHub</a></div><p class="copy-status" role="status" aria-live="polite"></p><p class="sub">{EMAIL}</p>
   </div></section>

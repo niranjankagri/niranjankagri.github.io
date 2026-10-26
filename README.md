@@ -5,6 +5,24 @@ Portfolio site of Niranjan Kumar Agri (Technical Lead QA, Senior SDET and Test A
 
 The site is static and hosted by GitHub Pages. It does not call GitHub APIs or third-party analytics when a visitor opens a page.
 
+## Release 1.0.0 — UI phase complete
+
+The current portfolio UI upgrade phase is closed at **v1.0.0** (26 October 2026). `VERSION` is the release source of truth; the homepage displays it and the staged `release.json` includes `version`, the exact deployed `build_id`, and `asset_version`. This first explicit version establishes a release baseline for the existing portfolio, not an initial claim that every project was built in this release. See [CHANGELOG.md](CHANGELOG.md).
+
+Final corrections cover accurate learning-lab workflow labels, historical Playwright evidence wording, and expandable filter help. The mobile learning lab has **compile-only CI**; its device result remains historical manual evidence. Selenium POM and Cucumber Demo have **automated headless Chrome CI**; their older multi-browser manual results retain their original scope and date.
+
+## Coming next
+
+These items are **planned**, not completed projects, and do not increase the current 25-project count. The same roadmap appears on the [portfolio homepage](https://niranjankagri.github.io/#coming-next).
+
+| Order | Work | Evidence required before portfolio promotion |
+|---|---|---|
+| Next | WebdriverIO + TypeScript framework | Local demo app, isolated data, Chrome/Firefox CI, network/log assertions, failure artifacts, and Quality Intelligence integration |
+| Enhance existing work | Automated mutation testing | Repeatable mutation report, surviving-mutant analysis, and a meaningful CI gate; extend the existing manual examples |
+| Optional after WebdriverIO | Karate API testing | Authentication, schemas, data-driven and negative cases, mocks, parallel CI, and collected reports |
+
+The next planned portfolio feature update happens after the next work is implemented and verified, with a new version, evidence links, and case study. Until then, this UI phase stays closed. Dependency maintenance, security fixes and broken-site repairs can still be released; this is not a freeze on necessary maintenance.
+
 ## Pages and data
 
 | File | Purpose |

@@ -102,7 +102,14 @@ def main() -> None:
                 )
         page.write_text(content, encoding="utf-8", newline="\n")
     (output / "release.json").write_text(
-        json.dumps({"build_id": build_id, "asset_version": asset_version}, indent=2)
+        json.dumps(
+            {
+                "version": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
+                "build_id": build_id,
+                "asset_version": asset_version,
+            },
+            indent=2,
+        )
         + "\n",
         encoding="utf-8",
         newline="\n",

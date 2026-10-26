@@ -128,25 +128,25 @@ FEATURED = [
 ]
 
 MORE = [
- # No CI: the app under test (Google Calculator) cannot be redistributed, so a CI machine has no APK.
+ # CI compiles main and test code only; the Google Calculator APK is not redistributed.
  # Facts checked 13 Oct 2026: Android suite 1/1 on an Android 15 emulator with Appium 3.8; iOS not run (needs a Mac).
- dict(title='Mobile Framework (2021, upgraded for Android + iOS)', repo='mobile-test-automation-framework',
+ dict(title='Mobile Framework (2021, upgraded for Android + iOS)', repo='mobile-test-automation-framework', wf='build.yml', wfname='Compile only (JDK 17)',
       report='docs/images/report-dashboard.png',
       text='My 2021 Appium + TestNG framework, upgraded in 2026 to Appium 3, Java client 11 and Selenium 4 without changing its design: '
            'one set of tests for Android and iOS through a platform layer, capabilities per platform in properties files, '
            'and a custom HTML report with failure screenshots. Runs green on an Android 15 emulator; the iOS side is ready but not yet run.',
       tags=['Java 17', 'Appium 3', 'TestNG', 'Selenium 4']),
- # No CI: tests run against the shared public OrangeHRM demo. Facts checked 13 Oct 2026: 4/4 on visible Chrome
+ # CI now runs headless Chrome against the public OrangeHRM demo. Facts checked 13 Oct 2026: 4/4 on visible Chrome
  # and headless Chrome, Edge and Firefox; the logout test had failed since 2024 because of a missing @ in its XPath.
- dict(title='Selenium Page Object Framework (2024, upgraded)', repo='java-selenium-testng-pom-framework',
+ dict(title='Selenium Page Object Framework (2024, upgraded)', repo='java-selenium-testng-pom-framework', wf='tests.yml', wfname='Chrome tests (JDK 17)',
       report='docs/images/extent-tests.png',
       text='My January 2024 Selenium + TestNG page object framework for OrangeHRM, upgraded step by step in 2026: '
            'explicit waits instead of fixed sleeps, browser and headless mode from a config file, and an Extent report '
            'with a screenshot on every failure. The upgrade also fixed a locator bug that had failed the logout test since 2024.',
       tags=['Java', 'Selenium', 'TestNG', 'Maven']),
- # No CI: tests run against public practice sites. Facts checked 13 Oct 2026 (after the layer split, commit 5bc9fb8): 5/5 scenarios on visible Chrome and
+ # CI now runs headless Chrome against public practice sites. Facts checked 13 Oct 2026 (after the layer split, commit 5bc9fb8): 5/5 scenarios on visible Chrome and
  # headless Chrome, Edge and Firefox; the 2022 build no longer compiled (Java 1.7 target, mixed Cucumber versions).
- dict(title='Cucumber BDD Demo (2022, upgraded)', repo='cucumber-bdd-demo',
+ dict(title='Cucumber BDD Demo (2022, upgraded)', repo='cucumber-bdd-demo', wf='tests.yml', wfname='Chrome scenarios (JDK 17)',
       report='docs/images/report-passing.png',
       text='My first Cucumber project from 2022, which no longer built, brought to Java 17, Cucumber 8 (JUnit Platform '
            'runners) and Selenium 4 step by step, then split into layers: runners, step definitions, page objects, hooks '
@@ -221,7 +221,7 @@ EVIDENCE_BY_REPO = {
     'playwright-typescript-framework': {
         'date': '2026-10-20',
         'url': 'https://github.com/niranjankagri/playwright-typescript-framework/actions/workflows/ci.yml',
-        'label': 'CI workflow (latest successful run: 20 Oct 2026)',
+        'label': 'Workflow history · historical evidence verified 20 Oct 2026',
     },
     'playwright-framework': {
         'date': '2026-10-20',
@@ -316,19 +316,19 @@ EVIDENCE_BY_REPO = {
         'date': '2026-10-13',
         'url': 'https://github.com/niranjankagri/mobile-test-automation-framework',
         'label': 'Repository evidence (manual run)',
-        'result': 'Android 15 emulator check: 1/1 passed. The iOS side is documented but has not been run.',
+        'result': 'Historical manual Android 15 emulator check: 1/1 passed. Current CI compiles main and test code only; it does not run device tests. iOS has not been run.',
     },
     'java-selenium-testng-pom-framework': {
         'date': '2026-10-13',
         'url': 'https://github.com/niranjankagri/java-selenium-testng-pom-framework',
         'label': 'Repository evidence (manual run)',
-        'result': 'Four smoke checks passed across Chrome, Edge and Firefox; no automated CI workflow is configured.',
+        'result': 'Historical manual evidence: four smoke checks passed across Chrome, Edge and Firefox. Current CI runs automated headless Chrome tests; the workflow link shows current execution history.',
     },
     'cucumber-bdd-demo': {
         'date': '2026-10-13',
         'url': 'https://github.com/niranjankagri/cucumber-bdd-demo',
         'label': 'Repository evidence (manual run)',
-        'result': 'Five scenarios passed across Chrome, Edge and Firefox; no automated CI workflow is configured.',
+        'result': 'Historical manual evidence: five scenarios passed across Chrome, Edge and Firefox. Current CI runs automated headless Chrome scenarios; the workflow link shows current execution history.',
     },
     'selenium-java-framework': {
         'date': '2026-10-06',
