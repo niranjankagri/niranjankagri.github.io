@@ -18,3 +18,5 @@
 - 2026-10-26: PR #9 conflict resolution: retained the merged three-flagship layout, dashboard guide and existing career content; reviewed eight updated QI screenshot/caption/evidence captures in both layouts/themes. Removed claims of an unpublished v1.2.0 release and unverified release workflow; deployment evidence remains dated 26 Oct with successful run 40269927960.
 
 - 2026-10-26: PR #9: all three browser suites and accessibility passed in CI run 40273308587. Reviewed the only four differences, confined to the neutral Workflow history badge glyphs in featured-project captures; layout, screenshot, captions and dates match. Accepted authoritative CI font rendering with the zero-pixel threshold retained.
+
+- 2026-10-26: PR #17 (straight portrait): reviewed expected/actual/difference of hero-desktop light and dark from CI run 40292598716; only the portrait frame changed (rotate(2deg) removed), everything else identical.
