@@ -8,3 +8,5 @@
 - 2026-10-24: Reviewed the 50 refreshed component captures in light/dark and desktop/mobile views, including the new dashboard showcase, hero portrait frame, NA header, blue accents and aligned project cards. Inspected the full desktop hero and mobile showcase and the component contact sheet; career copy and dated evidence are preserved.
 
 - 2026-10-24: Reviewed CI run 40072840396 on Ubuntu 26.04 after Chromium, Firefox and WebKit smoke passed. Compared the 13 differing captures with local baselines: menu/theme glyphs, workflow badge font rasterization, code font spacing and a one-channel dark-background pixel. Layout and content are preserved. CI captures are the authoritative rendering environment; zero pixel threshold remains unchanged.
+
+- 2026-10-26: Reviewed the three flagship project cards and new dashboard guide in desktop/mobile and light/dark layouts. All eight captures have readable scope captions, dated evidence and unclipped controls. Existing CI baselines retained for unchanged regions pending review in the authoritative CI renderer.

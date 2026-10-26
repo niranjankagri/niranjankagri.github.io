@@ -70,3 +70,7 @@ CI runs the same comparison and fails on any visual difference; how to review an
 Pull requests validate but do not deploy. Pushes to `main` and manual workflow runs on `main` deploy the validated artifact; a separate job waits for the deployed build id and runs browser smoke against the public site. `Portfolio validation and local browser smoke` is configured as a required check on `main`.
 
 The site build uses Python's standard library and remains usable without external services; browser validation installs Playwright and axe-core in CI. Update an existing project's evidence URL, date and description in the shared record after checking its source repository and workflow. Keep sample, replayed and historical results labelled. New projects need a unique identifier and page slug, a category, technology tags, a local image with meaningful alternative text, and an evidence date and link.
+
+### Portfolio sharing cards
+
+The home/catalogue and individual case studies use checked-in 1200×630 images in `img/social/`. Regenerate after editorial changes with `python tools/make_social_previews.py` (Pillow 11.3 and DejaVu Sans). These graphics describe the portfolio; they do not represent live execution status. The home page's guided dashboard selection builds a filter URL without calling the dashboard API.

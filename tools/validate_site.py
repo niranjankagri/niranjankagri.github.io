@@ -11,6 +11,7 @@ from urllib.parse import unquote, urlparse
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
 from project_data import CARD_RESULTS, COMPARISON_DETAILS, EXPLORATION_FOCUSES, FEATURED_PREVIEW_CAPTIONS, FEATURED_PROJECTS, PROJECTS, ROLE_VIEWS  # noqa: E402
+from portfolio_content import HOME_PROJECT_IDS  # noqa: E402
 from components import ASSET_VERSION  # noqa: E402
 
 ALLOWED = {'Web & API', 'Mobile', 'Performance', 'Security', 'Accessibility', 'AI & LLM', 'CI/CD', 'Quality Intelligence', 'Learning Labs'}
@@ -246,8 +247,8 @@ for path in html_files:
 
 home = (ROOT / 'index.html').read_text(encoding='utf-8')
 explorer = (ROOT / 'projects.html').read_text(encoding='utf-8')
-if home.count('class="card project-card"') != 6:
-    fail('Homepage does not contain exactly six featured project cards.')
+if home.count('class="card project-card"') != len(HOME_PROJECT_IDS):
+    fail('Homepage does not contain exactly three flagship project cards.')
 if explorer.count('class="card project-card"') != len(PROJECTS):
     fail('Projects page card count does not match shared project data.')
 if '84%' not in home or 'release test scope' not in home:
@@ -256,9 +257,11 @@ if 'Let’s build reliable releases.' not in home or 'Open to Senior SDET, QA Le
     fail('Homepage is missing the requested contact heading or hiring context.')
 if f'<strong>{len(PROJECTS)} projects</strong>' not in home:
     fail('Homepage evidence strip count does not match shared project data.')
-if home.count('class="featured-preview"') != len(FEATURED_PROJECTS):
+if home.count('class="featured-preview"') != len(HOME_PROJECT_IDS):
     fail('Featured project cards are missing a visible report or diagram caption.')
 for project in FEATURED_PROJECTS:
+    if project['id'] not in HOME_PROJECT_IDS:
+        continue
     if project['id'] not in home or project['preview_caption'][0] not in home or project['preview_caption'][1] not in home:
         fail(f'{project["id"]}: preview caption is not present in the generated homepage.')
     if project['card_result'] != CARD_RESULTS[project['id']]:

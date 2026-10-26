@@ -13,6 +13,7 @@ GH = 'https://github.com/niranjankagri/'
 e = html.escape
 sys.path.insert(0, os.path.dirname(__file__))
 from components import ci_status, footer, header, readable_date, stylesheet, script_asset  # noqa: E402
+from portfolio_content import FLAGSHIP_STORIES  # noqa: E402
 from project_data import PROJECTS, QI_REPORT_SNAPSHOT  # noqa: E402
 
 
@@ -882,7 +883,7 @@ def self_panel(component, project):
 
 def engineering_story(project):
     """Present documented problem, decision and result without adding inferred impact."""
-    story = STORIES.get(project['id'])
+    story = FLAGSHIP_STORIES.get(project['id']) or STORIES.get(project['id'])
     if not story:
         return ''
     evidence = f'<p class="story-evidence">Evidence checked {e(project["evidence_date"])} | <a href="{e(project["evidence_url"], quote=True)}" target="_blank" rel="noopener">{e(project["evidence_label"])}</a></p>'
@@ -893,7 +894,7 @@ def engineering_story(project):
         cards.append('<h3>Comparable run - after</h3>' + f'<p>{e(story["after"])}</p>')
     else:
         cards.append('<h3>Observed result</h3>' + f'<p>{e(project["result"])}</p>')
-    return '<div class="engineering-story"><div class="story-grid">' + ''.join('<article>' + card + '</article>' for card in cards) + '</div>' + evidence + '</div>'
+    return '<div class="engineering-story"><div class="story-grid">' + ''.join('<article>' + card + '</article>' for card in cards) + '</div>' + evidence + '<p class="scope-note"><b>Scope:</b> ' + e(story['limitation']) + '</p></div>'
 
 
 
@@ -943,7 +944,7 @@ def render_case_study(project, legacy=None):
     summary = project['description']
     repo = project['source_url']
     canonical = 'https://niranjankagri.github.io/projects/' + project['page'] + '.html'
-    image_url = 'https://niranjankagri.github.io/img/' + project['image'] + '.jpg'
+    image_url = 'https://niranjankagri.github.io/img/social/' + project['page'] + '.jpg'
     category = ', '.join(project['category'])
     tech = ', '.join(project['technologies'])
 

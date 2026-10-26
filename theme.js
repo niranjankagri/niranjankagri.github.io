@@ -410,3 +410,59 @@
     dialog.addEventListener('cancel', function () { if (previous) previous.focus(); });
   });
 })();
+
+// A local navigation guide. Options describe filter paths, not live availability.
+(function () {
+  var form = document.querySelector('[data-dashboard-tour]');
+  if (!form) return;
+  var repo = form.elements.repository;
+  var kind = form.elements.kind;
+  var browser = form.elements.browser;
+  var status = form.querySelector('[data-tour-status]');
+  var link = form.querySelector('[data-tour-link]');
+  var matrix = {
+    'enterprise-test-automation-framework': ['chrome', 'edge', 'firefox'],
+    'playwright-typescript-framework': ['chromium', 'firefox', 'webkit'],
+    'cypress-typescript-framework': ['chrome', 'electron']
+  };
+  function update(rebuild) {
+    if (rebuild) {
+      browser.replaceChildren(new Option('All browsers', ''));
+      if (kind.value === 'ui') matrix[repo.value].forEach(function (name) {
+        browser.add(new Option(name.charAt(0).toUpperCase() + name.slice(1), name));
+      });
+    }
+    browser.disabled = kind.value !== 'ui';
+    var params = new URLSearchParams({repository: 'niranjankagri/' + repo.value, kind: kind.value});
+    if (!browser.disabled && browser.value) params.set('browser', browser.value);
+    link.href = 'https://quality-intelligence-0ur1.onrender.com/#/results?' + params;
+    status.textContent = repo.selectedOptions[0].text + ' / ' + kind.selectedOptions[0].text +
+      (browser.disabled ? ' / Browser does not apply' : ' / ' + browser.selectedOptions[0].text) +
+      '. Open the dashboard to inspect available evidence; this scope may have no results.';
+  }
+  repo.addEventListener('change', function () { update(true); });
+  kind.addEventListener('change', function () { update(true); });
+  browser.addEventListener('change', function () { update(false); });
+  form.addEventListener('submit', function (event) { event.preventDefault(); });
+  form.addEventListener('reset', function () { setTimeout(function () { update(true); }, 0); });
+  update(true);
+})();
+(function () {
+  function revealAnchor() {
+    if (!location.hash || location.hash === '#') return;
+    var target;
+    try { target = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (_) { return; }
+    if (!target) return;
+    var parent = target.parentElement;
+    while (parent) {
+      if (parent.tagName === 'DETAILS') parent.open = true;
+      parent = parent.parentElement;
+    }
+  }
+  window.addEventListener('hashchange', revealAnchor);
+  document.addEventListener('click', function (event) {
+    var a = event.target.closest('a[href="#skills"]');
+    if (a) { var details = document.querySelector('[data-skills-disclosure]'); if (details) details.open = true; }
+  });
+  revealAnchor();
+})();
