@@ -42,7 +42,13 @@ jobs:
 
       - name: Install browser engines and system dependencies
         timeout-minutes: 10
-        run: python -m playwright install --with-deps chromium firefox webkit
+        run: |
+          # The Azure mirror can trickle large font/media packages for many minutes.
+          # Use the official Ubuntu archive; package signatures and versions stay unchanged.
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
+          fi
+          python -m playwright install --with-deps chromium firefox webkit
 
       - name: Install accessibility tooling
         timeout-minutes: 5
