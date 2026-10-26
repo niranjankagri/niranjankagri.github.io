@@ -374,7 +374,7 @@ FEATURED_IDS = set(FEATURED_ORDER)
 
 LIVE_DASHBOARD = 'https://quality-intelligence-0ur1.onrender.com'
 # Headline figures of the live report, read from its API (/api/report/overview, /api/summary,
-# /api/readiness) on 24 Oct 2026. A dated snapshot: the live report changes every day.
+# /api/readiness) on 26 Oct 2026. A dated snapshot: the live report changes every day.
 QI_REPORT_SNAPSHOT = {
     'date': '2026-10-26',
     'repositories': 23,
@@ -552,7 +552,7 @@ CARD_PURPOSE = {
 FEATURED_PREVIEW_CAPTIONS = {
     'enterprise-test-automation-framework': ('Historical report', '7 Oct 2026 · separate local run; not the nightly evidence linked below.'),
     'playwright-typescript-framework': ('Playwright HTML report', 'Static screenshot from 10 Oct 2026; CI evidence checked 20 Oct 2026.'),
-    'automation-coverage-quality-intelligence': ('Live report screenshot', 'Captured 24 Oct 2026 from the live report; the requirement catalog is synthetic.'),
+    'automation-coverage-quality-intelligence': ('Live report screenshot', 'Captured 26 Oct 2026 from the live report; the requirement catalog is synthetic.'),
     'appium-framework': ('Android test report', 'Historical emulator run from 12 Oct 2026; workflow checked 20 Oct 2026.'),
     'k6-performance-testing': ('k6 dashboard screenshot', 'Demo-shop stress run from 13 Oct 2026; scope is the linked workload profile.'),
     'ai-assisted-test-automation': ('Pipeline architecture diagram', 'Static architecture diagram; capture date unknown.'),
@@ -561,7 +561,7 @@ FEATURED_PREVIEW_CAPTIONS = {
 CARD_RESULTS = {
     'enterprise-test-automation-framework': '21 Oct 2026: 755 test executions passed (Chrome 233; Firefox, Edge and Selenium Grid 174 each).',
     'playwright-typescript-framework': '47 unique tests; 95 test executions per run across Chromium, Firefox and WebKit.',
-    'automation-coverage-quality-intelligence': 'Deployment smoke passed 24 Oct 2026; the live report covers 23 public repositories.',
+    'automation-coverage-quality-intelligence': 'Deployment smoke passed 26 Oct 2026 for release v1.2.0; the live report covers 23 public repositories.',
     'appium-framework': 'Run #7 passed 40 Android 15 emulator test executions; the repository has 40 TestNG methods and three known-bug checks.',
     'k6-performance-testing': 'Above ~90 orders/s checkout exceeded 3 s p95; after load shedding it stayed below 650 ms in the same profile.',
     'ai-assisted-test-automation': 'CI replayed hand-written samples; no live model result is claimed.',
