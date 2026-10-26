@@ -6,6 +6,7 @@ Close the portfolio UI upgrade phase with the existing 25-project catalog.
 
 - Correct the three learning-lab workflow records: mobile compilation only, and automated Chrome tests for Selenium POM and Cucumber Demo. Retain the dates and scope of historical manual results.
 - Label Playwright evidence as a historical verification rather than the latest run.
+- Increase the hero identity and role labels with bold, high-contrast text and a highlighted role strip, including mobile layouts.
 - Put detailed filter rules behind an accessible native disclosure.
 - Add a planned-work section shared by the homepage and README: WebdriverIO + TypeScript next, mutation testing as an existing-project enhancement, and Karate as optional.
 - Publish the release version in the homepage and staged release manifest alongside the exact deployment commit and asset hash.
