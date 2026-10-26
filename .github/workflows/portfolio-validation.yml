@@ -134,7 +134,7 @@ jobs:
 
       - name: Deploy the validated artifact
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   deployed-smoke:
     name: Verify the deployed Pages release
