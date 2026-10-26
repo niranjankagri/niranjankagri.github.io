@@ -923,3 +923,27 @@ h1,h2,h3,.card-title a{color:var(--ink)}
 @media(max-width:760px){.impact-proof{grid-template-columns:minmax(0,1fr)}}
 .featured-grid .card-title{min-height:2.5em}
 .featured-grid .desc{height:5.1em;min-height:5.1em}
+
+/* Recruiter-first home: three stories and a compact, optional deeper read. */
+.flagship-brief{margin:0 0 1rem;font-size:.88rem;line-height:1.6}
+.flagship-brief dt{font-weight:750;color:var(--ink);margin-top:.65rem}
+.flagship-brief dd{margin:0;color:var(--muted)}
+.featured-grid .flagship-brief{min-height:18rem}
+.dashboard-tour,.recruiter-summary{padding:clamp(1.2rem,3vw,2.5rem);border:1px solid var(--line);border-radius:24px;background:var(--surface);margin:2.5rem 0}
+.dashboard-tour h2,.recruiter-summary h2{color:var(--ink);font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.2}
+.tour-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.5rem}
+.tour-fields label{display:grid;gap:.6rem;font-size:.85rem;font-weight:700;min-width:0}
+.tour-fields select{width:100%;min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:12px;color:var(--ink);background:var(--surface-2);font:inherit}
+.tour-fields select:disabled{opacity:.6}
+.tour-status{color:var(--muted);font-size:.9rem;min-height:3em;margin:1.2rem 0}
+.recruiter-summary{display:flex;align-items:center;justify-content:space-between;gap:2rem}
+.recruiter-summary .btns{flex-shrink:0}
+.supporting-work{margin:2rem 0}
+.supporting-work>details,.supporting-work[data-skills-disclosure]{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.supporting-work summary{padding:1.25rem .25rem;cursor:pointer;font-weight:700;color:var(--ink)}
+.supporting-work section{margin-top:1.5rem}
+.supporting-work>summary:focus-visible,.tour-fields select:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+@media(max-width:900px){.recruiter-summary{display:block}.recruiter-summary .btns{margin-top:1rem}.featured-grid .flagship-brief{min-height:0}}
+@media(max-width:600px){.tour-fields{grid-template-columns:1fr}.dashboard-tour,.recruiter-summary{border-radius:18px}.tour-status{min-height:0}}
+@media(min-width:601px) and (max-width:900px){.featured-grid .flagship-brief{min-height:18rem}}
+@media(max-width:600px){.featured-grid .flagship-brief{min-height:0}}

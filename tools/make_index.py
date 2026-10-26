@@ -9,6 +9,7 @@ from urllib.parse import quote
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(__file__))
 from components import CV, EMAIL, GITHUB, HOME, LINKEDIN, footer, header, icon, project_card, readable_date, stylesheet, script_asset  # noqa: E402
+from portfolio_content import HOME_PROJECT_IDS, FLAGSHIP_STORIES  # noqa: E402
 from project_data import EXPLORATION_FOCUSES, FEATURED_PROJECTS, PROJECTS, PROJECT_BY_ID, ROLE_VIEWS  # noqa: E402
 
 
@@ -189,6 +190,33 @@ def dashboard_showcase() -> str:
     </section>'''
 
 
+def flagship_card(project_id):
+    project = dict(PROJECT_BY_ID[project_id])
+    if not project.get('preview_caption'):
+        project['preview_caption'] = ('Architecture illustration', 'Repository pipeline illustration; not a live model result.')
+    card = project_card(project)
+    story = FLAGSHIP_STORIES[project_id]
+    brief = ('<dl class="flagship-brief"><dt>Problem</dt><dd>' + html.escape(story['problem']) + '</dd>'
+             '<dt>Approach</dt><dd>' + html.escape(story['decision']) + '</dd></dl>')
+    card = card.replace('<div class="card-result">', brief + '<div class="card-result">')
+    return card.replace('<div class="actions">', '<div class="actions"><a class="text-action" href="projects/' + project['page'] + '.html#story">Engineering story</a>')
+
+
+def dashboard_walkthrough():
+    return '''<section class="dashboard-tour" aria-labelledby="tour-title" id="dashboard-tour">
+      <div><p class="eyebrow">Try the navigation</p><h2 id="tour-title">From repository to results.</h2>
+      <p class="sub">Choose a path, then open that scope in the live dashboard. This guide makes no live requests and displays no execution totals.</p></div>
+      <form data-dashboard-tour aria-label="Dashboard walkthrough">
+        <div class="tour-fields"><label>1. Repository<select name="repository"><option value="enterprise-test-automation-framework">Enterprise Test Automation</option><option value="playwright-typescript-framework">Playwright TypeScript</option><option value="cypress-typescript-framework">Cypress TypeScript</option></select></label>
+        <label>2. Test type<select name="kind"><option value="ui">UI</option><option value="api">API</option></select></label>
+        <label>3. Browser<select name="browser"><option value="">All browsers</option></select></label></div>
+        <p class="tour-status" role="status" aria-live="polite" data-tour-status>Open the live dashboard to explore collected execution evidence. Filters can return no results.</p>
+        <div class="btns"><a class="btn primary" data-tour-link href="https://quality-intelligence-0ur1.onrender.com/" target="_blank" rel="noopener">Open selected dashboard ↗</a><button class="btn" type="reset">Reset selection</button></div>
+        <noscript><p>The guided selection needs JavaScript. Use the dashboard link above to choose filters directly.</p></noscript>
+      </form>
+    </section>'''
+
+
 HTML = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -201,7 +229,8 @@ HTML = f'''<!doctype html>
 <meta property="og:description" content="A portfolio of {len(PROJECTS)} automation and quality engineering projects, with dated evidence and case studies.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{HOME}">
-<meta property="og:image" content="{HOME}img/profile-2026-10b.jpg">
+<meta property="og:image" content="{HOME}img/social/portfolio.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Niranjan Kumar Agri — quality engineering portfolio">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2308665e'/%3E%3Ctext x='32' y='42' font-family='Segoe UI,Arial' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3ENA%3C/text%3E%3C/svg%3E">
 {stylesheet()}
@@ -230,21 +259,14 @@ HTML = f'''<!doctype html>
   </div>
   </section>
 
+
+  <section id="projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="projects-title">Featured projects</h2><p class="sub">Three flagship stories: framework engineering, quality intelligence and reviewed AI-assisted testing. Results link to dated evidence.</p></div><a class="btn" href="projects.html">View all {len(PROJECTS)} projects</a></div>
+    <div class="grid featured-grid">{''.join(flagship_card(project_id) for project_id in HOME_PROJECT_IDS)}</div>
+  </section>
+
   {dashboard_showcase()}
-
-  <section id="projects" aria-labelledby="projects-title"><div class="section-heading"><div><p class="eyebrow">Selected work</p><h2 id="projects-title">Featured projects</h2><p class="sub">Six projects selected for engineering depth, range and evidence. Every card links to its case study and source.</p></div><a class="btn" href="projects.html">View all {len(PROJECTS)} projects</a></div>
-    <div class="grid featured-grid">{''.join(project_card(p) for p in FEATURED_PROJECTS)}</div>
-  </section>
-
-  <section class="exploration-band" id="exploration" aria-labelledby="exploration-title">
-    <div class="section-heading"><div><p class="eyebrow">Explore</p><h2 id="exploration-title">Find work by role or problem</h2><p class="sub">Open any path to see related project evidence and professional experience.</p></div></div>
-    {role_explorer()}
-    {problem_explorer()}
-  </section>
-
-  {capability_showcase()}
-  {engineering_approach()}
-  {evidence_showcase()}
+  {dashboard_walkthrough()}
+  <aside class="recruiter-summary" aria-labelledby="recruiter-title"><div><p class="eyebrow">At a glance</p><h2 id="recruiter-title">Quality engineering, from strategy to execution.</h2><p>Technical Lead QA · Senior SDET · Test Automation Architect</p><p class="sub">Haldwani, India · Open to European relocation. A destination-country work permit would be required.</p></div><div class="btns"><a class="btn primary" href="{CV}" download>Download CV</a><a class="btn" href="mailto:{EMAIL}">Get in touch</a></div></aside>
 
   <section id="experience" aria-labelledby="experience-title"><p class="eyebrow">Career history</p><h2 id="experience-title">Experience</h2><p class="sub">Employers, titles and dates as recorded on my CV. Key outcomes are visible first; supporting responsibilities expand below.</p>
     <ol class="timeline">
@@ -276,6 +298,17 @@ HTML = f'''<!doctype html>
     </ol>
   </section>
 
+  <section class="exploration-band" id="exploration" aria-labelledby="exploration-title">
+    <div class="section-heading"><div><p class="eyebrow">Explore</p><h2 id="exploration-title">Find work by role or problem</h2><p class="sub">Open any path to see related project evidence and professional experience.</p></div></div>
+    {role_explorer()}
+    {problem_explorer()}
+  </section>
+
+
+
+  <div class="supporting-work"><details><summary>Capabilities and working method</summary>{capability_showcase()}{engineering_approach()}</details><details><summary>Inspect engineering evidence</summary>{evidence_showcase()}</details></div>
+
+  <details class="supporting-work" data-skills-disclosure><summary>Skills, education and work authorization</summary>
   <section id="skills" aria-labelledby="skills-title"><p class="eyebrow">Strengths and tools</p><h2 id="skills-title">Skills</h2><p class="sub">Professional experience is separated from tools and approaches demonstrated in portfolio projects.</p>
     <div class="skills">
       <article class="skill"><h3>QA leadership · Professional</h3><p>Test strategy, test planning, RTM, release sign-off, defect triage and management, mentoring, offshore team coordination.</p></article>
@@ -292,6 +325,8 @@ HTML = f'''<!doctype html>
     <div class="two credentials"><article class="box"><h3>Education</h3><p><b>M.Tech, Computer Science and Engineering</b><br><span class="org">Galgotias University · 2012–2014</span></p><p><b>B.Tech, Information Technology</b><br><span class="org">Graphic Era University, Dehradun · 2008–2012</span></p></article>
       <article class="box"><h3>Languages and work authorization</h3><p>Hindi (native) · English (professional working proficiency)</p><p>Based in India. My earlier work in Germany does not give me a current right to work there or elsewhere in Europe. I would need a work permit for the destination country and am open to relocating.</p></article></div>
   </section>
+
+  </details>
 
   <section id="contact" aria-labelledby="contact-title"><div class="contact"><p class="eyebrow">Open to Senior SDET, QA Lead and Test Automation Architect opportunities</p><h2 id="contact-title">Let’s build reliable releases.</h2><p class="contact-context">Based in Haldwani, India · Open to European relocation</p>
     <div class="btns"><a class="btn primary" href="mailto:{EMAIL}">{icon('mail')}Email me</a><a class="btn" href="{CV}" download>{icon('download')}Download CV</a><button class="btn" type="button" data-copy-email="{EMAIL}">Copy email</button><a class="btn" href="{LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a><a class="btn" href="{GITHUB}" target="_blank" rel="noopener">GitHub</a></div><p class="copy-status" role="status" aria-live="polite"></p><p class="sub">{EMAIL}</p>

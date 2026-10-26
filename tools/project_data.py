@@ -114,7 +114,7 @@ FEATURED = [
       text='A mobile-first shop tested with Selenium on real phones through BrowserStack Local (layout, touch targets, keyboards, iOS zoom, checkout), a native iOS app tested with Appium XCUITest on a real iPhone, all within a 100-minute trial.',
       tags=['BrowserStack', 'Real devices', 'Selenium', 'Appium', 'iOS', 'Android']),
 
- # Facts checked 26 Oct 2026 against release v1.2.0, main 4287e89 (CI run 40269471866 green, self gate 31/31 requirements;
+ # Facts checked 26 Oct 2026 against main 4287e89 (CI run 40269471866 green, self gate 31/31 requirements;
  # deployment smoke 40269927960 green) and the live report: 23 repositories / 24 workflows / 59 jobs collected; 1,143
  # unit/integration/performance + 229 browser tests; live overview 3,905 latest results, 100 % pass rate (3,893/3,893),
  # 86 % automation coverage (sample catalog), 2 critical gaps, release readiness "at risk". Only the requirement catalog is synthetic; the executions are real CI results.
@@ -307,7 +307,7 @@ EVIDENCE_BY_REPO = {
         'date': '2026-10-26',
         'url': 'https://github.com/niranjankagri/automation-coverage-quality-intelligence/actions/runs/40269927960',
         'label': 'Deployment smoke check of the live report',
-        'result': 'Deployment smoke check passed on 26 Oct 2026 for release v1.2.0: the live report runs the latest commit, its sections, filters and drill-downs work in Chromium, and its figures match the API. It shows daily collected results from 23 public repositories and 59 workflow jobs; the requirement catalog is synthetic.',
+        'result': 'Deployment smoke check passed on 26 Oct 2026: the live report runs the latest commit, its sections, filters and drill-downs work in Chromium, and its figures match the API. It shows daily collected results from 23 public repositories and 59 workflow jobs; the requirement catalog is synthetic.',
         'result_kind': 'Deployment smoke check plus real collected CI history and synthetic requirement catalogue',
         'alt': 'Screenshot of the live Quality Intelligence report on 26 Oct 2026: 3,905 latest results, 100 percent execution pass rate, 86 percent automation coverage of the synthetic sample catalog, two critical gaps and release readiness at risk',
         'description': 'A quality engineering platform that collects daily CI results from 23 public repositories and 59 workflow jobs and presents them as a live report: overview, test results, failures and stability, trends, and coverage of a synthetic requirement catalog, with release gates and a readiness scorecard. The original dashboard remains available.',
@@ -561,7 +561,7 @@ FEATURED_PREVIEW_CAPTIONS = {
 CARD_RESULTS = {
     'enterprise-test-automation-framework': '21 Oct 2026: 755 test executions passed (Chrome 233; Firefox, Edge and Selenium Grid 174 each).',
     'playwright-typescript-framework': '47 unique tests; 95 test executions per run across Chromium, Firefox and WebKit.',
-    'automation-coverage-quality-intelligence': 'Deployment smoke passed 26 Oct 2026 for release v1.2.0; the live report covers 23 public repositories.',
+    'automation-coverage-quality-intelligence': 'Deployment smoke passed 26 Oct 2026; the live report covers 23 public repositories.',
     'appium-framework': 'Run #7 passed 40 Android 15 emulator test executions; the repository has 40 TestNG methods and three known-bug checks.',
     'k6-performance-testing': 'Above ~90 orders/s checkout exceeded 3 s p95; after load shedding it stayed below 650 ms in the same profile.',
     'ai-assisted-test-automation': 'CI replayed hand-written samples; no live model result is claimed.',

@@ -57,7 +57,7 @@ html_doc = f"""<!doctype html>
 <title>Projects | Niranjan Kumar Agri</title>
 <meta name="description" content="Explore all {len(PROJECTS)} automation and quality engineering projects by purpose, evidence, language and category.">
 <link rel="canonical" href="{HOME}projects.html">
-<meta property="og:title" content="Projects | Niranjan Kumar Agri"><meta property="og:description" content="Search {len(PROJECTS)} automation and quality engineering projects, each with a case study and dated evidence."><meta property="og:type" content="website"><meta property="og:url" content="{HOME}projects.html"><meta property="og:image" content="{HOME}img/profile-2026-10b.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Projects | Niranjan Kumar Agri"><meta property="og:description" content="Search {len(PROJECTS)} automation and quality engineering projects, each with a case study and dated evidence."><meta property="og:type" content="website"><meta property="og:url" content="{HOME}projects.html"><meta property="og:image" content="{HOME}img/social/portfolio.jpg"><meta name="twitter:card" content="summary_large_image">
 {stylesheet()}
 <script>try{{var t=localStorage.getItem('na-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 </head><body>
