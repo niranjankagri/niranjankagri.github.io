@@ -170,11 +170,21 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install deployed smoke dependencies
+      - name: Install deployed smoke Python dependency
+        timeout-minutes: 5
+        run: python -m pip install playwright==1.63.0
+
+      - name: Install deployed Chromium and system dependencies
+        timeout-minutes: 10
         run: |
-          python -m pip install playwright==1.63.0
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
+          fi
           python -m playwright install --with-deps chromium
-          npm install --prefix "$RUNNER_TEMP/portfolio-axe" --no-save --no-package-lock axe-core@4.10.3
+
+      - name: Install deployed accessibility tooling
+        timeout-minutes: 5
+        run: npm install --prefix "$RUNNER_TEMP/portfolio-axe" --no-save --no-package-lock axe-core@4.10.3
 
       - name: Wait for the expected deployment and versioned assets
         run: >-
