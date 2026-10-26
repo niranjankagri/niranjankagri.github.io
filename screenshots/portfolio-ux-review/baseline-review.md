@@ -16,3 +16,5 @@
 - 2026-10-26: PR #9 (QI release v1.2.0): reviewed expected/actual/difference of dashboard-showcase and featured-projects (desktop/mobile, light/dark) from CI run 40271421420; only the QI screenshot (live report of 26 Oct), its 26 Oct caption and the card result line (v1.2.0) changed.
 
 - 2026-10-26: PR #9 conflict resolution: retained the merged three-flagship layout, dashboard guide and existing career content; reviewed eight updated QI screenshot/caption/evidence captures in both layouts/themes. Removed claims of an unpublished v1.2.0 release and unverified release workflow; deployment evidence remains dated 26 Oct with successful run 40269927960.
+
+- 2026-10-26: PR #9: all three browser suites and accessibility passed in CI run 40273308587. Reviewed the only four differences, confined to the neutral Workflow history badge glyphs in featured-project captures; layout, screenshot, captions and dates match. Accepted authoritative CI font rendering with the zero-pixel threshold retained.
