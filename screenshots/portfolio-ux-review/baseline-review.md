@@ -12,3 +12,9 @@
 - 2026-10-26: Reviewed the three flagship project cards and new dashboard guide in desktop/mobile and light/dark layouts. All eight captures have readable scope captions, dated evidence and unclipped controls. Existing CI baselines retained for unchanged regions pending review in the authoritative CI renderer.
 
 - 2026-10-26: Reviewed expected, actual and difference images for all 40 differing CI captures from run 40270616760 after Chromium, Firefox and WebKit smoke/accessibility passed. Flagship badge rendering matches the CI font environment; moved sections and the longer Enterprise story shift component capture origins by fractional pixels, with 1px boundaries and 1–2 channel background differences. Content, spacing and controls remain intact. All four guide captures match exactly. Accepted CI renderer captures; zero-pixel threshold unchanged.
+
+- 2026-10-26: PR #9 (QI release v1.2.0): reviewed expected/actual/difference of dashboard-showcase and featured-projects (desktop/mobile, light/dark) from CI run 40271421420; only the QI screenshot (live report of 26 Oct), its 26 Oct caption and the card result line (v1.2.0) changed.
+
+- 2026-10-26: PR #9 conflict resolution: retained the merged three-flagship layout, dashboard guide and existing career content; reviewed eight updated QI screenshot/caption/evidence captures in both layouts/themes. Removed claims of an unpublished v1.2.0 release and unverified release workflow; deployment evidence remains dated 26 Oct with successful run 40269927960.
+
+- 2026-10-26: PR #9: all three browser suites and accessibility passed in CI run 40273308587. Reviewed the only four differences, confined to the neutral Workflow history badge glyphs in featured-project captures; layout, screenshot, captions and dates match. Accepted authoritative CI font rendering with the zero-pixel threshold retained.
