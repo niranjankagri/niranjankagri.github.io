@@ -17,6 +17,7 @@ GITHUB = 'https://github.com/niranjankagri/'
 LINKEDIN = 'https://www.linkedin.com/in/niranjan-kumar-agri/'
 EMAIL = 'niranjankagri@gmail.com'
 ROOT = Path(__file__).resolve().parent.parent
+PORTFOLIO_VERSION = (ROOT / 'VERSION').read_text(encoding='utf-8').strip()
 ASSET_VERSION = hashlib.sha256(b''.join((ROOT / name).read_bytes() for name in ('style.css', 'theme.js', 'projects.js'))).hexdigest()[:12]
 
 

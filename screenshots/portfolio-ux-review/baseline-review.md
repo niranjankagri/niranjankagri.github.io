@@ -20,3 +20,7 @@
 - 2026-10-26: PR #9: all three browser suites and accessibility passed in CI run 40273308587. Reviewed the only four differences, confined to the neutral Workflow history badge glyphs in featured-project captures; layout, screenshot, captions and dates match. Accepted authoritative CI font rendering with the zero-pixel threshold retained.
 
 - 2026-10-26: PR #17 (straight portrait): reviewed expected/actual/difference of hero-desktop light and dark from CI run 40292598716; only the portrait frame changed (rotate(2deg) removed), everything else identical.
+
+- 2026-10-26: v1.0.0: reviewed expected, actual and difference images for all 20 changed captures in light/dark and desktop/mobile. Adding the Coming next section changes the full-page radial background interpolation; comparison differences are confined to its bottom edge/corner. All dimensions and content geometry remain identical. Retained the exact zero-difference gate and the other 34 unchanged baselines.
+
+- 2026-10-26: v1.0.0 hero readability follow-up: reviewed all 32 changed expected/actual/difference captures, light/dark and desktop/mobile. Identity text is now larger and bold, with a high-contrast highlighted role strip. Hero height grows 17px desktop and 50px mobile with no clipping; downstream captures show expected fractional-position rasterization and at most 1px component-height changes. No overflow or functional/accessibility failures. Exact visual gate retained.
