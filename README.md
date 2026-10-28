@@ -17,11 +17,11 @@ These items are **planned**, not completed projects, and do not increase the cur
 
 | Order | Work | Evidence required before portfolio promotion |
 |---|---|---|
-| Next | WebdriverIO + TypeScript framework | Local demo app, isolated data, Chrome/Firefox CI, network/log assertions, failure artifacts, and Quality Intelligence integration |
+| In progress | WebdriverIO + TypeScript framework | Browser execution in Chrome/Firefox, network and log assertions, failure artifacts, and Quality Intelligence import; promotion follows verified execution evidence |
 | Enhance existing work | Automated mutation testing | Repeatable mutation report, surviving-mutant analysis, and a meaningful CI gate; extend the existing manual examples |
 | Optional after WebdriverIO | Karate API testing | Authentication, schemas, data-driven and negative cases, mocks, parallel CI, and collected reports |
 
-The next planned portfolio feature update happens after the next work is implemented and verified, with a new version, evidence links, and case study. Until then, this UI phase stays closed. Dependency maintenance, security fixes and broken-site repairs can still be released; this is not a freeze on necessary maintenance.
+The WebdriverIO framework is being built in [its repository](https://github.com/niranjankagri/webdriverio-typescript-framework). Its small increments are merged in [PR #4](https://github.com/niranjankagri/webdriverio-typescript-framework/pull/4), [#5](https://github.com/niranjankagri/webdriverio-typescript-framework/pull/5), [#6](https://github.com/niranjankagri/webdriverio-typescript-framework/pull/6), [#7](https://github.com/niranjankagri/webdriverio-typescript-framework/pull/7), [#8](https://github.com/niranjankagri/webdriverio-typescript-framework/pull/8), and [#9](https://github.com/niranjankagri/webdriverio-typescript-framework/pull/9). The framework now has a local shop, isolated test data, smoke and regression categories, browser/network assertions, failure evidence, JUnit reports, and a manual Quality Intelligence import. Browser execution evidence remains outstanding; no CI workflow was added. Portfolio promotion will follow verified browser runs, with a new version, evidence links, and case study. Until then, this UI phase stays closed. Dependency maintenance, security fixes and broken-site repairs can still be released; this is not a freeze on necessary maintenance.
 
 ## Pages and data
 
