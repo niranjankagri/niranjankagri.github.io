@@ -96,7 +96,7 @@ jobs:
 
       - name: Upload visual review screenshots
         if: always() && steps.browser-smoke.outcome == 'success'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: portfolio-visual-review-${{ github.sha }}
           path: artifacts/visual-review/
@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload browser failure screenshots, traces and logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: portfolio-browser-failure-${{ github.sha }}
           path: artifacts/browser-smoke/
@@ -114,7 +114,7 @@ jobs:
 
       - name: Upload visual regression expected, actual and difference images
         if: failure() && steps.browser-smoke.outcome == 'success'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: portfolio-visual-regression-failure-${{ github.sha }}
           path: artifacts/visual-review/
@@ -207,7 +207,7 @@ jobs:
 
       - name: Upload deployed smoke failure screenshots, traces and logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: portfolio-deployed-smoke-failure-${{ github.sha }}
           path: artifacts/browser-smoke/
