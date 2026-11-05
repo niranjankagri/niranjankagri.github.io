@@ -435,7 +435,7 @@ def exercise(
             assert (
                 page.locator('#projects a[href="projects.html"]')
                 .inner_text()
-                .startswith("View all 25")
+                .startswith("View all 26")
             )
             for card in featured.all():
                 card.scroll_into_view_if_needed()
