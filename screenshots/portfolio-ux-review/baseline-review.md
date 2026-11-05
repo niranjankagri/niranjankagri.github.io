@@ -24,3 +24,5 @@
 - 2026-10-26: v1.0.0: reviewed expected, actual and difference images for all 20 changed captures in light/dark and desktop/mobile. Adding the Coming next section changes the full-page radial background interpolation; comparison differences are confined to its bottom edge/corner. All dimensions and content geometry remain identical. Retained the exact zero-difference gate and the other 34 unchanged baselines.
 
 - 2026-10-26: v1.0.0 hero readability follow-up: reviewed all 32 changed expected/actual/difference captures, light/dark and desktop/mobile. Identity text is now larger and bold, with a high-contrast highlighted role strip. Hero height grows 17px desktop and 50px mobile with no clipping; downstream captures show expected fractional-position rasterization and at most 1px component-height changes. No overflow or functional/accessibility failures. Exact visual gate retained.
+
+- 2026-11-05: Reviewed the expected, actual and difference images of all 12 changed captures (hero, featured projects, header, mobile menu): the only change in each is the project count digit, 25 to 26, in a box of at most 13x13 pixels. Images are from CI run 41997665906.
