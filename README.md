@@ -13,7 +13,7 @@ Final corrections cover accurate learning-lab workflow labels, historical Playwr
 
 ## Coming next
 
-These items are **planned**, not completed projects, and do not increase the current 25-project count. The same roadmap appears on the [portfolio homepage](https://niranjankagri.github.io/#coming-next).
+These items are **planned**, not completed projects, and do not increase the current 26-project count. The same roadmap appears on the [portfolio homepage](https://niranjankagri.github.io/#coming-next).
 
 | Order | Work | Evidence required before portfolio promotion |
 |---|---|---|
@@ -28,7 +28,7 @@ The WebdriverIO framework is being built in [its repository](https://github.com/
 | File | Purpose |
 |---|---|
 | `index.html` | Home page, professional impact, live dashboard showcase, six featured projects, experience, skills and contact |
-| `projects.html` | Searchable collection of all 25 projects; cards remain available without JavaScript |
+| `projects.html` | Searchable collection of all 26 projects; cards remain available without JavaScript |
 | `projects/*.html` | One case study per project, with setup, architecture, dated evidence and limitations |
 | `tools/project_data.py` | Shared project records, category and technology tags, evidence links and featured selection |
 | `tools/make_*.py` | Static page and hosting metadata generators |

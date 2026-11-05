@@ -435,7 +435,7 @@ def exercise(
             assert (
                 page.locator('#projects a[href="projects.html"]')
                 .inner_text()
-                .startswith("View all 25")
+                .startswith("View all 26")
             )
             for card in featured.all():
                 card.scroll_into_view_if_needed()
@@ -551,7 +551,7 @@ def exercise(
                 .split("?v=")[1]
             )
             assert page.evaluate("document.styleSheets.length > 0")
-            assert page.locator("#project-grid .project-card").count() == 25
+            assert page.locator("#project-grid .project-card").count() == 26
             for project_id in (
                 "ai-assisted-test-automation",
                 "llm-feature-testing",
@@ -614,7 +614,7 @@ def exercise(
             page.locator("#role-focus").select_option("senior-sdet")
             assert (
                 "role=senior-sdet" in page.url
-                and page.locator("#project-grid .project-card:visible").count() == 25
+                and page.locator("#project-grid .project-card:visible").count() == 26
             )
             page.locator("#clear-filters").click()
 
@@ -982,10 +982,10 @@ def exercise(
                 static_page.goto(
                     base_url + "/projects.html", wait_until="domcontentloaded"
                 )
-                assert static_page.locator("#project-grid .project-card").count() == 25
+                assert static_page.locator("#project-grid .project-card").count() == 26
                 assert (
                     static_page.locator("#project-grid .card-title a:visible").count()
-                    == 25
+                    == 26
                 )
                 static_page.goto(base_url + "/projects/enterprise.html")
                 assert (
@@ -998,7 +998,7 @@ def exercise(
                 no_script.close()
 
             required_routes = ["/", "/projects.html", *case_routes, "/404.html"]
-            assert len(required_routes) == 28
+            assert len(required_routes) == 29
             for route in required_routes:
                 response = page.goto(base_url + route, wait_until="domcontentloaded")
                 assert response and response.status in (200, 304), (
@@ -1073,7 +1073,7 @@ def exercise(
                     )
                 page.locator('.not-found a[href="/projects.html"]').click()
                 page.wait_for_url("**/projects.html")
-                assert page.locator("#project-grid .project-card").count() == 25
+                assert page.locator("#project-grid .project-card").count() == 26
                 page.goto(base_url.rstrip("/") + missing_route)
                 page.locator('.not-found a[href="/"]').click()
                 page.wait_for_url(base_url.rstrip("/") + "/")

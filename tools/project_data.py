@@ -125,6 +125,14 @@ FEATURED = [
       fact='Collects the CI results of 23 of my repositories every day and shows them as a live report: the latest result of every suite, pass rate per browser, failures grouped by cause, trends, and requirement coverage. Every figure opens the executions behind it, and a test opens the exact run that was clicked.',
       text='A platform on top of existing test automation, for release decisions: it reads the JUnit XML, mochawesome and Allure files the frameworks already write, keeps coverage and pass rate as separate documented metrics, classifies flaky tests with evidence, decides CI quality gates (0 passed, 1 failed, 3 incomplete, so missing results never pass) and explains release readiness row by row. The live report is checked after every deployment.',
       tags=['Python', 'FastAPI', 'SQLite', 'pydantic', 'Playwright', 'GitHub Actions']),
+
+ # Facts checked 5 Nov 2026: CI run 41996593360 on main green; 59 tests from 35 test methods on Java 21; eight deliberate client bugs, all caught.
+ dict(n=18, badge='API mocking', title='Testing Third-Party APIs with WireMock', repo='wiremock-api-mocking', wf='ci.yml', wfname='CI',
+      img='wiremock', alt='Test results by class: 59 WireMock tests passed', page='wiremock-api-mocking',
+      report='docs/images/test-overview.png',
+      fact='59 tests prove what a sandbox cannot show on demand: dropped connections, rate limits and timeouts end as an unknown payment rather than a double charge, and eight deliberate client bugs were all caught.',
+      text='A checkout client for a payment and a shipping API, tested against WireMock over real HTTP: request matching, response templating, stateful retry scenarios, all four network faults, delays, JSON mappings, and record and replay.',
+      tags=['Java 21', 'WireMock', 'JUnit 6', 'API mocking', 'Fault injection']),
 ]
 
 MORE = [
@@ -187,6 +195,7 @@ CATEGORY_BY_REPO = {
     'accessibility-visual-testing': ['Accessibility'],
     'security-testing-zap': ['Security'],
     'integration-testing-testcontainers': ['Web & API'],
+    'wiremock-api-mocking': ['Web & API'],
     'mobile-real-device-testing': ['Mobile'],
     'automation-coverage-quality-intelligence': ['Quality Intelligence'],
     'mobile-test-automation-framework': ['Mobile', 'Learning Labs'],
@@ -292,6 +301,11 @@ EVIDENCE_BY_REPO = {
         'date': '2026-10-17',
         'url': 'https://github.com/niranjankagri/security-testing-zap/actions/runs/39034198614',
         'label': 'CI run #1 on main',
+    },
+    'wiremock-api-mocking': {
+        'date': '2026-11-05',
+        'url': 'https://github.com/niranjankagri/wiremock-api-mocking/actions/runs/41996593360',
+        'label': 'CI run on main',
     },
     'integration-testing-testcontainers': {
         'date': '2026-10-17',
@@ -479,6 +493,7 @@ REPORT_LABELS = {
     'accessibility-visual-testing': 'Accessibility and visual-diff report screenshot',
     'security-testing-zap': 'OWASP ZAP scan report screenshot',
     'integration-testing-testcontainers': 'Integration test report screenshot',
+    'wiremock-api-mocking': 'Test results by class',
     'mobile-real-device-testing': 'Real-device execution evidence screenshot',
     'automation-coverage-quality-intelligence': 'Live report screenshot',
     'mobile-test-automation-framework': 'Android test report screenshot',
@@ -508,6 +523,7 @@ COMPARISON_DETAILS = {
     'llm-feature-testing': ('LLM evaluation harness and deterministic safety checks', 'CI replays hand-written samples; no live model result claimed', 'Calibrated judge beside deterministic checks; sensitive areas have explicit gates'),
     'accessibility-visual-testing': ('Accessibility, keyboard/focus and visual regression checks', 'Playwright browser matrix; see workflow evidence', 'axe-core plus checks axe cannot cover and zero-tolerance image comparisons'),
     'security-testing-zap': ('DAST scans and API access-control tests', 'Docker private network', 'Separate scanner findings from API-only authorization checks'),
+    'wiremock-api-mocking': ('HTTP client integration tests against mocked third-party APIs', 'WireMock on local ports; no browser matrix', 'Stub objects, strict request matching, scenarios and fault injection'),
     'integration-testing-testcontainers': ('GraphQL, database and Kafka integration tests', 'PostgreSQL and Kafka containers', 'Real service dependencies, idempotency and dead-letter assertions'),
     'mobile-real-device-testing': ('Mobile web and native iOS tests', 'Real iPhone, Galaxy S24 and mobile emulation', 'Device minutes reserved for checks emulation cannot establish'),
     'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates, report and dashboard browser tests', 'Chromium, Firefox and WebKit browser tests; daily CI artifacts from 23 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
@@ -529,6 +545,7 @@ COMPARISON_LIMITATIONS = {
     'k6-performance-testing': 'The measured limit and load-shedding result apply to the repository demo shop and the linked stress-test profile.',
     'ai-assisted-test-automation': 'CI replays hand-written sample answers; no live model output or model-quality score is claimed.',
     'automation-coverage-quality-intelligence': 'The requirement catalog is synthetic; collected CI results are real. The shared dashboard account is documented in the case study.',
+    'wiremock-api-mocking': 'The payment and shipping APIs are invented; a mock cannot notice a real API changing, which is what contract tests are for.',
     'llm-feature-testing': 'CI uses hand-written examples with planted flaws; no live model pass rate is claimed.',
     'mobile-real-device-testing': 'The device matrix covers one iPhone and one Android phone; it is not a representative customer device matrix.',
 }
