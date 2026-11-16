@@ -13,7 +13,7 @@ Final corrections cover accurate learning-lab workflow labels, historical Playwr
 
 ## Coming next
 
-These items are **planned**, not completed projects, and do not increase the current 26-project count. The same roadmap appears on the [portfolio homepage](https://niranjankagri.github.io/#coming-next).
+These items are **planned**, not completed projects, and do not increase the current 30-project count. The same roadmap appears on the [portfolio homepage](https://niranjankagri.github.io/#coming-next).
 
 | Order | Work | Evidence required before portfolio promotion |
 |---|---|---|
@@ -28,7 +28,7 @@ The WebdriverIO framework is being built in [its repository](https://github.com/
 | File | Purpose |
 |---|---|
 | `index.html` | Home page, professional impact, live dashboard showcase, six featured projects, experience, skills and contact |
-| `projects.html` | Searchable collection of all 26 projects; cards remain available without JavaScript |
+| `projects.html` | Searchable collection of all 30 projects; cards remain available without JavaScript |
 | `projects/*.html` | One case study per project, with setup, architecture, dated evidence and limitations |
 | `tools/project_data.py` | Shared project records, category and technology tags, evidence links and featured selection |
 | `tools/make_*.py` | Static page and hosting metadata generators |
@@ -50,7 +50,7 @@ The Quality Intelligence dashboard uses collected repository and CI result files
 
 ## Project discovery and case studies
 
-The homepage has focused role views for Senior SDET, QA Lead, and Automation Architect. These views point into the same 25-project catalog and do not hide the rest of the site. The collection supports URL-backed search, category and language filters, skill matching, role focus, three sort orders, previews, and comparison of up to three projects. Search and skill terms combine with category and language groups; selections within each category or language group use OR matching.
+The homepage has focused role views for Senior SDET, QA Lead, and Automation Architect. These views point into the same 30-project catalog and do not hide the rest of the site. The collection supports URL-backed search, category and language filters, skill matching, role focus, three sort orders, previews, and comparison of up to three projects. Search and skill terms combine with category and language groups; selections within each category or language group use OR matching.
 
 Explorer links can include `q`, repeated `category` and `tech` parameters, `skill`, `role`, `sort`, and repeated `compare` parameters. Case-study links retain the filtered results URL and scroll position for the Back to Projects action within the same browser tab. The explorer remains a static list when JavaScript is unavailable; previews, sorting, filters, and comparison require JavaScript.
 
@@ -69,7 +69,7 @@ python tools/build_site.py
 python tools/validate_site.py
 ```
 
-For the full local browser check, install the pinned dependencies and run the staged-site smoke command. The script starts and stops its own static server, tests Chromium, Firefox and WebKit, checks the 28 routes and CV, and captures screenshots and traces on failure. axe-core runs WCAG 2.0, 2.1 and 2.2 A/AA checks.
+For the full local browser check, install the pinned dependencies and run the staged-site smoke command. The script starts and stops its own static server, tests Chromium, Firefox and WebKit, checks the 33 routes and CV, and captures screenshots and traces on failure. axe-core runs WCAG 2.0, 2.1 and 2.2 A/AA checks.
 
 ```bash
 python -m pip install playwright==1.63.0 ruff==0.17.1 Pillow==11.3.0

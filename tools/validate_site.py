@@ -14,7 +14,7 @@ from project_data import CARD_RESULTS, COMPARISON_DETAILS, EXPLORATION_FOCUSES, 
 from portfolio_content import HOME_PROJECT_IDS  # noqa: E402
 from components import ASSET_VERSION  # noqa: E402
 
-ALLOWED = {'Web & API', 'Mobile', 'Performance', 'Security', 'Accessibility', 'AI & LLM', 'CI/CD', 'Quality Intelligence', 'Learning Labs'}
+ALLOWED = {'Web & API', 'Mobile', 'Performance', 'Security', 'Accessibility', 'AI & LLM', 'CI/CD', 'Quality Intelligence', 'Test quality', 'Learning Labs'}
 ERRORS: list[str] = []
 
 
@@ -28,8 +28,8 @@ if len(ids) != len(set(ids)):
     fail('Duplicate project identifiers in shared data.')
 if len(pages) != len(set(pages)):
     fail('Duplicate project page slugs in shared data.')
-if len(PROJECTS) != 26:
-    fail(f'Expected all 26 existing projects, found {len(PROJECTS)}.')
+if len(PROJECTS) != 30:
+    fail(f'Expected all 30 existing projects, found {len(PROJECTS)}.')
 if len(FEATURED_PROJECTS) != 6:
     fail(f'Expected six featured projects, found {len(FEATURED_PROJECTS)}.')
 featured_ids = {p['id'] for p in FEATURED_PROJECTS}
@@ -174,8 +174,8 @@ for selector in ('.exploration-band::before', '.engineering-evidence::before'):
 
 
 html_files = [ROOT / 'index.html', ROOT / 'projects.html', ROOT / '404.html', *sorted((ROOT / 'projects').glob('*.html'))]
-if len(html_files) != 29:
-    fail(f'Expected 29 generated HTML pages, found {len(html_files)}.')
+if len(html_files) != 33:
+    fail(f'Expected 33 generated HTML pages, found {len(html_files)}.')
 if not (ROOT / 'Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf').is_file():
     fail('CV download is missing.')
 for path in html_files:

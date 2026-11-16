@@ -133,6 +133,42 @@ FEATURED = [
       fact='59 tests prove what a sandbox cannot show on demand: dropped connections, rate limits and timeouts end as an unknown payment rather than a double charge, and eight deliberate client bugs were all caught.',
       text='A checkout client for a payment and a shipping API, tested against WireMock over real HTTP: request matching, response templating, stateful retry scenarios, all four network faults, delays, JSON mappings, and record and replay.',
       tags=['Java 21', 'WireMock', 'JUnit 6', 'API mocking', 'Fault injection']),
+
+ # Facts checked 16 Nov 2026 against main 8a0ef74 (scheduled CI run 43552636833 green, 14 Nov): 15 tests, 0 failures;
+ # 18 out-of-date locators healed, 3 wrong heals pinned (README "Limits found on real runs").
+ dict(n=19, badge='Self-healing', title='Self-Healing Selenium Tests with Healenium', repo='healenium-self-healing-tests', wf='ci.yml', wfname='CI',
+      img='healenium', alt='Healenium healing report: each failed locator next to the healed locator and its score', page='healenium-self-healing',
+      report='docs/images/healenium-report.png',
+      fact='A redesign renamed every locator; the same 6 journeys still passed through Healenium, which healed 18 out-of-date locators. 3 heals picked the wrong element, and the normal assertions caught every one.',
+      text='A demo shop with two releases at the same URL, tested through the same page objects three times: learn on release 1, heal on release 2, and a control run without Healenium that proves the old locators really fail.',
+      tags=['Java 21', 'Selenium 4', 'Healenium', 'TestNG', 'Docker']),
+
+ # Facts checked 16 Nov 2026 against main 589c9ae (scheduled CI run 43551387965 green, 14 Nov): weak 15 tests 42/81 killed (52 %),
+ # strong 40 tests 81/81 (100 %), both 100 % line coverage in JaCoCo (91/91); PIT 1.30.2 STRONGER mutators.
+ dict(n=20, badge='Mutation testing', title='Mutation Testing with PIT', repo='pit-mutation-testing', wf='ci.yml', wfname='CI',
+      img='pit', alt='PIT report of the weak suite: 100 percent line coverage but a mutation score of 52 percent', page='pit-mutation-testing',
+      report='docs/images/pit-index-weak.png',
+      fact='Two suites with the same 100% line coverage: one kills all 81 mutants, the other only 42 (52%). The 39 survivors are bugs that would ship with every test green, such as an expired coupon that still gives its discount.',
+      text='PIT mutates a small pricing module and checks which test suite notices; the strong suite shows the habits that kill mutants: both sides of every boundary, exact values, side effects. CI fails if one mutant survives.',
+      tags=['Java 21', 'PIT', 'JUnit 6', 'JaCoCo', 'Maven']),
+
+ # Facts checked 16 Nov 2026 against main 04b35cc (scheduled CI run 43552247643 green, 14 Nov): 27 tests, 0 failures,
+ # 1,000 inputs per property (20,000 in the weekly run); shrunk examples with seed 20261111 from the README.
+ dict(n=21, badge='Property-based', title='Property-Based Testing with QuickTheories', repo='quicktheories-property-based-testing', wf='ci.yml', wfname='CI',
+      img='quicktheories', alt='Table of buggy first drafts and the smallest failing input QuickTheories shrank each one to', page='quicktheories-property-based',
+      report='README.md',
+      fact='27 tests state rules that must hold for every input and check each on 1,000 generated inputs. Four buggy first drafts were each shrunk to the smallest failing example, such as 1 cent split between 2 people.',
+      text='Bill splitting, a booking calendar, a run-length codec and a stock ledger, checked with generated inputs, round trips, a simple oracle and a stateful model check, with steered generators and documented shrinking limits.',
+      tags=['Java 21', 'QuickTheories', 'TestNG', 'Property-based testing', 'Maven']),
+
+ # Facts checked 16 Nov 2026 against main 73c9de3 (scheduled CI run 43668528137 green, 15 Nov); figures from the README's local run:
+ # load p95 52 ms (gate passes), regression p95 8,507 ms (gate fails as intended), closed 40 users p95 510 ms vs open 100/s p95 16,323 ms.
+ dict(n=22, badge='Performance', title='Gatling Performance Testing', repo='gatling-performance-testing', wf='ci.yml', wfname='CI',
+      img='gatling', alt='Gatling response time over time at the same throughput: flat in the closed model (top), climbing in the open model (bottom)', page='gatling-performance',
+      report='docs/images/open-model-over-time.png',
+      fact='At the same 77 orders per second, a closed workload model reported p95 0.5 s and an open model 16 s: how the load arrives decides whether the queue is visible. A 5x slower payment provider fails the SLO gate.',
+      text='Load tests as Java code against a shop API in the same repository: endpoint objects chained into journeys, feeders, SLO assertions that fail the Maven build, capacity steps, and the same overload in two workload models.',
+      tags=['Java 21', 'Gatling', 'Maven', 'Load testing', 'SLO']),
 ]
 
 MORE = [
@@ -196,6 +232,10 @@ CATEGORY_BY_REPO = {
     'security-testing-zap': ['Security'],
     'integration-testing-testcontainers': ['Web & API'],
     'wiremock-api-mocking': ['Web & API'],
+    'healenium-self-healing-tests': ['Web & API'],
+    'pit-mutation-testing': ['Test quality'],
+    'quicktheories-property-based-testing': ['Test quality'],
+    'gatling-performance-testing': ['Performance'],
     'mobile-real-device-testing': ['Mobile'],
     'automation-coverage-quality-intelligence': ['Quality Intelligence'],
     'mobile-test-automation-framework': ['Mobile', 'Learning Labs'],
@@ -306,6 +346,26 @@ EVIDENCE_BY_REPO = {
         'date': '2026-11-05',
         'url': 'https://github.com/niranjankagri/wiremock-api-mocking/actions/runs/41996593360',
         'label': 'CI run on main',
+    },
+    'healenium-self-healing-tests': {
+        'date': '2026-11-14',
+        'url': 'https://github.com/niranjankagri/healenium-self-healing-tests/actions/runs/43552636833',
+        'label': 'Scheduled CI run on main',
+    },
+    'pit-mutation-testing': {
+        'date': '2026-11-14',
+        'url': 'https://github.com/niranjankagri/pit-mutation-testing/actions/runs/43551387965',
+        'label': 'Scheduled CI run on main',
+    },
+    'quicktheories-property-based-testing': {
+        'date': '2026-11-14',
+        'url': 'https://github.com/niranjankagri/quicktheories-property-based-testing/actions/runs/43552247643',
+        'label': 'Scheduled CI run on main',
+    },
+    'gatling-performance-testing': {
+        'date': '2026-11-15',
+        'url': 'https://github.com/niranjankagri/gatling-performance-testing/actions/runs/43668528137',
+        'label': 'Scheduled CI run on main',
     },
     'integration-testing-testcontainers': {
         'date': '2026-10-17',
@@ -458,7 +518,7 @@ EXPLORATION_FOCUSES = {
         'label': 'Find performance bottlenecks',
         'summary': 'Inspect workload models, latency thresholds, load evidence and the limits of a demo-shop measurement.',
         'experience': 'Designed rfswarm benchmarks with real browser sessions, up to 135 concurrent users and 1,400+ seeded accounts; used them to flag response-time drift of 10% or more.',
-        'projects': ['k6-performance-testing', 'enterprise-test-automation-framework'],
+        'projects': ['k6-performance-testing', 'gatling-performance-testing', 'enterprise-test-automation-framework'],
     },
     'ai-testing': {
         'label': 'Evaluate AI-assisted testing',
@@ -494,6 +554,10 @@ REPORT_LABELS = {
     'security-testing-zap': 'OWASP ZAP scan report screenshot',
     'integration-testing-testcontainers': 'Integration test report screenshot',
     'wiremock-api-mocking': 'Test results by class',
+    'healenium-self-healing-tests': 'Healenium healing report screenshot',
+    'pit-mutation-testing': 'PIT mutation report screenshot',
+    'quicktheories-property-based-testing': 'README with the shrinking results table',
+    'gatling-performance-testing': 'Gatling response-time chart screenshot',
     'mobile-real-device-testing': 'Real-device execution evidence screenshot',
     'automation-coverage-quality-intelligence': 'Live report screenshot',
     'mobile-test-automation-framework': 'Android test report screenshot',
@@ -524,6 +588,10 @@ COMPARISON_DETAILS = {
     'accessibility-visual-testing': ('Accessibility, keyboard/focus and visual regression checks', 'Playwright browser matrix; see workflow evidence', 'axe-core plus checks axe cannot cover and zero-tolerance image comparisons'),
     'security-testing-zap': ('DAST scans and API access-control tests', 'Docker private network', 'Separate scanner findings from API-only authorization checks'),
     'wiremock-api-mocking': ('HTTP client integration tests against mocked third-party APIs', 'WireMock on local ports; no browser matrix', 'Stub objects, strict request matching, scenarios and fault injection'),
+    'healenium-self-healing-tests': ('Browser journeys across two releases of a demo shop', 'Headless Chrome; Healenium backend in Docker', 'Self-healing driver behind page objects, wrong heals pinned, control run without healing'),
+    'pit-mutation-testing': ('Unit tests measured by mutation testing', 'JVM unit tests; no browser matrix', 'Two suites with equal line coverage, boundary tables, exact assertions, 100% mutation gate'),
+    'quicktheories-property-based-testing': ('Property-based and stateful unit tests', 'JVM unit tests; no browser matrix', 'Generated inputs, shrinking, oracles, round trips and a model check'),
+    'gatling-performance-testing': ('HTTP smoke, load, capacity and workload-model tests', 'HTTP workload; no browser matrix', 'Endpoint objects, journeys, feeders and SLO assertions as a build gate'),
     'integration-testing-testcontainers': ('GraphQL, database and Kafka integration tests', 'PostgreSQL and Kafka containers', 'Real service dependencies, idempotency and dead-letter assertions'),
     'mobile-real-device-testing': ('Mobile web and native iOS tests', 'Real iPhone, Galaxy S24 and mobile emulation', 'Device minutes reserved for checks emulation cannot establish'),
     'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates, report and dashboard browser tests', 'Chromium, Firefox and WebKit browser tests; daily CI artifacts from 23 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
@@ -546,6 +614,10 @@ COMPARISON_LIMITATIONS = {
     'ai-assisted-test-automation': 'CI replays hand-written sample answers; no live model output or model-quality score is claimed.',
     'automation-coverage-quality-intelligence': 'The requirement catalog is synthetic; collected CI results are real. The shared dashboard account is documented in the case study.',
     'wiremock-api-mocking': 'The payment and shipping APIs are invented; a mock cannot notice a real API changing, which is what contract tests are for.',
+    'healenium-self-healing-tests': 'The demo shop and its redesign are written for the project; healing quality on another application will differ, and every healed locator still needs review.',
+    'pit-mutation-testing': 'A small pricing module written for the project; mutation scores of real code bases are lower and take longer to compute.',
+    'quicktheories-property-based-testing': 'QuickTheories 0.26 is no longer maintained, and shrinking with mixed generators depends on the JDK (documented in the repository).',
+    'gatling-performance-testing': 'Load generator and API share one machine; the numbers compare models and catch regressions, not the capacity of a real system.',
     'llm-feature-testing': 'CI uses hand-written examples with planted flaws; no live model pass rate is claimed.',
     'mobile-real-device-testing': 'The device matrix covers one iPhone and one Android phone; it is not a representative customer device matrix.',
 }
