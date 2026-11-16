@@ -13,7 +13,7 @@ from project_data import EXPLORATION_FOCUSES, PROJECTS  # noqa: E402
 
 e = html.escape
 CATEGORIES = ['Web & API', 'Mobile', 'Performance', 'Security', 'Accessibility', 'AI & LLM',
-              'CI/CD', 'Quality Intelligence', 'Learning Labs']
+              'CI/CD', 'Quality Intelligence', 'Test quality', 'Learning Labs']
 LANGUAGES = ['Java', 'Python', 'TypeScript']
 
 
