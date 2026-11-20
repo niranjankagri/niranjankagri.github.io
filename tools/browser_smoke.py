@@ -559,8 +559,11 @@ def exercise(
                 ai_card = page.locator(
                     f'#project-grid [data-project-id="{project_id}"]'
                 )
-                assert ai_card.locator(".evidence-kind").inner_text() == (
-                    "Recorded CI replay"
+                # The build appends an "older evidence" note after 30 days, so check the start
+                assert (
+                    ai_card.locator(".evidence-kind")
+                    .inner_text()
+                    .startswith("Recorded CI replay")
                 )
                 assert (
                     "no live model result is claimed"
