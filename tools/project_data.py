@@ -115,15 +115,15 @@ FEATURED = [
       tags=['BrowserStack', 'Real devices', 'Selenium', 'Appium', 'iOS', 'Android']),
 
  # Facts checked 20 Nov 2026 against main acdf1f3 (CI run 43876173382 green, self gate 32/32 requirements;
- # deployment smoke 43877075761 green on 16 Nov) and the live report after collection run 44674642515: 27 repositories /
- # 28 workflows / 64 jobs collected; 1,228 unit/integration/performance + 229 browser tests; live overview 4,203 latest
- # results, 100 % pass rate (4,187/4,187), 86 % automation coverage (sample catalog), 2 critical gaps, release readiness
- # "at risk" (157 flaky candidates, 2 incomplete collections in 7 days). Only the requirement catalog is synthetic; the executions are real CI results.
+ # deployment smoke 43877075761 green on 16 Nov) and the live report after collection run 44730583094: 29 repositories /
+ # 30 workflows / 73 jobs collected; 1,228 unit/integration/performance + 229 browser tests; live overview 4,325 latest
+ # results, 100 % pass rate (4,309/4,309), 86 % automation coverage (sample catalog), 2 critical gaps, release readiness
+ # "at risk" (157 flaky candidates, 4 incomplete collections in 7 days, 3 of them recovered). Only the requirement catalog is synthetic; the executions are real CI results.
  dict(n=17, badge='Quality engineering', title='Automation Coverage & Quality Intelligence', repo='automation-coverage-quality-intelligence',
       wf='ci.yml', wfname='CI', img='quality-intelligence-report-2026-11-20',
-      alt='Live Quality Intelligence report overview on 20 Nov 2026: 4,203 latest results from 27 repositories, execution pass rate 100 %, automation coverage 86 % of the synthetic sample catalog, two critical gaps, release readiness at risk',
+      alt='Live Quality Intelligence report overview on 20 Nov 2026: 4,325 latest results from 29 repositories, execution pass rate 100 %, automation coverage 86 % of the synthetic sample catalog, two critical gaps, release readiness at risk',
       page='quality-intelligence', report='docs/images/gate-report-release.png',
-      fact='Collects the CI results of 27 of my repositories every day and shows them as a live report: the latest result of every suite, pass rate per browser, failures grouped by cause, trends, and requirement coverage. Every figure opens the executions behind it, and a test opens the exact run that was clicked.',
+      fact='Collects the CI results of 29 of my repositories every day and shows them as a live report: the latest result of every suite, pass rate per browser, failures grouped by cause, trends, and requirement coverage. Every figure opens the executions behind it, and a test opens the exact run that was clicked.',
       text='A platform on top of existing test automation, for release decisions: it reads the JUnit XML, mochawesome and Allure files the frameworks already write, keeps coverage and pass rate as separate documented metrics, classifies flaky tests with evidence, decides CI quality gates (0 passed, 1 failed, 3 incomplete, so missing results never pass) and explains release readiness row by row. The live report is checked after every deployment.',
       tags=['Python', 'FastAPI', 'SQLite', 'pydantic', 'Playwright', 'GitHub Actions']),
 
@@ -170,6 +170,24 @@ FEATURED = [
       fact='At the same 77 orders per second, a closed workload model reported p95 0.5 s and an open model 16 s: how the load arrives decides whether the queue is visible. A 5x slower payment provider fails the SLO gate.',
       text='Load tests as Java code against a shop API in the same repository: endpoint objects chained into journeys, feeders, SLO assertions that fail the Maven build, capacity steps, and the same overload in two workload models.',
       tags=['Java 21', 'Gatling', 'Maven', 'Load testing', 'SLO']),
+
+ # Facts checked 20 Nov 2026 against main 1176f20 (CI run 44729081797 green): 37 tests (26 unit and API, 11 UI) on 7 browser
+ # setups; a core job and 7 UI jobs, each starting the Pattern Shop image from ghcr.io; the password-manager problem from the README.
+ dict(n=23, badge='Design patterns', title='Design Patterns in a Selenium and Playwright Framework', repo='design-patterns-test-framework', wf='ci.yml', wfname='CI',
+      img='design-patterns', alt='CI run on main: the unit and API job and seven UI jobs on Selenium and Playwright, all passed', page='design-patterns-test-framework',
+      report='docs/images/ci-run.png',
+      fact='The same 11 UI tests run on Selenium WebDriver and on Playwright for Java, on 7 browser setups, through one Browser interface. Running both engines exposed a Chrome password-leak dialog that swallowed clicks on Selenium only; the fix lives in the Factory and a test keeps it there.',
+      text='Five design patterns doing real work in one Java framework: Page Object, Factory (browser and engine), Strategy (JSON, CSV or API test data), Adapter (two browser engines, three catalog APIs) and Observer (reports, logs, metrics and screenshots from test events).',
+      tags=['Java 21', 'Selenium 4', 'Playwright', 'TestNG', 'Design patterns']),
+
+ # Facts checked 20 Nov 2026 against main e33214c (CI run 44724127713 green): 19 JUnit tests over HTTP plus an image smoke test;
+ # image on ghcr.io (Java 25 runtime); hosted demo smoke test passed on 20 Nov 2026.
+ dict(n=24, badge='Demo application', title='Pattern Shop: a Shared Demo App for Test Frameworks', repo='pattern-shop-demo-app', wf='ci.yml', wfname='CI',
+      img='pattern-shop', alt='Pattern Shop product list: four products with prices and add-to-cart buttons', page='pattern-shop-demo-app',
+      report='docs/images/products.png',
+      fact='A small shop I control, so my frameworks never depend on a public demo site: each CI job starts a fresh copy from a Docker image in seconds. 19 JUnit tests and an image smoke test gate every change, and a hosted copy is online for demos.',
+      text='Sign-in, products, cart and checkout pages with a data-testid on every element a test needs, and the same catalog through REST/JSON, a SOAP-style XML API and a legacy text format, for adapter and contract tests. JDK only, no dependencies.',
+      tags=['Java', 'Docker', 'GitHub Actions', 'REST', 'Render']),
 ]
 
 MORE = [
@@ -237,6 +255,8 @@ CATEGORY_BY_REPO = {
     'pit-mutation-testing': ['Test quality'],
     'quicktheories-property-based-testing': ['Test quality'],
     'gatling-performance-testing': ['Performance'],
+    'design-patterns-test-framework': ['Web & API'],
+    'pattern-shop-demo-app': ['Web & API', 'CI/CD'],
     'mobile-real-device-testing': ['Mobile'],
     'automation-coverage-quality-intelligence': ['Quality Intelligence'],
     'mobile-test-automation-framework': ['Mobile', 'Learning Labs'],
@@ -368,6 +388,16 @@ EVIDENCE_BY_REPO = {
         'url': 'https://github.com/niranjankagri/gatling-performance-testing/actions/runs/43668528137',
         'label': 'Scheduled CI run on main',
     },
+    'design-patterns-test-framework': {
+        'date': '2026-11-20',
+        'url': 'https://github.com/niranjankagri/design-patterns-test-framework/actions/runs/44729081797',
+        'label': 'CI run on main',
+    },
+    'pattern-shop-demo-app': {
+        'date': '2026-11-20',
+        'url': 'https://github.com/niranjankagri/pattern-shop-demo-app/actions/runs/44724127713',
+        'label': 'CI run on main',
+    },
     'integration-testing-testcontainers': {
         'date': '2026-10-17',
         'url': 'https://github.com/niranjankagri/integration-testing-testcontainers/actions/runs/39044080833',
@@ -380,12 +410,12 @@ EVIDENCE_BY_REPO = {
     },
     'automation-coverage-quality-intelligence': {
         'date': '2026-11-20',
-        'url': 'https://github.com/niranjankagri/automation-coverage-quality-intelligence/actions/runs/44674642515',
+        'url': 'https://github.com/niranjankagri/automation-coverage-quality-intelligence/actions/runs/44730583094',
         'label': 'Collection run behind the live report',
-        'result': 'Collected on 20 Nov 2026 from 27 public repositories (28 workflows, 64 jobs): the latest result of every suite passed, 4,187 of 4,187 verdicts (16 skipped). The nightly gate passed; readiness is at risk because of 157 flaky candidates and 2 incomplete collections in 7 days. The latest deployment smoke check (16 Nov) passed; the requirement catalog is synthetic.',
+        'result': 'Collected on 20 Nov 2026 from 29 public repositories (30 workflows, 73 jobs): the latest result of every suite passed, 4,309 of 4,309 verdicts (16 skipped). The nightly gate passed; readiness is at risk because of 157 flaky candidates and 4 incomplete collections in 7 days (3 recovered by a later complete run). The latest deployment smoke check (16 Nov) passed; the requirement catalog is synthetic.',
         'result_kind': 'Real collected CI history plus synthetic requirement catalogue',
-        'alt': 'Screenshot of the live Quality Intelligence report on 20 Nov 2026: 4,203 latest results, 100 percent execution pass rate, 86 percent automation coverage of the synthetic sample catalog, two critical gaps and release readiness at risk',
-        'description': 'A quality engineering platform that collects daily CI results from 27 public repositories and 64 workflow jobs and presents them as a live report: overview, test results, failures and stability, trends, and coverage of a synthetic requirement catalog, with release gates and a readiness scorecard. The original dashboard remains available.',
+        'alt': 'Screenshot of the live Quality Intelligence report on 20 Nov 2026: 4,325 latest results, 100 percent execution pass rate, 86 percent automation coverage of the synthetic sample catalog, two critical gaps and release readiness at risk',
+        'description': 'A quality engineering platform that collects daily CI results from 29 public repositories and 73 workflow jobs and presents them as a live report: overview, test results, failures and stability, trends, and coverage of a synthetic requirement catalog, with release gates and a readiness scorecard. The original dashboard remains available.',
     },
     'mobile-test-automation-framework': {
         'date': '2026-10-13',
@@ -452,13 +482,13 @@ LIVE_DASHBOARD = 'https://quality-intelligence-0ur1.onrender.com'
 # /api/readiness) on 20 Nov 2026. A dated snapshot: the live report changes every day.
 QI_REPORT_SNAPSHOT = {
     'date': '2026-11-20',
-    'repositories': 27,
-    'results': 4203,
+    'repositories': 29,
+    'results': 4325,
     'tiles': [
-        ('passed', 'Execution pass rate', '100%', '4,187 of 4,187 verdicts passed; 16 skipped not counted', '#/results'),
+        ('passed', 'Execution pass rate', '100%', '4,309 of 4,309 verdicts passed; 16 skipped not counted', '#/results'),
         ('accent', 'Automation coverage', '86%', '37 of 43 test cases in the synthetic sample catalog automated', '#/coverage'),
         ('failed', 'Critical gaps', '2', 'critical requirements without an automated test', '#/coverage?show=gaps'),
-        ('warning', 'Release readiness', 'At risk', 'gate passed; 157 flaky candidates and 2 incomplete collections in 7 days', '#/overview?panel=readiness'),
+        ('warning', 'Release readiness', 'At risk', 'gate passed; 157 flaky candidates and 4 incomplete collections in 7 days', '#/overview?panel=readiness'),
     ],
 }
 PROJECTS_URL = 'https://niranjankagri.github.io/projects.html'
@@ -499,7 +529,8 @@ EXPLORATION_FOCUSES = {
         'summary': 'Compare layered frameworks, reusable page objects, typed API clients and test-owned data.',
         'experience': 'Built a hybrid Selenium WebDriver framework and progressed through software engineering and architecture roles at bebo Technologies.',
         'projects': ['enterprise-test-automation-framework', 'playwright-typescript-framework',
-                     'playwright-framework', 'python-pytest-framework', 'cypress-typescript-framework'],
+                     'playwright-framework', 'python-pytest-framework', 'cypress-typescript-framework',
+                     'design-patterns-test-framework'],
     },
     'release-quality': {
         'label': 'Investigate release quality',
@@ -559,6 +590,8 @@ REPORT_LABELS = {
     'pit-mutation-testing': 'PIT mutation report screenshot',
     'quicktheories-property-based-testing': 'README with the shrinking results table',
     'gatling-performance-testing': 'Gatling response-time chart screenshot',
+    'design-patterns-test-framework': 'CI run screenshot',
+    'pattern-shop-demo-app': 'Product list screenshot',
     'mobile-real-device-testing': 'Real-device execution evidence screenshot',
     'automation-coverage-quality-intelligence': 'Live report screenshot',
     'mobile-test-automation-framework': 'Android test report screenshot',
@@ -593,9 +626,11 @@ COMPARISON_DETAILS = {
     'pit-mutation-testing': ('Unit tests measured by mutation testing', 'JVM unit tests; no browser matrix', 'Two suites with equal line coverage, boundary tables, exact assertions, 100% mutation gate'),
     'quicktheories-property-based-testing': ('Property-based and stateful unit tests', 'JVM unit tests; no browser matrix', 'Generated inputs, shrinking, oracles, round trips and a model check'),
     'gatling-performance-testing': ('HTTP smoke, load, capacity and workload-model tests', 'HTTP workload; no browser matrix', 'Endpoint objects, journeys, feeders and SLO assertions as a build gate'),
+    'design-patterns-test-framework': ('UI, API adapter, data-source and framework unit tests', 'Selenium: Chrome, Firefox, Edge and Selenium Grid; Playwright: Chromium, Firefox and WebKit', 'Page Object, Factory, Strategy, Adapter and Observer; one Browser interface for two engines'),
+    'pattern-shop-demo-app': ('Demo application: HTTP tests of its pages and APIs, and an image smoke test', 'No browser matrix; the frameworks that use it bring their own', 'One Docker image per CI job, data-testid hooks, the same catalog in three API formats'),
     'integration-testing-testcontainers': ('GraphQL, database and Kafka integration tests', 'PostgreSQL and Kafka containers', 'Real service dependencies, idempotency and dead-letter assertions'),
     'mobile-real-device-testing': ('Mobile web and native iOS tests', 'Real iPhone, Galaxy S24 and mobile emulation', 'Device minutes reserved for checks emulation cannot establish'),
-    'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates, report and dashboard browser tests', 'Chromium, Firefox and WebKit browser tests; daily CI artifacts from 27 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
+    'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates, report and dashboard browser tests', 'Chromium, Firefox and WebKit browser tests; daily CI artifacts from 29 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
     'mobile-test-automation-framework': ('Android run; iOS implementation documented but not run', 'Android 15 emulator', 'Platform layer with per-platform capabilities'),
     'java-selenium-testng-pom-framework': ('UI smoke checks', 'Chrome, Edge and Firefox (manual run)', 'Page objects, explicit waits and configurable headless execution'),
     'cucumber-bdd-demo': ('BDD UI scenarios', 'Chrome, Edge and Firefox (manual run)', 'Cucumber runners and separated framework layers'),
@@ -619,6 +654,8 @@ COMPARISON_LIMITATIONS = {
     'pit-mutation-testing': 'A small pricing module written for the project; mutation scores of real code bases are lower and take longer to compute.',
     'quicktheories-property-based-testing': 'QuickTheories 0.26 is no longer maintained, and shrinking with mixed generators depends on the JDK (documented in the repository).',
     'gatling-performance-testing': 'Load generator and API share one machine; the numbers compare models and catch regressions, not the capacity of a real system.',
+    'design-patterns-test-framework': 'The application under test is my own small demo shop; the patterns are shown at framework scale, not on a large product.',
+    'pattern-shop-demo-app': 'A deliberately small demo app: in-memory sessions, no database; the hosted copy is on a free plan and sleeps when idle.',
     'llm-feature-testing': 'CI uses hand-written examples with planted flaws; no live model pass rate is claimed.',
     'mobile-real-device-testing': 'The device matrix covers one iPhone and one Android phone; it is not a representative customer device matrix.',
 }
@@ -631,7 +668,7 @@ ARCHITECTURE_PREVIEWS = {
 CARD_PURPOSE = {
     'enterprise-test-automation-framework': 'One demo shop tested through browser, API, database and integration layers.',
     'playwright-typescript-framework': 'Typed UI and API checks for a shared demo shop across three browser engines.',
-    'automation-coverage-quality-intelligence': 'A live report of daily CI results from 27 repositories, with coverage and release gates.',
+    'automation-coverage-quality-intelligence': 'A live report of daily CI results from 29 repositories, with coverage and release gates.',
     'appium-framework': 'Android checks with device-aware waits and preserved failure evidence.',
     'k6-performance-testing': 'Shop API load tests with endpoint service-level thresholds.',
     'ai-assisted-test-automation': 'A human-reviewed pipeline for drafting and triaging Playwright tests.',
@@ -651,7 +688,7 @@ FEATURED_PREVIEW_CAPTIONS = {
 CARD_RESULTS = {
     'enterprise-test-automation-framework': '19 Nov 2026: 792 test executions passed (Chrome 246; Firefox, Edge and Selenium Grid 182 each).',
     'playwright-typescript-framework': '47 unique tests; 95 test executions per run across Chromium, Firefox and WebKit.',
-    'automation-coverage-quality-intelligence': 'Collected 20 Nov 2026: the live report covers 27 public repositories, latest results 4,187 of 4,187 passed.',
+    'automation-coverage-quality-intelligence': 'Collected 20 Nov 2026: the live report covers 29 public repositories, latest results 4,309 of 4,309 passed.',
     'appium-framework': 'Run #7 passed 40 Android 15 emulator test executions; the repository has 40 TestNG methods and three known-bug checks.',
     'k6-performance-testing': 'Above ~90 orders/s checkout exceeded 3 s p95; after load shedding it stayed below 650 ms in the same profile.',
     'ai-assisted-test-automation': 'CI replayed hand-written samples; no live model result is claimed.',
