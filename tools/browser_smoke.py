@@ -560,8 +560,10 @@ def exercise(
                     f'#project-grid [data-project-id="{project_id}"]'
                 )
                 # The build appends an "older evidence" note after 30 days, so check the start
-                assert ai_card.locator(".evidence-kind").inner_text().startswith(
-                    "Recorded CI replay"
+                assert (
+                    ai_card.locator(".evidence-kind")
+                    .inner_text()
+                    .startswith("Recorded CI replay")
                 )
                 assert (
                     "no live model result is claimed"
