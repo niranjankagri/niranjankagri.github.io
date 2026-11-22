@@ -551,7 +551,7 @@ def exercise(
                 .split("?v=")[1]
             )
             assert page.evaluate("document.styleSheets.length > 0")
-            assert page.locator("#project-grid .project-card").count() == 32
+            assert page.locator("#project-grid .project-card").count() == 33
             for project_id in (
                 "ai-assisted-test-automation",
                 "llm-feature-testing",
@@ -617,7 +617,7 @@ def exercise(
             page.locator("#role-focus").select_option("senior-sdet")
             assert (
                 "role=senior-sdet" in page.url
-                and page.locator("#project-grid .project-card:visible").count() == 32
+                and page.locator("#project-grid .project-card:visible").count() == 33
             )
             page.locator("#clear-filters").click()
 
@@ -1076,7 +1076,7 @@ def exercise(
                     )
                 page.locator('.not-found a[href="/projects.html"]').click()
                 page.wait_for_url("**/projects.html")
-                assert page.locator("#project-grid .project-card").count() == 32
+                assert page.locator("#project-grid .project-card").count() == 33
                 page.goto(base_url.rstrip("/") + missing_route)
                 page.locator('.not-found a[href="/"]').click()
                 page.wait_for_url(base_url.rstrip("/") + "/")
