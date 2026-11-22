@@ -38,3 +38,5 @@
 - 2026-11-20: 20 Nov 2026, PR #26: compared all 54 captures of CI run 44732809934 locally against the baselines in one pass (so pixel changes are not hidden behind size changes) and reviewed the 28 that differ. Header, hero and mobile menu: project count 30 to 32; dashboard showcase and featured projects: new QI screenshot (29 repositories, 4,325 results) and its text; problem card expanded: the design patterns framework added to "Build maintainable automation"; related projects: Pattern Shop card; case footer (1 px shorter) and architecture (max delta 1): sub-pixel rendering. No unintended changes.
 
 - 2026-11-22: 22 Nov 2026: dashboard showcase shows the new live QI report screenshot (31 repositories, 4,533 results; CI run 44988541917 actual images); diffs reviewed, only the screenshot and its figures changed.
+
+- 2026-11-22: 22 Nov 2026: QI card and dashboard showcase from CI run 44989477515, reviewed against the old baselines: new live report screenshot (31 repositories, 4,533 results), 29 -> 31 in the card text, figures 4,510 of 4,510, evidence and caption dated 22 Nov; nothing else changed.
