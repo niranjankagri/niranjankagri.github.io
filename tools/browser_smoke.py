@@ -435,7 +435,7 @@ def exercise(
             assert (
                 page.locator('#projects a[href="projects.html"]')
                 .inner_text()
-                .startswith("View all 32")
+                .startswith("View all 33")
             )
             for card in featured.all():
                 card.scroll_into_view_if_needed()
@@ -985,10 +985,10 @@ def exercise(
                 static_page.goto(
                     base_url + "/projects.html", wait_until="domcontentloaded"
                 )
-                assert static_page.locator("#project-grid .project-card").count() == 32
+                assert static_page.locator("#project-grid .project-card").count() == 33
                 assert (
                     static_page.locator("#project-grid .card-title a:visible").count()
-                    == 32
+                    == 33
                 )
                 static_page.goto(base_url + "/projects/enterprise.html")
                 assert (
@@ -1001,7 +1001,7 @@ def exercise(
                 no_script.close()
 
             required_routes = ["/", "/projects.html", *case_routes, "/404.html"]
-            assert len(required_routes) == 35
+            assert len(required_routes) == 36
             for route in required_routes:
                 response = page.goto(base_url + route, wait_until="domcontentloaded")
                 assert response and response.status in (200, 304), (

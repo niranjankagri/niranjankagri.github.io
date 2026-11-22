@@ -189,6 +189,15 @@ FEATURED = [
       fact='A small shop I control, used by four of my frameworks instead of public demo sites: each CI job starts a fresh copy from a Docker image in seconds. 32 JUnit tests and an image smoke test gate every change, and a hosted copy is online for demos.',
       text='Sign-in, a sortable product list, product pages, cart and a two-step checkout, with a data-testid on every element a test needs, and the same catalog through REST/JSON, a SOAP-style XML API and a legacy text format, for adapter and contract tests. JDK only, no dependencies.',
       tags=['Java', 'Docker', 'GitHub Actions', 'REST', 'Render']),
+ # Facts checked 22 Nov 2026 against main b6a8664 (Tests run 45013660433 and Airbnb image run 45013660451 green):
+ # 28 sessions; 459 tests in 23 Maven modules on JDK 17 and JDK 25 (46 module summaries in the CI log, all passing);
+ # Airbnb backend live on Render since 22 Nov 2026, smoke-test.sh passed against it the same day.
+ dict(n=25, badge='Backend course', title='Java Backend Course: a Live Airbnb Backend', repo='java-backend-development', wf='tests.yml', wfname='Tests',
+      img='java-backend', alt='Smoke test against the live Airbnb backend on Render, 22 Nov 2026: register, listing, search, booking, a second booking of the same nights refused with 409, PASSED', page='java-backend-course',
+      report='airbnb-backend/README.md',
+      fact='28 sessions from core Java to Spring Boot, microservices and AI tools, every example checked by tests: 459 tests in 23 Maven modules on JDK 17 and 25. The Airbnb backend from the last project sessions runs live on Render, and its smoke test passed there.',
+      text='My work for a Java backend course, session by session, one pull request per day: Java and Maven, Spring MVC and Boot, JDBC and JPA, testing, Redis, Spring Security and OAuth 2, microservices and messaging, two projects (Splitwise and Airbnb), deployment with Docker, Flyway and Render, and AI tools ending in a RAG assistant built with only the JDK.',
+      tags=['Java 17', 'Spring Boot 4', 'PostgreSQL', 'Docker', 'Render']),
 ]
 
 MORE = [
@@ -258,6 +267,7 @@ CATEGORY_BY_REPO = {
     'gatling-performance-testing': ['Performance'],
     'design-patterns-test-framework': ['Web & API'],
     'pattern-shop-demo-app': ['Web & API', 'CI/CD'],
+    'java-backend-development': ['Web & API', 'CI/CD'],
     'mobile-real-device-testing': ['Mobile'],
     'automation-coverage-quality-intelligence': ['Quality Intelligence'],
     'mobile-test-automation-framework': ['Mobile', 'Learning Labs'],
@@ -393,6 +403,12 @@ EVIDENCE_BY_REPO = {
         'date': '2026-11-22',
         'url': 'https://github.com/niranjankagri/design-patterns-test-framework/actions/runs/45004125413',
         'label': 'CI run on main',
+    },
+    'java-backend-development': {
+        'date': '2026-11-22',
+        'url': 'https://github.com/niranjankagri/java-backend-development/actions/runs/45013660433',
+        'label': 'CI run on main',
+        'result': 'On 22 Nov 2026: 459 tests in 23 modules passed on JDK 17 and JDK 25 in CI; the Airbnb backend is live at https://airbnb-backend-u7lv.onrender.com and its smoke test (register, listing, search, booking, no double booking) passed against it.',
     },
     'pattern-shop-demo-app': {
         'date': '2026-11-22',
@@ -593,6 +609,7 @@ REPORT_LABELS = {
     'gatling-performance-testing': 'Gatling response-time chart screenshot',
     'design-patterns-test-framework': 'CI run screenshot',
     'pattern-shop-demo-app': 'Product list screenshot',
+    'java-backend-development': 'Airbnb backend README',
     'mobile-real-device-testing': 'Real-device execution evidence screenshot',
     'automation-coverage-quality-intelligence': 'Live report screenshot',
     'mobile-test-automation-framework': 'Android test report screenshot',
@@ -629,6 +646,7 @@ COMPARISON_DETAILS = {
     'gatling-performance-testing': ('HTTP smoke, load, capacity and workload-model tests', 'HTTP workload; no browser matrix', 'Endpoint objects, journeys, feeders and SLO assertions as a build gate'),
     'design-patterns-test-framework': ('UI, API adapter, data-source and framework unit tests', 'Selenium: Chrome, Firefox, Edge and Selenium Grid; Playwright: Chromium, Firefox and WebKit', 'Page Object, Factory, Strategy, Adapter and Observer; one Browser interface for two engines'),
     'pattern-shop-demo-app': ('Demo application: HTTP tests of its pages and APIs, and an image smoke test', 'No browser matrix; the frameworks that use it bring their own', 'One Docker image per CI job, data-testid hooks, the same catalog in three API formats'),
+    'java-backend-development': ('Unit, slice and API tests per session; the Airbnb backend also on PostgreSQL in Docker and as a running image', 'JDK 17 and JDK 25 in CI; the Airbnb image smoke-tested in CI and on Render', 'One Maven module per session with code, a README per topic, one pull request per session'),
     'integration-testing-testcontainers': ('GraphQL, database and Kafka integration tests', 'PostgreSQL and Kafka containers', 'Real service dependencies, idempotency and dead-letter assertions'),
     'mobile-real-device-testing': ('Mobile web and native iOS tests', 'Real iPhone, Galaxy S24 and mobile emulation', 'Device minutes reserved for checks emulation cannot establish'),
     'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates, report and dashboard browser tests', 'Chromium, Firefox and WebKit browser tests; daily CI artifacts from 31 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
@@ -657,6 +675,7 @@ COMPARISON_LIMITATIONS = {
     'gatling-performance-testing': 'Load generator and API share one machine; the numbers compare models and catch regressions, not the capacity of a real system.',
     'design-patterns-test-framework': 'The application under test is my own small demo shop; the patterns are shown at framework scale, not on a large product.',
     'pattern-shop-demo-app': 'A deliberately small demo app: in-memory sessions, no database; the hosted copy is on a free plan and sleeps when idle.',
+    'java-backend-development': 'Course work: the projects are realistic but small, and the live Airbnb backend runs on a free plan (it sleeps when idle; the free database expires after 30 days unless upgraded).',
     'llm-feature-testing': 'CI uses hand-written examples with planted flaws; no live model pass rate is claimed.',
     'mobile-real-device-testing': 'The device matrix covers one iPhone and one Android phone; it is not a representative customer device matrix.',
 }
