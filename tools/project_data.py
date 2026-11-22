@@ -73,13 +73,13 @@ FEATURED = [
       text='All Java: a demo app in the repository, the Anthropic Java SDK with typed structured outputs, repair rounds fed by the gate, an approve step that marks AI-written tests, and AI failure triage into product bug, test bug, environment or flaky. Answers are recorded, so CI replays them without an API key; until the first live run, CI runs the pipeline on hand-written sample answers that every report labels as samples.',
       tags=['Java 21', 'Claude API', 'Playwright', 'TestNG', 'GitHub Actions']),
 
- # Facts checked 19 Oct 2026: 90 harness tests green locally and in CI (no model calls), incl. the eval on hand-written samples with planted flaws (all caught). Not claimed yet: Claude's eval pass rates
+ # Facts checked 22 Nov 2026 (main 3fcfa8f, PR #11): 168 harness tests green locally and in CI (no model calls), incl. the eval on hand-written samples with planted flaws (all caught). Not claimed yet: Claude's eval pass rates
  # (the first live recording run is still to do).
  dict(n=12, badge='LLM evals', title='Testing an LLM Feature (Claude)', repo='llm-feature-testing', wf='ci.yml', wfname='CI',
       img='llm-evals', alt='Eval flow: golden set, assistant, deterministic checks, calibrated LLM judge, pass rate per tag', page='llm-feature-testing',
       report='docs/images/eval-flow.png',
-      fact='32 hand-written eval cases in six areas, each run three times; prompt-injection and data-leak areas must pass 100%, and the LLM judge is only trusted after it agrees with hand-labelled answers.',
-      text='An HR policy assistant on Claude and the harness that decides whether it can ship: structured replies, deterministic checks for facts, citations, a canary and colleagues\' data, a calibrated groundedness judge, pass rates per area, and 90 tests of the harness itself, including a run on hand-written answers with planted leaks that the harness must catch.',
+      fact='35 hand-written eval cases in seven areas, each run three times; prompt-injection, data-leak and stale-context areas must pass 100%, and the LLM judge is only trusted after it agrees with hand-labelled answers.',
+      text='An HR policy assistant on Claude and the harness that decides whether it can ship: structured replies, deterministic checks for facts, citations, a canary and colleagues\' data, a calibrated groundedness judge, pass rates per area, and 168 tests of the harness itself, including a run on hand-written answers with planted leaks that the harness must catch.',
       tags=['Java 21', 'Claude API', 'LLM evals', 'TestNG', 'GitHub Actions']),
 
  # Facts checked 17 Oct 2026: CI run 39007129438 green on all 4 jobs; 86 Playwright + 28 unit tests; 8 of 8 planted defects caught.
@@ -347,9 +347,9 @@ EVIDENCE_BY_REPO = {
         'result_kind': 'Recorded CI replay',
     },
     'llm-feature-testing': {
-        'date': '2026-11-16',
-        'url': 'https://github.com/niranjankagri/llm-feature-testing/actions/runs/43793865879',
-        'label': 'CI run #34 (hand-written sample answers)',
+        'date': '2026-11-22',
+        'url': 'https://github.com/niranjankagri/llm-feature-testing/actions/runs/44979415961',
+        'label': 'CI run #36 (hand-written sample answers)',
         'result': 'CI replayed hand-written samples with planted flaws; no live model result is claimed.',
         'result_kind': 'Recorded CI replay',
     },
