@@ -679,7 +679,7 @@ CARD_PURPOSE = {
 FEATURED_PREVIEW_CAPTIONS = {
     'enterprise-test-automation-framework': ('Historical report', '7 Oct 2026 · separate local run; not the nightly evidence linked below.'),
     'playwright-typescript-framework': ('Playwright HTML report', 'Static screenshot from 10 Oct 2026; CI evidence checked 20 Oct 2026.'),
-    'automation-coverage-quality-intelligence': ('Live report screenshot', 'Captured 20 Nov 2026 from the live report; the requirement catalog is synthetic.'),
+    'automation-coverage-quality-intelligence': ('Live report screenshot', 'Captured 22 Nov 2026 from the live report; the requirement catalog is synthetic.'),
     'appium-framework': ('Android test report', 'Historical emulator run from 12 Oct 2026; workflow checked 20 Oct 2026.'),
     'k6-performance-testing': ('k6 dashboard screenshot', 'Demo-shop stress run from 13 Oct 2026; scope is the linked workload profile.'),
     'ai-assisted-test-automation': ('Pipeline architecture diagram', 'Static architecture diagram; capture date unknown.'),
