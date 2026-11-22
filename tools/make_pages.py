@@ -938,7 +938,7 @@ PAGES = {
   repo='automation-coverage-quality-intelligence', workflow='ci.yml', report='docs/images/gate-report-release.png',
   eyebrow='Featured project 17 · Quality engineering · Python',
   title='Automation Coverage & Quality Intelligence',
-  summary='A quality engineering platform on top of existing test automation: it collects the results that pytest, Robot Framework, Selenium/TestNG, Playwright and Cypress suites already produce (JUnit XML, mochawesome, Allure) from 29 repositories, links them to requirements, analyses execution history, decides release quality gates in CI and presents everything in a live report.',
+  summary='A quality engineering platform on top of existing test automation: it collects the results that pytest, Robot Framework, Selenium/TestNG, Playwright and Cypress suites already produce (JUnit XML, mochawesome, Allure) from 31 repositories, links them to requirements, analyses execution history, decides release quality gates in CI and presents everything in a live report.',
   purpose='<p>Each automation framework reports on its own run, but a release decision needs answers across all of them: which requirements are tested, which critical ones have no automated test, what failed and what it puts at risk, which tests are flaky, and whether this build meets the agreed criteria. '
           'This platform answers those questions from the results the frameworks already write. Execution history comes from collected CI result files, while the requirement catalog used by the demonstration is synthetic; the two data sources are kept distinct.</p>',
   stack=[['Language', 'Python 3.12+, one package (qualityintel) with the command qi; pydantic 2 models, mypy --strict'],

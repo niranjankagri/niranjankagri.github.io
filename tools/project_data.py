@@ -114,16 +114,16 @@ FEATURED = [
       text='A mobile-first shop tested with Selenium on real phones through BrowserStack Local (layout, touch targets, keyboards, iOS zoom, checkout), a native iOS app tested with Appium XCUITest on a real iPhone, all within a 100-minute trial.',
       tags=['BrowserStack', 'Real devices', 'Selenium', 'Appium', 'iOS', 'Android']),
 
- # Facts checked 20 Nov 2026 against main acdf1f3 (CI run 43876173382 green, self gate 32/32 requirements;
- # deployment smoke 43877075761 green on 16 Nov) and the live report after collection run 44730583094: 29 repositories /
- # 30 workflows / 73 jobs collected; 1,228 unit/integration/performance + 229 browser tests; live overview 4,325 latest
- # results, 100 % pass rate (4,309/4,309), 86 % automation coverage (sample catalog), 2 critical gaps, release readiness
- # "at risk" (157 flaky candidates, 4 incomplete collections in 7 days, 3 of them recovered). Only the requirement catalog is synthetic; the executions are real CI results.
+ # Facts checked 22 Nov 2026 against main 47a6669 (PR #43: webdriverio and rag-agent-evals collected) and the live
+ # report after collection run 44988035299: 31 repositories / 32 workflows / 76 jobs collected; 1,228
+ # unit/integration/performance + 229 browser tests (CI run 43876173382, unchanged since); live overview 4,533 latest
+ # results, 100 % pass rate (4,510/4,510), 86 % automation coverage (sample catalog), 2 critical gaps, release readiness
+ # "at risk" (157 flaky candidates, 4 incomplete collections in 7 days, all 4 recovered by a later complete run). Only the requirement catalog is synthetic; the executions are real CI results.
  dict(n=17, badge='Quality engineering', title='Automation Coverage & Quality Intelligence', repo='automation-coverage-quality-intelligence',
-      wf='ci.yml', wfname='CI', img='quality-intelligence-report-2026-11-20',
-      alt='Live Quality Intelligence report overview on 20 Nov 2026: 4,325 latest results from 29 repositories, execution pass rate 100 %, automation coverage 86 % of the synthetic sample catalog, two critical gaps, release readiness at risk',
+      wf='ci.yml', wfname='CI', img='quality-intelligence-report-2026-11-22',
+      alt='Live Quality Intelligence report overview on 22 Nov 2026: 4,533 latest results from 31 repositories, execution pass rate 100 %, automation coverage 86 % of the synthetic sample catalog, two critical gaps, release readiness at risk',
       page='quality-intelligence', report='docs/images/gate-report-release.png',
-      fact='Collects the CI results of 29 of my repositories every day and shows them as a live report: the latest result of every suite, pass rate per browser, failures grouped by cause, trends, and requirement coverage. Every figure opens the executions behind it, and a test opens the exact run that was clicked.',
+      fact='Collects the CI results of 31 of my repositories every day and shows them as a live report: the latest result of every suite, pass rate per browser, failures grouped by cause, trends, and requirement coverage. Every figure opens the executions behind it, and a test opens the exact run that was clicked.',
       text='A platform on top of existing test automation, for release decisions: it reads the JUnit XML, mochawesome and Allure files the frameworks already write, keeps coverage and pass rate as separate documented metrics, classifies flaky tests with evidence, decides CI quality gates (0 passed, 1 failed, 3 incomplete, so missing results never pass) and explains release readiness row by row. The live report is checked after every deployment.',
       tags=['Python', 'FastAPI', 'SQLite', 'pydantic', 'Playwright', 'GitHub Actions']),
 
@@ -409,13 +409,13 @@ EVIDENCE_BY_REPO = {
         'label': 'Real-device evidence and CI workflow',
     },
     'automation-coverage-quality-intelligence': {
-        'date': '2026-11-20',
-        'url': 'https://github.com/niranjankagri/automation-coverage-quality-intelligence/actions/runs/44730583094',
+        'date': '2026-11-22',
+        'url': 'https://github.com/niranjankagri/automation-coverage-quality-intelligence/actions/runs/44988035299',
         'label': 'Collection run behind the live report',
-        'result': 'Collected on 20 Nov 2026 from 29 public repositories (30 workflows, 73 jobs): the latest result of every suite passed, 4,309 of 4,309 verdicts (16 skipped). The nightly gate passed; readiness is at risk because of 157 flaky candidates and 4 incomplete collections in 7 days (3 recovered by a later complete run). The latest deployment smoke check (16 Nov) passed; the requirement catalog is synthetic.',
+        'result': 'Collected on 22 Nov 2026 from 31 public repositories (32 workflows, 76 jobs): the latest result of every suite passed, 4,510 of 4,510 verdicts (23 skipped). The nightly gate passed; readiness is at risk because of 157 flaky candidates and 4 incomplete collections in 7 days (all 4 recovered by a later complete run). The latest deployment smoke check (16 Nov) passed; the requirement catalog is synthetic.',
         'result_kind': 'Real collected CI history plus synthetic requirement catalogue',
-        'alt': 'Screenshot of the live Quality Intelligence report on 20 Nov 2026: 4,325 latest results, 100 percent execution pass rate, 86 percent automation coverage of the synthetic sample catalog, two critical gaps and release readiness at risk',
-        'description': 'A quality engineering platform that collects daily CI results from 29 public repositories and 73 workflow jobs and presents them as a live report: overview, test results, failures and stability, trends, and coverage of a synthetic requirement catalog, with release gates and a readiness scorecard. The original dashboard remains available.',
+        'alt': 'Screenshot of the live Quality Intelligence report on 22 Nov 2026: 4,533 latest results, 100 percent execution pass rate, 86 percent automation coverage of the synthetic sample catalog, two critical gaps and release readiness at risk',
+        'description': 'A quality engineering platform that collects daily CI results from 31 public repositories and 76 workflow jobs and presents them as a live report: overview, test results, failures and stability, trends, and coverage of a synthetic requirement catalog, with release gates and a readiness scorecard. The original dashboard remains available.',
     },
     'mobile-test-automation-framework': {
         'date': '2026-10-13',
@@ -479,13 +479,13 @@ FEATURED_IDS = set(FEATURED_ORDER)
 
 LIVE_DASHBOARD = 'https://quality-intelligence-0ur1.onrender.com'
 # Headline figures of the live report, read from its API (/api/report/overview, /api/summary,
-# /api/readiness) on 20 Nov 2026. A dated snapshot: the live report changes every day.
+# /api/readiness) on 22 Nov 2026. A dated snapshot: the live report changes every day.
 QI_REPORT_SNAPSHOT = {
-    'date': '2026-11-20',
-    'repositories': 29,
-    'results': 4325,
+    'date': '2026-11-22',
+    'repositories': 31,
+    'results': 4533,
     'tiles': [
-        ('passed', 'Execution pass rate', '100%', '4,309 of 4,309 verdicts passed; 16 skipped not counted', '#/results'),
+        ('passed', 'Execution pass rate', '100%', '4,510 of 4,510 verdicts passed; 23 skipped not counted', '#/results'),
         ('accent', 'Automation coverage', '86%', '37 of 43 test cases in the synthetic sample catalog automated', '#/coverage'),
         ('failed', 'Critical gaps', '2', 'critical requirements without an automated test', '#/coverage?show=gaps'),
         ('warning', 'Release readiness', 'At risk', 'gate passed; 157 flaky candidates and 4 incomplete collections in 7 days', '#/overview?panel=readiness'),
@@ -630,7 +630,7 @@ COMPARISON_DETAILS = {
     'pattern-shop-demo-app': ('Demo application: HTTP tests of its pages and APIs, and an image smoke test', 'No browser matrix; the frameworks that use it bring their own', 'One Docker image per CI job, data-testid hooks, the same catalog in three API formats'),
     'integration-testing-testcontainers': ('GraphQL, database and Kafka integration tests', 'PostgreSQL and Kafka containers', 'Real service dependencies, idempotency and dead-letter assertions'),
     'mobile-real-device-testing': ('Mobile web and native iOS tests', 'Real iPhone, Galaxy S24 and mobile emulation', 'Device minutes reserved for checks emulation cannot establish'),
-    'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates, report and dashboard browser tests', 'Chromium, Firefox and WebKit browser tests; daily CI artifacts from 29 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
+    'automation-coverage-quality-intelligence': ('CLI, ingestion, traceability, history, gates, report and dashboard browser tests', 'Chromium, Firefox and WebKit browser tests; daily CI artifacts from 31 repositories', 'Typed common result model, SQLite history, incomplete gate exit code'),
     'mobile-test-automation-framework': ('Android run; iOS implementation documented but not run', 'Android 15 emulator', 'Platform layer with per-platform capabilities'),
     'java-selenium-testng-pom-framework': ('UI smoke checks', 'Chrome, Edge and Firefox (manual run)', 'Page objects, explicit waits and configurable headless execution'),
     'cucumber-bdd-demo': ('BDD UI scenarios', 'Chrome, Edge and Firefox (manual run)', 'Cucumber runners and separated framework layers'),
@@ -668,7 +668,7 @@ ARCHITECTURE_PREVIEWS = {
 CARD_PURPOSE = {
     'enterprise-test-automation-framework': 'One demo shop tested through browser, API, database and integration layers.',
     'playwright-typescript-framework': 'Typed UI and API checks for a shared demo shop across three browser engines.',
-    'automation-coverage-quality-intelligence': 'A live report of daily CI results from 29 repositories, with coverage and release gates.',
+    'automation-coverage-quality-intelligence': 'A live report of daily CI results from 31 repositories, with coverage and release gates.',
     'appium-framework': 'Android checks with device-aware waits and preserved failure evidence.',
     'k6-performance-testing': 'Shop API load tests with endpoint service-level thresholds.',
     'ai-assisted-test-automation': 'A human-reviewed pipeline for drafting and triaging Playwright tests.',
@@ -679,7 +679,7 @@ CARD_PURPOSE = {
 FEATURED_PREVIEW_CAPTIONS = {
     'enterprise-test-automation-framework': ('Historical report', '7 Oct 2026 · separate local run; not the nightly evidence linked below.'),
     'playwright-typescript-framework': ('Playwright HTML report', 'Static screenshot from 10 Oct 2026; CI evidence checked 20 Oct 2026.'),
-    'automation-coverage-quality-intelligence': ('Live report screenshot', 'Captured 20 Nov 2026 from the live report; the requirement catalog is synthetic.'),
+    'automation-coverage-quality-intelligence': ('Live report screenshot', 'Captured 22 Nov 2026 from the live report; the requirement catalog is synthetic.'),
     'appium-framework': ('Android test report', 'Historical emulator run from 12 Oct 2026; workflow checked 20 Oct 2026.'),
     'k6-performance-testing': ('k6 dashboard screenshot', 'Demo-shop stress run from 13 Oct 2026; scope is the linked workload profile.'),
     'ai-assisted-test-automation': ('Pipeline architecture diagram', 'Static architecture diagram; capture date unknown.'),
@@ -688,7 +688,7 @@ FEATURED_PREVIEW_CAPTIONS = {
 CARD_RESULTS = {
     'enterprise-test-automation-framework': '19 Nov 2026: 792 test executions passed (Chrome 246; Firefox, Edge and Selenium Grid 182 each).',
     'playwright-typescript-framework': '47 unique tests; 95 test executions per run across Chromium, Firefox and WebKit.',
-    'automation-coverage-quality-intelligence': 'Collected 20 Nov 2026: the live report covers 29 public repositories, latest results 4,309 of 4,309 passed.',
+    'automation-coverage-quality-intelligence': 'Collected 22 Nov 2026: the live report covers 31 public repositories, latest results 4,510 of 4,510 passed.',
     'appium-framework': 'Run #7 passed 40 Android 15 emulator test executions; the repository has 40 TestNG methods and three known-bug checks.',
     'k6-performance-testing': 'Above ~90 orders/s checkout exceeded 3 s p95; after load shedding it stayed below 650 ms in the same profile.',
     'ai-assisted-test-automation': 'CI replayed hand-written samples; no live model result is claimed.',
