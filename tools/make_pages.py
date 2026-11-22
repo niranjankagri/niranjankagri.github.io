@@ -272,7 +272,7 @@ PAGES = {
   title='Robot Framework UI + API',
   summary='UI and API test automation with Robot Framework 7, SeleniumLibrary and RequestsLibrary on the Page Object Model: 30 tests in about 70 seconds with 4 parallel pabot processes.',
   purpose='<p>Shows keyword-driven automation built like maintainable software: the same tool I use at work (Robot Framework + Python), '
-          'applied to a public demo shop (<a href="https://www.saucedemo.com" target="_blank" rel="noopener">Sauce Demo</a>) and a public API '
+          'applied to my own demo shop (<a href="pattern-shop-demo-app.html">Pattern Shop</a>, started from its Docker image in CI) and a public API '
           '(<a href="https://dummyjson.com" target="_blank" rel="noopener">DummyJSON</a>).</p>',
   stack=[['Framework', 'Robot Framework 7'], ['UI', 'SeleniumLibrary 6.9'], ['API', 'RequestsLibrary 0.9'], ['Parallel runs', 'pabot'],
          ['Code quality', 'Robocop linter (documentation required on every test and keyword)'], ['CI', 'GitHub Actions: lint gate, Chrome and Firefox matrix, nightly run']],
@@ -289,16 +289,16 @@ PAGES = {
   results=fig('https://raw.githubusercontent.com/niranjankagri/robot-framework-automation/main/docs/images/report-overview.png',
               'Robot Framework report: 30 tests passed', 'Robot Framework report of a full parallel run.'),
   ci='<p>Lint first (Robocop and a dry run), then the suite on Chrome and Firefox in parallel with pabot, a pass/fail table in the run summary, and the logs as artifacts; also a nightly run.</p>',
-  limits=['Runs against public demo sites, whose availability affects results', 'No performance tests in this public project (I use rfswarm for that at work)'],
-  next=['A small rfswarm load scenario against a self-hosted app', 'Libdoc keyword documentation published to GitHub Pages'],
+  limits=['The API tests run against a public demo API (DummyJSON), whose availability affects results', 'No performance tests in this public project (I use rfswarm for that at work)'],
+  next=['A small rfswarm load scenario against Pattern Shop', 'Libdoc keyword documentation published to GitHub Pages'],
  ),
  'playwright-java': dict(
   repo='playwright-framework', workflow='tests.yml', report='docs/images/html-report.png',
   eyebrow='Featured project 3 · Java · Web + API',
   title='Playwright for Java Framework',
-  summary='UI, API and network test automation with Playwright for Java and TestNG: the Sauce Demo shop and the Restful Booker API, 57 tests run in CI on Chromium, Firefox and WebKit.',
+  summary='UI, API and network test automation with Playwright for Java and TestNG: my own Pattern Shop and the Restful Booker API, 57 tests run in CI on Chromium, Firefox and WebKit.',
   purpose='<p>Shows Playwright in a Java/TestNG stack, the combination many Java teams move to from Selenium: UI tests on '
-          '<a href="https://www.saucedemo.com" target="_blank" rel="noopener">Sauce Demo</a>, API tests on '
+          '<a href="pattern-shop-demo-app.html">Pattern Shop</a> (my own demo shop, started from its Docker image in CI), API tests on '
           '<a href="https://restful-booker.herokuapp.com" target="_blank" rel="noopener">Restful Booker</a> through Playwright&#39;s own request context, and network control in the browser.</p>',
   stack=[['Language', 'Java 17'], ['Browser and API automation', 'Playwright for Java 1.63 (Chromium, Firefox, WebKit; APIRequestContext)'],
          ['Test runner', 'TestNG 7.12 (groups, data providers, parallel classes)'], ['JSON', 'Jackson (Java records)'],
@@ -317,7 +317,7 @@ PAGES = {
   results=fig('https://raw.githubusercontent.com/niranjankagri/playwright-framework/main/docs/images/html-report.png',
               'Playwright for Java HTML report', 'The custom HTML report (this run includes the deliberate demo failures).'),
   ci='<p>On every push and pull request: one job each for Chromium, Firefox and WebKit; each installs its browser with the Linux libraries it needs, runs the tests headless and keeps the HTML report plus any failure screenshots, videos and traces as an artifact.</p>',
-  limits=['UI and API tests depend on public demo sites', 'The README report screenshot shows a run that includes the deliberate demo failures (run with -Pdemo)'],
+  limits=['The API tests depend on a public demo API (Restful Booker); the UI tests run against Pattern Shop in CI', 'The report screenshots come from local runs; CI keeps each browser\'s report as an artifact'],
   next=['Publish the HTML report to GitHub Pages', 'Visual comparison of key pages'],
  ),
  'python-pytest': dict(
@@ -842,7 +842,7 @@ PAGES = {
   summary='A Java test framework built to show five design patterns doing real work: Page Object, Factory, Strategy, Adapter and Observer. The same UI tests run on Selenium WebDriver and on Playwright for Java, on seven browser setups, against my own demo shop started from a Docker image in every CI job.',
   purpose='<p>Pattern names are easy to list and hard to show. Here each pattern solves a problem the framework really has: two browser engines behind one interface, test data that can come from three sources, three catalog APIs that disagree on names and prices, and reporting that must not be called from the tests. '
           'Running one set of tests on two engines also turns environment problems into visible differences instead of flaky tests.</p>',
-  stack=[['Tests', 'Java 21, TestNG 7.12, AssertJ: 37 tests (26 unit and API, 11 UI)'],
+  stack=[['Tests', 'Java 21, TestNG 7.12, AssertJ: 39 tests (26 unit and API, 13 UI)'],
          ['Engines', 'Selenium 4.53 (Chrome, Firefox, Edge, Selenium Grid) and Playwright 1.65 for Java (Chromium, Firefox, WebKit)'],
          ['Application', '<a href="pattern-shop-demo-app.html">Pattern Shop</a>: pages, REST, SOAP-style XML and a legacy text API'],
          ['CI', 'GitHub Actions: a core job and 7 UI jobs, each with its own shop container; weekly and on demand']],
@@ -855,7 +855,7 @@ PAGES = {
   features=['Adapters for three catalog APIs: JSON in cents, SOAP-style XML in dollars, legacy upper-case text with error strings',
             'Observer output on every run: a Markdown report (also in the CI job summary), metrics.json, a log line per test, a screenshot per failed UI test',
             'Selenium Grid in Docker as one of the browser setups',
-            'Data-provider sign-in tests for each user state: active, locked, and a second active user',
+            'Data-provider sign-in tests for every demo user: active, locked, a problem user and a slow user',
             'A personal guide with the reasons and the alternatives that were not chosen'],
   run='<pre><code>docker run -d -p 8080:8080 ghcr.io/niranjankagri/pattern-shop-demo-app:latest\nmvnw.cmd verify -Dsuite=core\nmvnw.cmd verify -Dsuite=ui -Dengine=playwright -Dbrowser=webkit -Ddata.source=csv</code></pre>',
   results=fig('https://raw.githubusercontent.com/niranjankagri/design-patterns-test-framework/main/docs/images/ci-run.png',
@@ -866,7 +866,7 @@ PAGES = {
   limits=['The application under test is a small demo shop; the patterns are shown at framework scale',
           'Edge\'s first start on a fresh CI runner takes 30 to 45 seconds, so CI starts it once before the tests',
           'Five patterns, not all of them: no Builder, Decorator or Singleton, by choice'],
-  next=['Move my other Java frameworks onto the shared Pattern Shop', 'A Decorator around the Browser for timing and retries of infrastructure errors only'],
+  next=['A Decorator around the Browser for timing and retries of infrastructure errors only'],
  ),
  'pattern-shop-demo-app': dict(
   repo='pattern-shop-demo-app', workflow='ci.yml', report='docs/images/products.png',
@@ -876,7 +876,7 @@ PAGES = {
   purpose='<p>Public demo sites are shared, slow, change without notice, and sometimes add bot checks. A framework that tests one of them is partly testing the internet. '
           'Pattern Shop is an application I control: same data on every run, no other users, and features added on purpose, such as an API in three formats for adapter tests.</p>',
   stack=[['Application', 'Java, JDK HTTP server only, no dependencies; compiled for Java 21, runs on Java 25 in the image; starts in under a second'],
-         ['Tests', 'JUnit 6: 19 tests over real HTTP, plus a smoke test of the built image (sign-in, cart, all three APIs)'],
+         ['Tests', 'JUnit 6: 32 tests over real HTTP, plus a smoke test of the built image (sign-in, cart, checkout, all three APIs)'],
          ['Image', 'Multi-stage Docker build, non-root user, health check; published to ghcr.io as :latest and :sha-&lt;commit&gt;'],
          ['Hosting', 'Render free plan from render.yaml, deployed only after CI passes; uptime monitored']],
   architecture='<pre><code>framework CI job ──► docker run ghcr.io/.../pattern-shop-demo-app ──► tests against localhost:8080\n                     (fresh shop per job: fast, no shared data, never down)\npeople, demos    ──► hosted demo on Render (https://pattern-shop.onrender.com)</code></pre>',
@@ -885,7 +885,9 @@ PAGES = {
              'The same catalog as JSON in cents, SOAP-style XML in dollars and legacy text, so adapter tests have real differences to translate',
              'Sessions and carts per browser session, so parallel tests never share a cart',
              'The image is published only after its own smoke test passed'],
-  features=['Users for each sign-in outcome: active, locked, wrong password, empty fields',
+  features=['A sortable product list with pictures, a page per product, and a two-step checkout with 8 % tax',
+            'Users for each sign-in outcome (active, locked, wrong password, empty fields), plus a problem user who sees broken pictures and a slow user for wait tests',
+            'Used by four frameworks: design patterns (Selenium and Playwright), Playwright for Java, Robot Framework and Cucumber',
             'A test-data API that lists the demo users, for a test-data service strategy',
             'A health check that needs no extra tools in the image',
             'At most 10,000 sessions on the hosted copy, then it starts over'],
@@ -897,7 +899,7 @@ PAGES = {
   ci='<p>On every pull request, push to <code>main</code>, weekly and on demand: the app tests, then the Docker image is built, started, health-checked and smoke-tested. On <code>main</code> the tested image is published to ghcr.io, and Render deploys only after the checks pass. The JUnit results are collected daily by <a href="quality-intelligence.html">Quality Intelligence</a>.</p>',
   limits=['Deliberately small: in-memory sessions, no database, four products',
           'The hosted copy is on a free plan and sleeps when idle',
-          'Used by one framework so far; the others move over one at a time'],
+          'Pages have no JavaScript on purpose (plain forms), so it cannot stand in for single-page-app behaviour'],
   next=['Move my other Java frameworks onto it', 'Add pages for features a framework needs next, such as file upload or a slow page'],
  ),
  'mobile-real-device-testing': dict(
