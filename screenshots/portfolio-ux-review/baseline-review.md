@@ -42,3 +42,5 @@
 - 2026-11-22: 22 Nov 2026: QI card and dashboard showcase from CI run 44989477515, reviewed against the old baselines: new live report screenshot (31 repositories, 4,533 results), 29 -> 31 in the card text, figures 4,510 of 4,510, evidence and caption dated 22 Nov; nothing else changed.
 
 - 2026-11-22: 22 Nov 2026: Pattern Shop card text (sortable list, product pages, two-step checkout) in the related-projects box; CI actual images of run 45006736398 reviewed against the expected ones, only that excerpt changed
+
+- 2026-11-22: 22 Nov 2026: Java backend course added (project 25): project count 32 to 33 in header, hero, featured section and mobile menu; the course in a mobile related-projects box; two 1-pixel architecture shifts. CI run 45018143865 actual images reviewed against expected.
