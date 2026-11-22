@@ -171,22 +171,23 @@ FEATURED = [
       text='Load tests as Java code against a shop API in the same repository: endpoint objects chained into journeys, feeders, SLO assertions that fail the Maven build, capacity steps, and the same overload in two workload models.',
       tags=['Java 21', 'Gatling', 'Maven', 'Load testing', 'SLO']),
 
- # Facts checked 20 Nov 2026 against main 1176f20 (CI run 44729081797 green): 37 tests (26 unit and API, 11 UI) on 7 browser
+ # Facts checked 22 Nov 2026 against main 928afd8 (CI run 45004125413 green): 39 tests (26 unit and API, 13 UI) on 7 browser
  # setups; a core job and 7 UI jobs, each starting the Pattern Shop image from ghcr.io; the password-manager problem from the README.
  dict(n=23, badge='Design patterns', title='Design Patterns in a Selenium and Playwright Framework', repo='design-patterns-test-framework', wf='ci.yml', wfname='CI',
       img='design-patterns', alt='CI run on main: the unit and API job and seven UI jobs on Selenium and Playwright, all passed', page='design-patterns-test-framework',
       report='docs/images/ci-run.png',
-      fact='The same 11 UI tests run on Selenium WebDriver and on Playwright for Java, on 7 browser setups, through one Browser interface. Running both engines exposed a Chrome password-leak dialog that swallowed clicks on Selenium only; the fix lives in the Factory and a test keeps it there.',
+      fact='The same 13 UI tests run on Selenium WebDriver and on Playwright for Java, on 7 browser setups, through one Browser interface. Running both engines exposed a Chrome password-leak dialog that swallowed clicks on Selenium only; the fix lives in the Factory and a test keeps it there.',
       text='Five design patterns doing real work in one Java framework: Page Object, Factory (browser and engine), Strategy (JSON, CSV or API test data), Adapter (two browser engines, three catalog APIs) and Observer (reports, logs, metrics and screenshots from test events).',
       tags=['Java 21', 'Selenium 4', 'Playwright', 'TestNG', 'Design patterns']),
 
- # Facts checked 20 Nov 2026 against main e33214c (CI run 44724127713 green): 19 JUnit tests over HTTP plus an image smoke test;
- # image on ghcr.io (Java 25 runtime); hosted demo smoke test passed on 20 Nov 2026.
+ # Facts checked 22 Nov 2026 against main 2788860 (CI run 45005697097 green): 32 JUnit tests over HTTP plus an image smoke test
+ # (now with the checkout); image on ghcr.io (Java 25 runtime); hosted demo smoke test passed on 22 Nov 2026; used by four
+ # frameworks in CI (design-patterns, playwright-framework, robot-framework-automation, cucumber-bdd-demo).
  dict(n=24, badge='Demo application', title='Pattern Shop: a Shared Demo App for Test Frameworks', repo='pattern-shop-demo-app', wf='ci.yml', wfname='CI',
       img='pattern-shop', alt='Pattern Shop product list: four products with prices and add-to-cart buttons', page='pattern-shop-demo-app',
       report='docs/images/products.png',
-      fact='A small shop I control, so my frameworks never depend on a public demo site: each CI job starts a fresh copy from a Docker image in seconds. 19 JUnit tests and an image smoke test gate every change, and a hosted copy is online for demos.',
-      text='Sign-in, products, cart and checkout pages with a data-testid on every element a test needs, and the same catalog through REST/JSON, a SOAP-style XML API and a legacy text format, for adapter and contract tests. JDK only, no dependencies.',
+      fact='A small shop I control, used by four of my frameworks instead of public demo sites: each CI job starts a fresh copy from a Docker image in seconds. 32 JUnit tests and an image smoke test gate every change, and a hosted copy is online for demos.',
+      text='Sign-in, a sortable product list, product pages, cart and a two-step checkout, with a data-testid on every element a test needs, and the same catalog through REST/JSON, a SOAP-style XML API and a legacy text format, for adapter and contract tests. JDK only, no dependencies.',
       tags=['Java', 'Docker', 'GitHub Actions', 'REST', 'Render']),
 ]
 
@@ -207,7 +208,7 @@ MORE = [
            'explicit waits instead of fixed sleeps, browser and headless mode from a config file, and an Extent report '
            'with a screenshot on every failure. The upgrade also fixed a locator bug that had failed the logout test since 2024.',
       tags=['Java', 'Selenium', 'TestNG', 'Maven']),
- # CI now runs headless Chrome against public practice sites. Facts checked 13 Oct 2026 (after the layer split, commit 5bc9fb8): 5/5 scenarios on visible Chrome and
+ # CI runs headless Chrome: TC-101 on a public practice site, TC-102 against Pattern Shop (since 22 Nov 2026). Facts checked 13 Oct 2026 (after the layer split, commit 5bc9fb8): 5/5 scenarios on visible Chrome and
  # headless Chrome, Edge and Firefox; the 2022 build no longer compiled (Java 1.7 target, mixed Cucumber versions).
  dict(title='Cucumber BDD Demo (2022, upgraded)', repo='cucumber-bdd-demo', wf='tests.yml', wfname='Chrome scenarios (JDK 17)',
       report='docs/images/report-passing.png',
@@ -389,13 +390,13 @@ EVIDENCE_BY_REPO = {
         'label': 'Scheduled CI run on main',
     },
     'design-patterns-test-framework': {
-        'date': '2026-11-20',
-        'url': 'https://github.com/niranjankagri/design-patterns-test-framework/actions/runs/44729081797',
+        'date': '2026-11-22',
+        'url': 'https://github.com/niranjankagri/design-patterns-test-framework/actions/runs/45004125413',
         'label': 'CI run on main',
     },
     'pattern-shop-demo-app': {
-        'date': '2026-11-20',
-        'url': 'https://github.com/niranjankagri/pattern-shop-demo-app/actions/runs/44724127713',
+        'date': '2026-11-22',
+        'url': 'https://github.com/niranjankagri/pattern-shop-demo-app/actions/runs/45005697097',
         'label': 'CI run on main',
     },
     'integration-testing-testcontainers': {
