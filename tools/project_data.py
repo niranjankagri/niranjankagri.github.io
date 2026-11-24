@@ -189,13 +189,14 @@ FEATURED = [
       fact='A small shop I control, used by four of my frameworks instead of public demo sites: each CI job starts a fresh copy from a Docker image in seconds. 32 JUnit tests and an image smoke test gate every change, and a hosted copy is online for demos.',
       text='Sign-in, a sortable product list, product pages, cart and a two-step checkout, with a data-testid on every element a test needs, and the same catalog through REST/JSON, a SOAP-style XML API and a legacy text format, for adapter and contract tests. JDK only, no dependencies.',
       tags=['Java', 'Docker', 'GitHub Actions', 'REST', 'Render']),
- # Facts checked 22 Nov 2026 against main b6a8664 (Tests run 45013660433 and Airbnb image run 45013660451 green):
- # 28 sessions; 459 tests in 23 Maven modules on JDK 17 and JDK 25 (46 module summaries in the CI log, all passing);
- # Airbnb backend live on Render since 22 Nov 2026, smoke-test.sh passed against it the same day.
+ # Facts checked 24 Nov 2026 against main 67f3a01 (Tests run 45339082285 green; the last Airbnb image run, 45337595153
+ # on 99d4b11, green): 28 sessions; 483 tests in 23 Maven modules on JDK 17 and JDK 25 (23 module summaries per JDK in
+ # the CI log of PR #48, all passing, none skipped); Airbnb backend live on Render since 22 Nov 2026, smoke-test.sh
+ # passed against it on 24 Nov 2026. The screenshot is still the 22 Nov run (its alt text says so).
  dict(n=25, badge='Backend course', title='Java Backend Course: a Live Airbnb Backend', repo='java-backend-development', wf='tests.yml', wfname='Tests',
       img='java-backend', alt='Smoke test against the live Airbnb backend on Render, 22 Nov 2026: register, listing, search, booking, a second booking of the same nights refused with 409, PASSED', page='java-backend-course',
       report='airbnb-backend/README.md',
-      fact='28 sessions from core Java to Spring Boot, microservices and AI tools, every example checked by tests: 459 tests in 23 Maven modules on JDK 17 and 25. The Airbnb backend from the last project sessions runs live on Render, and its smoke test passed there.',
+      fact='28 sessions from core Java to Spring Boot, microservices and AI tools, every example checked by tests: 483 tests in 23 Maven modules on JDK 17 and 25. The Airbnb backend from the last project sessions runs live on Render, and its smoke test passed there.',
       text='My work for a Java backend course, session by session, one pull request per day: Java and Maven, Spring MVC and Boot, JDBC and JPA, testing, Redis, Spring Security and OAuth 2, microservices and messaging, two projects (Splitwise and Airbnb), deployment with Docker, Flyway and Render, and AI tools ending in a RAG assistant built with only the JDK.',
       tags=['Java 17', 'Spring Boot 4', 'PostgreSQL', 'Docker', 'Render']),
 ]
@@ -405,10 +406,10 @@ EVIDENCE_BY_REPO = {
         'label': 'CI run on main',
     },
     'java-backend-development': {
-        'date': '2026-11-22',
-        'url': 'https://github.com/niranjankagri/java-backend-development/actions/runs/45013660433',
+        'date': '2026-11-24',
+        'url': 'https://github.com/niranjankagri/java-backend-development/actions/runs/45339082285',
         'label': 'CI run on main',
-        'result': 'On 22 Nov 2026: 459 tests in 23 modules passed on JDK 17 and JDK 25 in CI; the Airbnb backend is live at https://airbnb-backend-u7lv.onrender.com and its smoke test (register, listing, search, booking, no double booking) passed against it.',
+        'result': 'On 24 Nov 2026: 483 tests in 23 modules passed on JDK 17 and JDK 25 in CI; the Airbnb backend is live at https://airbnb-backend-u7lv.onrender.com and its smoke test (register, listing, search, booking, no double booking) passed against it.',
     },
     'pattern-shop-demo-app': {
         'date': '2026-11-22',
