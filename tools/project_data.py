@@ -135,13 +135,14 @@ FEATURED = [
       text='A checkout client for a payment and a shipping API, tested against WireMock over real HTTP: request matching, response templating, stateful retry scenarios, all four network faults, delays, JSON mappings, and record and replay.',
       tags=['Java 21', 'WireMock', 'JUnit 6', 'API mocking', 'Fault injection']),
 
- # Facts checked 16 Nov 2026 against main 8a0ef74 (scheduled CI run 43552636833 green, 14 Nov): 15 tests, 0 failures;
- # 18 out-of-date locators healed, 3 wrong heals pinned (README "Limits found on real runs").
+ # Facts checked 27 Nov 2026 against main 7413506 (CI run 45968463923 green): 41 tests, 0 failures; on release 2 Healenium
+ # proposes 18 heals, 16 approved and used, 2 rejected and stopped; the 0.05 clear-winner margin stops the 2 ties; the
+ # wrong button-label heal wins 0.897 against 0.781 (README "Controlled healing"); review gate fails day one, passes after review.
  dict(n=19, badge='Self-healing', title='Self-Healing Selenium Tests with Healenium', repo='healenium-self-healing-tests', wf='ci.yml', wfname='CI',
-      img='healenium', alt='Healenium healing report: each failed locator next to the healed locator and its score', page='healenium-self-healing',
-      report='docs/images/healenium-report.png',
-      fact='A redesign renamed every locator; the same 6 journeys still passed through Healenium, which healed 18 out-of-date locators. 3 heals picked the wrong element, and the normal assertions caught every one.',
-      text='A demo shop with two releases at the same URL, tested through the same page objects three times: learn on release 1, heal on release 2, and a control run without Healenium that proves the old locators really fail.',
+      img='healenium-rejected-heal', alt="Heal journal screenshot: the lookup for the torque wrench's button label lands on the spirit level's button, a confident heal a reviewer rejected", page='healenium-self-healing',
+      report='docs/images/rejected-heal-button-label.png',
+      fact='A redesign broke every locator and Healenium healed them, but real scores showed that a clear winner can still be wrong: the wrong button won 0.897 to 0.781. So a heal is used only with a clear winner and a reviewed verdict, and a review gate fails the build for heals nobody has checked.',
+      text='A demo shop with two releases at the same URL, tested through the same page objects: learn on release 1, heal on release 2 on day one and after review, and a control run without Healenium. Every heal goes into a journal with its top 5 candidates, their scores and a screenshot of the proposed element.',
       tags=['Java 21', 'Selenium 4', 'Healenium', 'TestNG', 'Docker']),
 
  # Facts checked 16 Nov 2026 against main 589c9ae (scheduled CI run 43551387965 green, 14 Nov): weak 15 tests 42/81 killed (52 %),
@@ -199,6 +200,15 @@ FEATURED = [
       fact='28 sessions from core Java to Spring Boot, microservices and AI tools, every example checked by tests: 483 tests in 23 Maven modules on JDK 17 and 25. The Airbnb backend from the last project sessions runs live on Render, and its smoke test passed there.',
       text='My work for a Java backend course, session by session, one pull request per day: Java and Maven, Spring MVC and Boot, JDBC and JPA, testing, Redis, Spring Security and OAuth 2, microservices and messaging, two projects (Splitwise and Airbnb), deployment with Docker, Flyway and Render, and AI tools ending in a RAG assistant built with only the JDK.',
       tags=['Java 17', 'Spring Boot 4', 'PostgreSQL', 'Docker', 'Render']),
+ # Facts checked 27 Nov 2026 against main da7ca74 (CI run 45834743767 green, 26 Nov): gate PASSED, 22 checks; pytest 196
+ # results (174 passed, 10 strict xfail known misses, 12 model-only tests skipped); figures from the README (run 45753214655,
+ # same gate values) and its four real-model runs of 26 Nov. Card image: docs/images/api-chat-call.png.
+ dict(n=26, badge='RAG evaluation', title='Quality Gate for a RAG Chatbot', repo='rag-chatbot-quality-gate', wf='ci.yml', wfname='CI',
+      img='rag-chatbot', alt='A real call to POST /chat: an answer that cites help section M2, status answered, latency 0.47 ms', page='rag-chatbot-quality-gate',
+      report='docs/images/api-chat-call.png',
+      fact='API tests, DeepEval, Ragas and a Promptfoo red team feed one quality gate on every pull request, offline and free. Reworded questions give the honest number: 7 of 14 get "I don\'t have that information", but every answer stays grounded in its citation and none of 16 attacks leaks a secret.',
+      text='A help-desk chatbot for a fictional climbing gym behind a FastAPI API, with staff-only secrets and a planted prompt injection in its knowledge base. Weekly, real local models answer and judge through Ollama in CI, and the run records where the model invents and where the judges disagree.',
+      tags=['Python 3.13', 'FastAPI', 'DeepEval', 'Ragas', 'Promptfoo', 'Ollama']),
 ]
 
 MORE = [
@@ -263,6 +273,7 @@ CATEGORY_BY_REPO = {
     'integration-testing-testcontainers': ['Web & API'],
     'wiremock-api-mocking': ['Web & API'],
     'healenium-self-healing-tests': ['Web & API'],
+    'rag-chatbot-quality-gate': ['AI & LLM'],
     'pit-mutation-testing': ['Test quality'],
     'quicktheories-property-based-testing': ['Test quality'],
     'gatling-performance-testing': ['Performance'],
@@ -381,9 +392,16 @@ EVIDENCE_BY_REPO = {
         'label': 'CI run on main',
     },
     'healenium-self-healing-tests': {
-        'date': '2026-11-14',
-        'url': 'https://github.com/niranjankagri/healenium-self-healing-tests/actions/runs/43552636833',
-        'label': 'Scheduled CI run on main',
+        'date': '2026-11-27',
+        'url': 'https://github.com/niranjankagri/healenium-self-healing-tests/actions/runs/45968463923',
+        'label': 'CI run on main',
+        'result': 'On 27 Nov 2026: 41 tests passed in CI. Of the 18 heals Healenium proposed on release 2, 16 were approved and used and 2 were rejected and stopped; the review gate failed on day one (7 heals used without review) and passed after review.',
+    },
+    'rag-chatbot-quality-gate': {
+        'date': '2026-11-26',
+        'url': 'https://github.com/niranjankagri/rag-chatbot-quality-gate/actions/runs/45834743767',
+        'label': 'CI run on main',
+        'result': 'On 26 Nov 2026 the quality gate passed on main: all 22 checks within their limits; pytest 174 passed, with 10 known misses as strict expected failures. Four real-model runs on the same day are in the README.',
     },
     'pit-mutation-testing': {
         'date': '2026-11-14',
@@ -604,7 +622,8 @@ REPORT_LABELS = {
     'security-testing-zap': 'OWASP ZAP scan report screenshot',
     'integration-testing-testcontainers': 'Integration test report screenshot',
     'wiremock-api-mocking': 'Test results by class',
-    'healenium-self-healing-tests': 'Healenium healing report screenshot',
+    'healenium-self-healing-tests': 'Rejected heal screenshot',
+    'rag-chatbot-quality-gate': 'API call screenshot',
     'pit-mutation-testing': 'PIT mutation report screenshot',
     'quicktheories-property-based-testing': 'README with the shrinking results table',
     'gatling-performance-testing': 'Gatling response-time chart screenshot',
@@ -641,7 +660,8 @@ COMPARISON_DETAILS = {
     'accessibility-visual-testing': ('Accessibility, keyboard/focus and visual regression checks', 'Playwright browser matrix; see workflow evidence', 'axe-core plus checks axe cannot cover and zero-tolerance image comparisons'),
     'security-testing-zap': ('DAST scans and API access-control tests', 'Docker private network', 'Separate scanner findings from API-only authorization checks'),
     'wiremock-api-mocking': ('HTTP client integration tests against mocked third-party APIs', 'WireMock on local ports; no browser matrix', 'Stub objects, strict request matching, scenarios and fault injection'),
-    'healenium-self-healing-tests': ('Browser journeys across two releases of a demo shop', 'Headless Chrome; Healenium backend in Docker', 'Self-healing driver behind page objects, wrong heals pinned, control run without healing'),
+    'healenium-self-healing-tests': ('Browser journeys across two releases of a demo shop, unit tests of the healing rules', 'Headless Chrome; Healenium backend in Docker', 'Self-healing driver behind page objects, a clear-winner rule, reviewed heals and a review gate, control run without healing'),
+    'rag-chatbot-quality-gate': ('HTTP contract, retrieval, answer, attack and latency checks, plus unit tests of every grader', 'Offline on every pull request; real local models weekly through Ollama', 'One set of case files and graders feeds DeepEval, Ragas and Promptfoo; the gate is configuration'),
     'pit-mutation-testing': ('Unit tests measured by mutation testing', 'JVM unit tests; no browser matrix', 'Two suites with equal line coverage, boundary tables, exact assertions, 100% mutation gate'),
     'quicktheories-property-based-testing': ('Property-based and stateful unit tests', 'JVM unit tests; no browser matrix', 'Generated inputs, shrinking, oracles, round trips and a model check'),
     'gatling-performance-testing': ('HTTP smoke, load, capacity and workload-model tests', 'HTTP workload; no browser matrix', 'Endpoint objects, journeys, feeders and SLO assertions as a build gate'),
@@ -670,7 +690,8 @@ COMPARISON_LIMITATIONS = {
     'ai-assisted-test-automation': 'CI replays hand-written sample answers; no live model output or model-quality score is claimed.',
     'automation-coverage-quality-intelligence': 'The requirement catalog is synthetic; collected CI results are real. The shared dashboard account is documented in the case study.',
     'wiremock-api-mocking': 'The payment and shipping APIs are invented; a mock cannot notice a real API changing, which is what contract tests are for.',
-    'healenium-self-healing-tests': 'The demo shop and its redesign are written for the project; healing quality on another application will differ, and every healed locator still needs review.',
+    'healenium-self-healing-tests': 'The demo shop and its redesign are written for the project; healing quality on another application will differ, and reviewed heals still need fixing in the page objects.',
+    'rag-chatbot-quality-gate': 'A lab: 44 cases and 19 sections; the required gate uses a generator that cannot invent, and the weekly small-model run is an indication, not a measurement.',
     'pit-mutation-testing': 'A small pricing module written for the project; mutation scores of real code bases are lower and take longer to compute.',
     'quicktheories-property-based-testing': 'QuickTheories 0.26 is no longer maintained, and shrinking with mixed generators depends on the JDK (documented in the repository).',
     'gatling-performance-testing': 'Load generator and API share one machine; the numbers compare models and catch regressions, not the capacity of a real system.',

@@ -28,8 +28,8 @@ if len(ids) != len(set(ids)):
     fail('Duplicate project identifiers in shared data.')
 if len(pages) != len(set(pages)):
     fail('Duplicate project page slugs in shared data.')
-if len(PROJECTS) != 33:
-    fail(f'Expected all 33 existing projects, found {len(PROJECTS)}.')
+if len(PROJECTS) != 34:
+    fail(f'Expected all 34 existing projects, found {len(PROJECTS)}.')
 if len(FEATURED_PROJECTS) != 6:
     fail(f'Expected six featured projects, found {len(FEATURED_PROJECTS)}.')
 featured_ids = {p['id'] for p in FEATURED_PROJECTS}
@@ -174,8 +174,8 @@ for selector in ('.exploration-band::before', '.engineering-evidence::before'):
 
 
 html_files = [ROOT / 'index.html', ROOT / 'projects.html', ROOT / '404.html', *sorted((ROOT / 'projects').glob('*.html'))]
-if len(html_files) != 36:
-    fail(f'Expected 36 generated HTML pages, found {len(html_files)}.')
+if len(html_files) != 37:
+    fail(f'Expected 37 generated HTML pages, found {len(html_files)}.')
 if not (ROOT / 'Niranjan_Kumar_Agri_CV_Technical_Lead_QA_SDET.pdf').is_file():
     fail('CV download is missing.')
 for path in html_files:
