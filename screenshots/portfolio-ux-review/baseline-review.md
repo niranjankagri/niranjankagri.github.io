@@ -45,3 +45,5 @@
 
 - 2026-11-22: 22 Nov 2026: Java backend course added (project 25): project count 32 to 33 in header, hero, featured section and mobile menu; the course in a mobile related-projects box; two 1-pixel architecture shifts. CI run 45018143865 actual images reviewed against expected.
 - 2026-11-22: follow-up for project 25: related-projects desktop (the course among the related projects) and the case footer (1 px lower as a result), from CI run 45019000621, reviewed against the expected images.
+
+- 2026-11-27: Healenium controlled healing + project 26 (RAG chatbot quality gate): 16 captures from CI run 46002288717 compared with the expected ones: the project count 33 to 34 in header, hero, featured section and mobile menu; the Healenium card's new description in the related-projects box (desktop and mobile).
